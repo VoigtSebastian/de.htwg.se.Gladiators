@@ -1,2 +1,51 @@
 *.class
 *.log
+
+# Mac
+.DS_Store
+
+# Eclipse
+bin/
+.settings/
+.classpath
+
+# Intellij
+.idea/
+target/
+
+# VS Code
+.vscode/settings.json
+
+# Maven
+log/
+
+# Gradle
+.gradle/
+build/
+pom.xml
+
+# sbt
+.cache
+.lib/
+dist/*
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+project/project/
+logs/
+project/.sbtserver
+.sbtserver/
+
+# Scala-IDE specific
+.scala_dependencies
+.worksheet
+
+# Sonar
+.sonar/
+
+# Application log
+sudoku.log
+
+# Application backup
+grid.json
