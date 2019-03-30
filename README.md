@@ -1,3 +1,3 @@
 # de.htwg.se.Gladiators
 A turnbased game called Gladiators. 
-Sascha Villing & Sebastian Voigt
+created by S.V & S.V
