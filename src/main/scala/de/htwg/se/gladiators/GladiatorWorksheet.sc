@@ -1,40 +1,46 @@
-case class Gladiator(x:Int, y:Int, movementPoints:Double, strength:Double, health:Double);
+//define basic classes
+case class Gladiator(x: Int, y: Int, movementPoints: Double, strength: Double, health: Double)
 
-val gladiator1 = Gladiator(0,0, 2.0, 5.0, 1.0);
+case class Cell(movementCost: Double, cellType: Int)
 
-gladiator1.x;
-gladiator1.y;
-gladiator1.movementPoints;
-gladiator1.strength;
-gladiator1.health;
+case class Grid(cells: Array[Array[Cell]])
 
-val gladiator2 = Gladiator(0,1, 4.0, 2.0, 1.0);
+//define basic gridTypes translates to how many movementPoints a player has to invest to move onto the cell.
+def base = 0
+def sand = 1
+def marsh = 2
+def water = 3
 
-case class Cell(x:Int, y:Int, movementCost:Double, cellType:Int);
-case class Grid(cell:Array[Cell]);
+//create basic objects and test stuff
+val gladiator1 = Gladiator(0, 0, 3.0, 5.0, 1.0)
+gladiator1.x
+gladiator1.y
+gladiator1.movementPoints
+gladiator1.strength
+gladiator1.health
 
-val cell0 = Cell(0,0,1.0,0);
-val cell1 = Cell(0,1,1.0,0);
-val cell2 = Cell(1,0,1.0,0);
-val cell3 = Cell(1,1,1.0,0);
+val cells = Array.ofDim[Cell](3, 3)
+cells(0)(0) = Cell(1.0, sand)
+cells(0)(1) = Cell(1.0, base)
+cells(0)(2) = Cell(1.0, sand)
 
-val array = new Array[Cell](4);
-array(0) = cell0;
-array(1) = cell1;
-array(2) = cell2;
-array(3) = cell3;
+cells(1)(0) = Cell(1.0, water)
+cells(1)(1) = Cell(1.0, marsh)
+cells(1)(2) = Cell(1.0, marsh)
 
-val grid = Grid(array);
+cells(2)(0) = Cell(1.0, sand)
+cells(2)(1) = Cell(1.0, base)
+cells(2)(2) = Cell(1.0, sand)
 
-grid.cell(0).x;
-grid.cell(1).x;
+val playingField = Grid(cells)
 
-array.foreach {println}
 
-print("Gladiator1 pos: " + gladiator1.x + "," + gladiator1.y);
+print("Gladiator1 pos: " + gladiator1.x + "," + gladiator1.y)
 
-for(c <- array) {
-  if(c.x == gladiator1.x && c.y == gladiator1.y) {
-    print(c + " ist besetzt von Gladiator1");
-  }
+println("Printing cell types of current playingField")
+for (i <- cells.indices) {
+    for (j <- cells(i).indices) {
+        print(playingField.cells(i)(j).cellType + " ")
+    }
+    println()
 }
