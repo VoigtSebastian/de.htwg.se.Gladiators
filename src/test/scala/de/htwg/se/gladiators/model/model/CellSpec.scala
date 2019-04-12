@@ -11,8 +11,8 @@ class CellSpec extends WordSpec with Matchers {
             "have a type" in {
                 cell.cellType should be(CellType.WATER.id)
             }
-            "have a nice Int representation" in {
-                cell.toString should be("Your Name")
+            "have a nice String representation" in {
+                cell.toString should be("3")
             }
         }
     }

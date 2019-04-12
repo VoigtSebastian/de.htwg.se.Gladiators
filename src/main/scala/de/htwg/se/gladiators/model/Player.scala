@@ -1,5 +1,5 @@
 package de.htwg.se.gladiators.model
 
-case class Player(name: String) {
-  override def toString:String = name;
+case class Player(name: String = "NO_NAME") {
+  override def toString:String = name
 }
