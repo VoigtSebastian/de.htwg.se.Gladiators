@@ -8,4 +8,5 @@ case class Gladiator(cell: Cell, movementPoints: Double, var ap: Double, hp: Dou
   def levelUp(value: Int): Unit = {
     this.ap += value;
   }
+
 }
