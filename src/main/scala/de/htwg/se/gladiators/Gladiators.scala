@@ -26,5 +26,7 @@ object Gladiators {
 
         val field = PlayingField(cells)
         println(field.toString())
+
+        println("CellType.SAND prints: " + CellType.SAND)
     }
 }
