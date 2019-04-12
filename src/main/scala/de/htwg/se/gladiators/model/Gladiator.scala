@@ -3,9 +3,13 @@ package de.htwg.se.gladiators.model
 import de.htwg.se.gladiators.model.GaldiatorType.GladiatorType
 
 
-case class Gladiator(cell: Cell, movementPoints: Double, var ap: Double, hp: Double, gladiatortype: GladiatorType) {
+case class Gladiator(cell: Cell, movementPoints: Double, var ap: Double, hp: Double, gladiatortype:  GladiatorType) {
 
   def levelUp(value: Int): Unit = {
     this.ap += value;
+  }
+
+  object ENums extends Enumeration {
+    val SWORD, SPEAR = Value
   }
 }
