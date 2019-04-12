@@ -6,8 +6,10 @@ import org.scalatest.{Matchers, WordSpec}
 
 class GladiatorSpec extends WordSpec with Matchers {
   "A Gladiator is a fighter in the game. A Gladiator" when {
+
     "new" should {
-      val gladiator = Gladiator(new Cell(0), 10.0, 50.0, 100.0, SWORD)
+      var gladiator = Gladiator(new Cell(0), 10.0, 50.0, 100.0, SWORD)
+
       "have a cell" in {
         gladiator.cell should be(Cell(0));
       }
@@ -25,10 +27,11 @@ class GladiatorSpec extends WordSpec with Matchers {
       }
     }
     "after levelUp" should {
-      val gladiator = Gladiator(new Cell(0), 10.0, 50.0, 100.0, SWORD)
-      gladiator.levelUp(50);
+      var gladiator2 = Gladiator(new Cell(0), 10.0, 50.0, 100.0, SWORD)
+
+      gladiator2.levelUp(50);
       "have more ap" in {
-        gladiator.ap should be (100.0);
+        gladiator2.ap should be (100.0);
       }
     }
 
