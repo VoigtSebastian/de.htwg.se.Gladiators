@@ -1,8 +1,7 @@
 package de.htwg.gladiators
 
-import de.htwg.se.gladiators.model.CellType
-import de.htwg.se.gladiators.model.PlayingField
-import de.htwg.se.gladiators.model.Cell
+
+import de.htwg.se.gladiators.model.{Cell, CellType, Gladiator, PlayingField}
 
 object Gladiators {
 
