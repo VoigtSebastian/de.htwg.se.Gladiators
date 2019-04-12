@@ -24,6 +24,13 @@ class GladiatorSpec extends WordSpec with Matchers {
         gladiator.gladiatortype should be (SWORD);
       }
     }
+    "after levelUp" should {
+      val gladiator = Gladiator(new Cell(0), 10.0, 50.0, 100.0, SWORD)
+      gladiator.levelUp(50);
+      "have more ap" in {
+        gladiator.ap should be (100.0);
+      }
+    }
 
   }
 }
