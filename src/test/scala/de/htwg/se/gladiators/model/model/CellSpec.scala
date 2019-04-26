@@ -7,9 +7,9 @@ import org.scalatest.{Matchers, WordSpec}
 class CellSpec extends WordSpec with Matchers {
     "A Cell" when {
         "new" should {
-            val cell = Cell(CellType.WATER.id)
+            val cell = Cell(CellType.PALM.id)
             "have a type" in {
-                cell.cellType should be(CellType.WATER.id)
+                cell.cellType should be(CellType.PALM.id)
             }
             "have a nice String representation" in {
                 cell.toString should be("3")
