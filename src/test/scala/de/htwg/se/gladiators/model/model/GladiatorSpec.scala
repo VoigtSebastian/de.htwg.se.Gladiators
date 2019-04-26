@@ -8,10 +8,13 @@ class GladiatorSpec extends WordSpec with Matchers {
   "A Gladiator is a fighter in the game. A Gladiator" when {
 
     "new" should {
-      var gladiator = Gladiator(Cell(0), 10.0, 50.0, 100.0, SWORD)
+      var gladiator = Gladiator(5, 1, 10.0, 50.0, 100.0, SWORD)
 
-      "have a cell" in {
-        gladiator.cell should be(Cell(0))
+      "have a x coordinate" in {
+        gladiator.x should be(5)
+      }
+      "have a y coordinate" in {
+        gladiator.y should be (1)
       }
       "have movementPoints" in {
         gladiator.movementPoints should be (10.0)
@@ -23,11 +26,11 @@ class GladiatorSpec extends WordSpec with Matchers {
         gladiator.hp should be (100.0)
       }
       "have a type " in {
-        gladiator.gladiatortype should be (SWORD)
+        gladiator.gladiatorType should be (SWORD)
       }
     }
     "after levelUp" should {
-      var gladiator2 = Gladiator(Cell(0), 10.0, 50.0, 100.0, SWORD)
+      var gladiator2 = Gladiator(5, 5, 10.0, 50.0, 100.0, SWORD)
 
       gladiator2.levelUp(50)
       "have more ap" in {
