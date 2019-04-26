@@ -22,8 +22,15 @@ object Gladiators {
             Gladiator(1,0, 1.0,1.0,1.0, GladiatorType.SWORD))
 
         println("Line zero with gladiators: " + field.formatLine(0,glad) + "\n\n")
-
+        
+        var input: String = "h"
+        do {
+          input = readLine()
+          field = tui.processInputLine(input, field)
+          println("PlayingField:\n" + field.toString())
+        } while (input != "q")
+        
         println(field.toString())
-
+        
     }
 }
