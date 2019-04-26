@@ -1,6 +1,6 @@
 package de.htwg.se.gladiators.model
 
 object CellType extends Enumeration {
-    type CellType = Value;
-    val BASE, SAND, MARSH, WATER = Value;
+    type CellType = Value
+    val SAND, PALM, BASE = Value
 }
