@@ -28,4 +28,22 @@ case class PlayingField(cells: Array[Array[Cell]]) {
 
         ret
     }
+     
+    def createRandom(length: Int): PlayingField = {
+        cells = Array.ofDim[Cell](length, length)
+        for (i <- cells.indices) {
+            for (j <- cells(i).indices) {
+                //cells(i)(j) = Cell(scala.util.Random.nextInt(CellType.maxId - 1));
+                val randInt = scala.util.Random.nextInt(100);
+                if (randInt < 83) {
+                    cells(i)(j) = Cell(CellType.SAND.id);
+                } else {
+                    cells(i)(j) = Cell(CellType.PALM.id);
+                }
+            }
+        }
+        cells(0)(length / 2) = Cell(CellType.BASE.id)
+        cells(length - 1)(length / 2) = Cell(CellType.BASE.id)
+        return this;
+    }     
 }
