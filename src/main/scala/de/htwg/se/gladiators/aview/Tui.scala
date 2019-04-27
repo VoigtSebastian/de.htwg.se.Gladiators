@@ -18,7 +18,8 @@ class Tui {
             TEXT_COLOR_BLACK + ""  + SAND_BACKGROUND + " color of a sand tile" + RESET_ANSI_ESCAPE + "\n" +
             TEXT_COLOR_BLACK + ""  + PALM_BACKGROUND + " color of a palm tile" + RESET_ANSI_ESCAPE + "\n" +
             TEXT_COLOR_BLACK + ""  + BASE_BACKGROUND + " color of a base tile" + RESET_ANSI_ESCAPE + "\n" +
-            TEXT_COLOR_BLACK + ""  + UNIT_BACKGROUND + " color of a unit tile (S = Sword unit, B = Bow unit, M = Magic unit" +
+            TEXT_COLOR_BLACK + ""  + UNIT_BACKGROUND +
+            " color of a unit tile (S = Sword unit, B = Bow unit, M = Magic unit" +
             RESET_ANSI_ESCAPE + "\n\nYour current playingField!:"
         ret
     }
@@ -27,8 +28,9 @@ class Tui {
 
         input match {
             case "q" => (pf, "")
-            case "n" => (pf.createRandom(7), "New playingFiled created: ")
+            case "n" => (pf.createRandom(11), "New playingFiled created: ")
             case "h" => (pf, generateHelpMessage())
+            case "t" => (pf, "implement toggle unit color?")
             case _=> (pf, generateHelpMessage()) //TODO: Make units addressable
             //case "g" =>
             /*

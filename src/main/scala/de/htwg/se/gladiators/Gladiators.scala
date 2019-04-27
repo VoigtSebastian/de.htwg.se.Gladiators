@@ -12,7 +12,9 @@ object Gladiators {
     val TEXT_COLOR_BLACK = "\33[97m"
     val RESET_ANSI_ESCAPE = "\033[0m"
     //Other Strings
-    val WAITING_FOR_INPUT = "=> "
+
+    val INPUT_BLUE = "\u001B[34m"
+    val WAITING_FOR_INPUT:String = INPUT_BLUE + "▶ " + RESET_ANSI_ESCAPE
 
     var tui = new Tui
 
