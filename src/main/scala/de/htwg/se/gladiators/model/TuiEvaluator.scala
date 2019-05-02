@@ -47,7 +47,7 @@ object TuiEvaluator {
             TEXT_COLOR_BLACK + ""  + BASE_BACKGROUND + " color of a base tile" + RESET_ANSI_ESCAPE + "\n" +
             TEXT_COLOR_BLACK + ""  + UNIT_BACKGROUND +
             " color of a unit tile (S = Sword unit, B = Bow unit, M = Magic unit" +
-            RESET_ANSI_ESCAPE + "\n\nYour current playingField!:"
+            RESET_ANSI_ESCAPE + "\n\nYour current playingField!"
     }
 
     /**

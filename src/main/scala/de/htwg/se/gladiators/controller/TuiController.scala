@@ -3,7 +3,7 @@ package de.htwg.se.gladiators.controller
 import de.htwg.se.gladiators.model._
 import de.htwg.se.gladiators.aview.Tui
 
-class TuiController {
+class TuiController extends ControllerInterface {
     val INPUT_BLUE = "\u001B[34m"
     val WAITING_FOR_INPUT:String = INPUT_BLUE + "▶ " + TuiEvaluator.RESET_ANSI_ESCAPE
     val DIMENSIONS = 7
