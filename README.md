@@ -1,3 +1,7 @@
-# de.htwg.se.Gladiators
-A turnbased game called Gladiators. 
-created by S.V & S.V
+#Gladiators
+###A turn-based game developed by Sascha Villing and Sebastian Voigt
+
+This game is created as an assignment for the course 'Software Engineering' at the HTWG Konstanz.
+The corresponding lecture is held by Prof. Marco Boger.
+
+The goal of this assignment is to build a game which works in a Terminal and a GUI.
