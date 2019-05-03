@@ -56,7 +56,7 @@ case class PlayingField(var cells: Array[Array[Cell]]) {
     }
 
     def createGladiator(gladiator: Gladiator): PlayingField = {
-        glad = gladiator :: Nil
+        glad = glad ::: gladiator :: Nil
         this
     }
 }

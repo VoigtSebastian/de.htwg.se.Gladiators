@@ -12,7 +12,9 @@ object Gladiators {
 
 
         val controller = new Controller((new PlayingField(new Array[Array[Cell]](3))))
+        controller.createRandom()
         val tui = new Tui(controller)
+        controller.notifyObservers
 
         var input: String = ""
         var output: String = ""
@@ -20,9 +22,9 @@ object Gladiators {
             print(WAITING_FOR_INPUT)
             input = scala.io.StdIn.readLine()
 
-            output = tui.processInputLine(input)
-
-            tui.showOutput(output)
+            //output = tui.processInputLine(input)
+            tui.processInputLine(input)
+            //tui.showOutput(output)
 
         } while (input != "q")
     }
