@@ -1,6 +1,7 @@
 package de.htwg.se.gladiators.aview
 
 import de.htwg.se.gladiators.controller.Controller
+import de.htwg.se.gladiators.model.GladiatorType
 import de.htwg.se.gladiators.util.Observer
 
 
@@ -14,6 +15,7 @@ class Tui (controller: Controller) extends Observer{
             case "n" => controller.createRandom(); controller.printPlayingField()
             case "h" => controller.printHelpMessage()
             case "t" => "implement toggle unit color?"
+            case "g" => controller.addGladiator(0,0,10,10,10,GladiatorType.SWORD); controller.printPlayingField()
             case _=> controller.createCommand(input).toString()
             //case "g" =>
             /*

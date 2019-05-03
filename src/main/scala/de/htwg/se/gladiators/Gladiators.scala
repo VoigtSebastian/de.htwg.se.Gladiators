@@ -11,7 +11,7 @@ object Gladiators {
         val WAITING_FOR_INPUT:String = INPUT_BLUE + "▶ " + RESET_ANSI_ESCAPE
 
 
-        val controller = new Controller(new PlayingField(new Array[Array[Cell]]))
+        val controller = new Controller((new PlayingField(new Array[Array[Cell]](3))))
         val tui = new Tui(controller)
 
         var input: String = ""
