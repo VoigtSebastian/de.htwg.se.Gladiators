@@ -14,11 +14,10 @@ class Tui (controller: Controller) extends Observer{
         splitinput(0) match {
             case "q" => ""
             case "n" => controller.createRandom();
-            case "h" => controller.printHelpMessage()
+            case "h" => showOutput(controller.printHelpMessage())
             case "t" => throw new NotImplementedError("toggle is not implemented yet")
-            case "g" =>
-                controller.addGladiator(splitinput(1).toInt,splitinput(2).toInt,10,10,10,GladiatorType.SWORD); controller.printPlayingField()
-            case _=> controller.createCommand(input).toString()
+            case "g" => controller.addGladiator(splitinput(1).toInt,splitinput(2).toInt,10,10,10,GladiatorType.SWORD); controller.printPlayingField()
+            case _=> showOutput(controller.createCommand(input).toString())
             //case "g" =>
             /*
              case _ => {

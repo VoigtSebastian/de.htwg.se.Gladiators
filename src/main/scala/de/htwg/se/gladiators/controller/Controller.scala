@@ -18,7 +18,7 @@ class Controller(var playingField : PlayingField) extends Observable {
     }
 
     def createCommand(command:String): Vector[String] = {
-        notifyObservers
+        //notifyObservers
         TuiEvaluator.evalCommand(command)
     }
 
@@ -33,7 +33,7 @@ class Controller(var playingField : PlayingField) extends Observable {
     }
     def addGladiator(x: Int, y: Int, movementPoints: Double, ap: Double, hp: Double, gladiatorType: GladiatorType): Unit = {
 
-        var glad = new Gladiator(x, y, movementPoints, ap, hp, gladiatorType)
+        var glad = Gladiator(x, y, movementPoints, ap, hp, gladiatorType)
         playingField = playingField.createGladiator(glad)
         notifyObservers
         playingField
