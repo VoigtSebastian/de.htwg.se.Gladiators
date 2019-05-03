@@ -22,7 +22,16 @@ case class PlayingField(var cells: Array[Array[Cell]]) {
         //println("Ausgabe wenn gladiator sich in momentaner line befindet")
         for (gladiator <- glad) //iterate over all gladiators
             if (gladiator.line == line) {
-                ret = ret.substring(0, gladiator.row) + (gladiator.gladiatorType.id) + ret.substring(gladiator.row + 1)
+                val currentCellType = cells(line)(gladiator.row).cellType
+                if (!(currentCellType == CellType.BASE.id))
+                    gladiator.gladiatorType match {
+                        case GladiatorType.TANK => ret = ret.substring(0, gladiator.row) +
+                          'M' + ret.substring(gladiator.row + 1)
+                        case GladiatorType.BOW => ret = ret.substring(0, gladiator.row) +
+                          'B' + ret.substring(gladiator.row + 1)
+                        case GladiatorType.SWORD => ret = ret.substring(0, gladiator.row) +
+                          'S' + ret.substring(gladiator.row + 1)
+                    }
             }
         //ret(gladiator.x) = gladiator.gladiatorType.id.toChar
         ret
