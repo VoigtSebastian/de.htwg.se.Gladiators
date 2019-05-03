@@ -1,10 +1,28 @@
 package de.htwg.se.gladiators
-import de.htwg.se.gladiators.controller.TuiController
+import de.htwg.se.gladiators.aview.Tui
+import de.htwg.se.gladiators.controller.Controller
 
 object Gladiators {
 
     def main(args: Array[String]): Unit = {
-        val tuiC = new TuiController
-        tuiC.gameLoop()
+        val RESET_ANSI_ESCAPE = "\033[0m"
+        val INPUT_BLUE = "\u001B[34m"
+        val WAITING_FOR_INPUT:String = INPUT_BLUE + "▶ " + RESET_ANSI_ESCAPE
+
+
+        val controller = new Controller
+        val tui = new Tui(controller)
+
+        var input: String = ""
+        var output: String = ""
+        do {
+            print(WAITING_FOR_INPUT)
+            input = scala.io.StdIn.readLine()
+
+            output = tui.processInputLine(input)
+
+            tui.showOutput(output)
+
+        } while (input != "q")
     }
 }

@@ -2,5 +2,5 @@ package de.htwg.se.gladiators.model
 
 object GladiatorType extends Enumeration {
     type GladiatorType = Value
-    val SWORD, BOW, MAGIC = Value
+    val SWORD, BOW, TANK = Value
 }
