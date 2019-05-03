@@ -15,7 +15,8 @@ object TuiEvaluator {
     val REGEX_COMMANDS = new Regex("([a-zA-Z]+)|([0-9]+)")
 
     /**
-      * Function that when entered a String that was formatted by an instance of PlayingField by using formatLine returns a colored PlayingField line ready to print out.
+      * Function that when entered a String that was formatted by an instance of
+      * PlayingField by using formatLine returns a colored PlayingField line ready to print out.
       * @param line returned by PlayingField.formatLine
       * @return a line which is colored and ready to be printed on Terminal.
       */
@@ -24,13 +25,19 @@ object TuiEvaluator {
         for (c <- line) {
             c match {
                 //gladiators
-                case 'S' => returnValue = returnValue + (TuiEvaluator.TEXT_COLOR_BLACK + TuiEvaluator.UNIT_BACKGROUND + " S " + TuiEvaluator.RESET_ANSI_ESCAPE) //-> SWORD
-                case 'B' => returnValue = returnValue + (TuiEvaluator.TEXT_COLOR_BLACK + TuiEvaluator.UNIT_BACKGROUND + " B " + TuiEvaluator.RESET_ANSI_ESCAPE) //-> BOW
-                case 'M' => returnValue = returnValue + (TuiEvaluator.TEXT_COLOR_BLACK + TuiEvaluator.UNIT_BACKGROUND + " M " + TuiEvaluator.RESET_ANSI_ESCAPE) //-> MAGIC
+                case 'S' => returnValue = returnValue + (TuiEvaluator.TEXT_COLOR_BLACK +
+                    TuiEvaluator.UNIT_BACKGROUND + " S " + TuiEvaluator.RESET_ANSI_ESCAPE) //-> SWORD
+                case 'B' => returnValue = returnValue + (TuiEvaluator.TEXT_COLOR_BLACK +
+                    TuiEvaluator.UNIT_BACKGROUND + " B " + TuiEvaluator.RESET_ANSI_ESCAPE) //-> BOW
+                case 'T' => returnValue = returnValue + (TuiEvaluator.TEXT_COLOR_BLACK +
+                    TuiEvaluator.UNIT_BACKGROUND + " T " + TuiEvaluator.RESET_ANSI_ESCAPE) //-> TANK
                 //cells
-                case '0' => returnValue = returnValue + (TuiEvaluator.TEXT_COLOR_BLACK + TuiEvaluator.SAND_BACKGROUND + " S " + TuiEvaluator.RESET_ANSI_ESCAPE) //-> SAND
-                case '1' => returnValue = returnValue + (TuiEvaluator.TEXT_COLOR_BLACK + TuiEvaluator.PALM_BACKGROUND + " P " + TuiEvaluator.RESET_ANSI_ESCAPE) //-> PALM
-                case '2' => returnValue = returnValue + (TuiEvaluator.TEXT_COLOR_BLACK + TuiEvaluator.BASE_BACKGROUND + " B " + TuiEvaluator.RESET_ANSI_ESCAPE) //-> BASE
+                case '0' => returnValue = returnValue + (TuiEvaluator.TEXT_COLOR_BLACK +
+                    TuiEvaluator.SAND_BACKGROUND + " S " + TuiEvaluator.RESET_ANSI_ESCAPE) //-> SAND
+                case '1' => returnValue = returnValue + (TuiEvaluator.TEXT_COLOR_BLACK +
+                    TuiEvaluator.PALM_BACKGROUND + " P " + TuiEvaluator.RESET_ANSI_ESCAPE) //-> PALM
+                case '2' => returnValue = returnValue + (TuiEvaluator.TEXT_COLOR_BLACK +
+                    TuiEvaluator.BASE_BACKGROUND + " B " + TuiEvaluator.RESET_ANSI_ESCAPE) //-> BASE
             }
         }
         returnValue
@@ -46,7 +53,7 @@ object TuiEvaluator {
             TEXT_COLOR_BLACK + ""  + PALM_BACKGROUND + " color of a palm tile" + RESET_ANSI_ESCAPE + "\n" +
             TEXT_COLOR_BLACK + ""  + BASE_BACKGROUND + " color of a base tile" + RESET_ANSI_ESCAPE + "\n" +
             TEXT_COLOR_BLACK + ""  + UNIT_BACKGROUND +
-            " color of a unit tile (S = Sword unit, B = Bow unit, M = Magic unit" +
+            " color of a unit tile (S = Sword unit, B = Bow unit, T = Tank unit" +
             RESET_ANSI_ESCAPE + "\n\nYour current playingField!"
     }
 

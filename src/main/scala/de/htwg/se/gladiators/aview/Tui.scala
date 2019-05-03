@@ -1,15 +1,14 @@
 package de.htwg.se.gladiators.aview
 
-import de.htwg.se.gladiators.controller.TuiController
+import de.htwg.se.gladiators.controller.Controller
 
 
-class Tui (controller: TuiController){
-
+class Tui (controller: Controller){
     def processInputLine(input: String): String = {
         input match {
             case "q" => ""
-            case "n" => controller.createRandom(); controller.printPlayingField(); "New playingFiled created: "
-            case "h" => controller.printHelpMessage(); ""
+            case "n" => controller.createRandom(); controller.printPlayingField()
+            case "h" => controller.printHelpMessage()
             case "t" => "implement toggle unit color?"
             case _=> controller.createCommand(input).toString()
             //case "g" =>

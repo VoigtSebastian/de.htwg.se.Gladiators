@@ -27,8 +27,8 @@ case class PlayingField(var cells: Array[Array[Cell]]) {
                 val currentCellType = cells(line)(gladiator.row).cellType
                 if (!(currentCellType == CellType.BASE.id))
                     gladiator.gladiatorType match {
-                        case GladiatorType.MAGIC => ret = ret.substring(0, gladiator.row) +
-                            'M' + ret.substring(gladiator.row + 1)
+                        case GladiatorType.TANK => ret = ret.substring(0, gladiator.row) +
+                            'T' + ret.substring(gladiator.row + 1)
                         case GladiatorType.BOW => ret = ret.substring(0, gladiator.row) +
                             'B' + ret.substring(gladiator.row + 1)
                         case GladiatorType.SWORD => ret = ret.substring(0, gladiator.row) +
