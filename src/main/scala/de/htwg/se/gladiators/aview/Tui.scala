@@ -1,9 +1,13 @@
 package de.htwg.se.gladiators.aview
 
 import de.htwg.se.gladiators.controller.Controller
+import de.htwg.se.gladiators.util.Observer
 
 
-class Tui (controller: Controller){
+class Tui (controller: Controller) extends Observer{
+
+    controller.add(this)
+
     def processInputLine(input: String): String = {
         input match {
             case "q" => ""
@@ -27,6 +31,7 @@ class Tui (controller: Controller){
         println(output)
     }
 
+    override def update: Unit = print(controller.printPlayingField())
 
 }
 
