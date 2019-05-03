@@ -9,13 +9,15 @@ class Tui (controller: Controller) extends Observer{
 
     controller.add(this)
 
-    def processInputLine(input: String): String = {
-        input match {
+    def processInputLine(input: String): Unit = {
+        val splitinput = input.split(",")
+        splitinput(0) match {
             case "q" => ""
-            case "n" => controller.createRandom(); controller.printPlayingField()
+            case "n" => controller.createRandom();
             case "h" => controller.printHelpMessage()
-            case "t" => "implement toggle unit color?"
-            case "g" => controller.addGladiator(0,0,10,10,10,GladiatorType.SWORD); controller.printPlayingField()
+            case "t" => throw new NotImplementedError("toggle is not implemented yet")
+            case "g" =>
+                controller.addGladiator(splitinput(1).toInt,splitinput(2).toInt,10,10,10,GladiatorType.SWORD); controller.printPlayingField()
             case _=> controller.createCommand(input).toString()
             //case "g" =>
             /*

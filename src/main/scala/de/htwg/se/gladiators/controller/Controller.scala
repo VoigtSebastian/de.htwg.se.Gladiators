@@ -13,12 +13,12 @@ class Controller(var playingField : PlayingField) extends Observable {
     }
 
     def createRandom(): Unit = {
-      //  notifyObservers
+        notifyObservers
         playingField = playingField.createRandom(DIMENSIONS)
     }
 
     def createCommand(command:String): Vector[String] = {
-     //   notifyObservers
+        notifyObservers
         TuiEvaluator.evalCommand(command)
     }
 
@@ -28,12 +28,14 @@ class Controller(var playingField : PlayingField) extends Observable {
         for (i <- playingField.cells.indices)
             str = str + TuiEvaluator.evalPrintLine(playingField.formatLine(i)) + "\n"
         str*/
-//        notifyObservers
+       // notifyObservers
         playingField.toString()
     }
     def addGladiator(x: Int, y: Int, movementPoints: Double, ap: Double, hp: Double, gladiatorType: GladiatorType): Unit = {
-       // notifyObservers
+
         var glad = new Gladiator(x, y, movementPoints, ap, hp, gladiatorType)
         playingField = playingField.createGladiator(glad)
+        notifyObservers
+        playingField
     }
 }
