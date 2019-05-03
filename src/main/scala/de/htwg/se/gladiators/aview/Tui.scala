@@ -1,27 +1,32 @@
-package de.htwg.se.sudoku.aview
+package de.htwg.se.gladiators.aview
 
-import de.htwg.se.gladiators.model.{Cell,Gladiator,Player,PlayingField}
+import de.htwg.se.gladiators.controller.Controller
 
 
-class Tui {
+class Tui (controller: Controller){
+    def processInputLine(input: String): String = {
+        input match {
+            case "q" => ""
+            case "n" => controller.createRandom(); controller.printPlayingField()
+            case "h" => controller.printHelpMessage()
+            case "t" => "implement toggle unit color?"
+            case _=> controller.createCommand(input).toString()
+            //case "g" =>
+            /*
+             case _ => {
 
-  def processInputLine(input: String, pf:PlayingField):PlayingField = {
+               input.toList.filter(c => c != ' ').map(c => c.toString.toInt) match {
+                 case row :: column :: value :: Nil => grid.set(row, column, value)
+                 case _ => grid
+             */
+        }
 
-    input match {
+    }
 
-      case "q" => pf
-      case "n"=> pf.createRandom(7);
-      //case "g" =>
-      /*
-       case _ => {
+    def showOutput(output: String): Unit = {
+        println(output)
+    }
 
-         input.toList.filter(c => c != ' ').map(c => c.toString.toInt) match {
-           case row :: column :: value :: Nil => grid.set(row, column, value)
-           case _ => grid
-       */
-      }
-
-  }
 
 }
 

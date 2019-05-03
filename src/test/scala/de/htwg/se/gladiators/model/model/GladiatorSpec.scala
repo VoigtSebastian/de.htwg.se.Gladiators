@@ -11,10 +11,10 @@ class GladiatorSpec extends WordSpec with Matchers {
       var gladiator = Gladiator(5, 1, 10.0, 50.0, 100.0, SWORD)
 
       "have a x coordinate" in {
-        gladiator.x should be(5)
+        gladiator.line should be(5)
       }
       "have a y coordinate" in {
-        gladiator.y should be (1)
+        gladiator.row should be (1)
       }
       "have movementPoints" in {
         gladiator.movementPoints should be (10.0)

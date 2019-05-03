@@ -1,31 +1,28 @@
 package de.htwg.se.gladiators
-
-import de.htwg.se.gladiators.model.{Cell, CellType, Gladiator, GladiatorType, PlayingField}
-import de.htwg.se.sudoku.aview.Tui
+import de.htwg.se.gladiators.aview.Tui
+import de.htwg.se.gladiators.controller.Controller
 
 object Gladiators {
-    var tui = new Tui
 
     def main(args: Array[String]): Unit = {
-        println("Gladiators")
-        val cells = Array.ofDim[Cell](3, 3)
+        val RESET_ANSI_ESCAPE = "\033[0m"
+        val INPUT_BLUE = "\u001B[34m"
+        val WAITING_FOR_INPUT:String = INPUT_BLUE + "▶ " + RESET_ANSI_ESCAPE
 
-        var field = PlayingField(cells)
-        field.createRandom(5)
 
-        var glad: List[Gladiator] = List(Gladiator(0,0, 1.0,1.0,1.0, GladiatorType.MAGIC),
-            Gladiator(1,0, 1.0,1.0,1.0, GladiatorType.SWORD))
+        val controller = new Controller
+        val tui = new Tui(controller)
 
-        println("Line zero with gladiators: " + field.formatLine(0,glad) + "\n\n")
-        
-        var input: String = "h"
+        var input: String = ""
+        var output: String = ""
         do {
-          input = readLine()
-          field = tui.processInputLine(input, field)
-          println("PlayingField:\n" + field.toString())
+            print(WAITING_FOR_INPUT)
+            input = scala.io.StdIn.readLine()
+
+            output = tui.processInputLine(input)
+
+            tui.showOutput(output)
+
         } while (input != "q")
-        
-        println(field.toString())
-        
     }
 }
