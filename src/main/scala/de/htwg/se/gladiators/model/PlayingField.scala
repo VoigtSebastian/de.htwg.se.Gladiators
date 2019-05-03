@@ -8,7 +8,7 @@ case class PlayingField(var cells: Array[Array[Cell]]) {
     override def toString(): String = {
         var output = ""
         for(i <- cells.indices) {
-            output += formatLine(i) + "\n"
+            output += TuiEvaluator.evalPrintLine(formatLine(i)) + "\n"
         }
         output
     }
@@ -22,7 +22,7 @@ case class PlayingField(var cells: Array[Array[Cell]]) {
         //println("Ausgabe wenn gladiator sich in momentaner line befindet")
         for (gladiator <- glad) //iterate over all gladiators
             if (gladiator.line == line) {
-                ret = ret.substring(0, gladiator.row) + (gladiator.gladiatorType.id  + 3) + ret.substring(gladiator.row + 1)
+                ret = ret.substring(0, gladiator.row) + (gladiator.gladiatorType.id) + ret.substring(gladiator.row + 1)
             }
         //ret(gladiator.x) = gladiator.gladiatorType.id.toChar
         ret
