@@ -6,7 +6,7 @@ import de.htwg.se.gladiators.model.{Cell, Gladiator, GladiatorType, PlayingField
 import org.scalatest.{Matchers, WordSpec}
 
 class TuiSpec extends WordSpec with Matchers {
-  val controller = new Controller(PlayingField(new Array[Array[Cell]](7)))
+  val controller = new Controller(PlayingField())
   val tui = new Tui(controller)
   "do nothing on input 'q'" in {
     tui.processInputLine("q")
@@ -15,10 +15,10 @@ class TuiSpec extends WordSpec with Matchers {
     tui.processInputLine("n")
     controller.playingField.size() should be (7)
   }
-  /*
+
   "add a gladiator to the playingfield" in {
     tui.processInputLine("g,0,0")
-    controller.playingField.glad(0) should be (Gladiator(0,0,10,10,10,GladiatorType.SWORD))
+    controller.playingField.glad.head should be (Gladiator(0,0,10,10,10,GladiatorType.SWORD))
   }
-  */
+
 }
