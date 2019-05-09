@@ -1,5 +1,5 @@
-#Gladiators
-###A turn-based game developed by Sascha Villing and Sebastian Voigt
+Gladiators
+A turn-based game developed by Sascha Villing and Sebastian Voigt
 
 This game is created as an assignment for the course 'Software Engineering' at the HTWG Konstanz.
 The corresponding lecture is held by Prof. Marco Boger.
