@@ -16,10 +16,17 @@ class PlayingFieldSpec extends WordSpec with Matchers{
     cells(2)(1) = Cell(CellType.SAND.id)
     cells(2)(2) = Cell(CellType.BASE.id)
 
+    val SAND_BACKGROUND = "\033[103m"
+    val PALM_BACKGROUND = "\033[43m"
+    val BASE_BACKGROUND = "\033[101m"
+    val UNIT_BACKGROUND = "\033[45m"
+    val TEXT_COLOR_BLACK = "\33[97m"
+    val RESET_ANSI_ESCAPE = "\033[0m"
+
     val field = PlayingField(cells)
 
     "have a nice String representation" in {
-      field.toString should be("0 1 3 \n1 1 3 \n1 1 0 \n")
+      field.toString should be("2 0 1 \n0 0 1 \n0 0 2 \n")
     }
   }}
 }
