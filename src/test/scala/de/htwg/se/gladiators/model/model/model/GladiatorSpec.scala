@@ -1,6 +1,6 @@
-package de.htwg.se.gladiators.model.model
+package de.htwg.se.gladiators.model.model.model
 
-import de.htwg.se.gladiators.model.{Cell, Gladiator}
+import de.htwg.se.gladiators.model.Gladiator
 import de.htwg.se.gladiators.model.GladiatorType._
 import org.scalatest.{Matchers, WordSpec}
 

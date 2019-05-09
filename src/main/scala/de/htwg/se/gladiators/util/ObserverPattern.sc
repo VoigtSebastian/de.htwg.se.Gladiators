@@ -10,7 +10,6 @@ object ObserverPattern {
   observable.add(observer1)
   observable.add(observer2)
   observable.notifyObservers                      //> Ping
-  //| Ping
   observable.remove(observer1)
   observable.notifyObservers                      //> Ping
   observable.remove(observer2)
