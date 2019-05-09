@@ -24,9 +24,11 @@ class PlayingFieldSpec extends WordSpec with Matchers{
     val RESET_ANSI_ESCAPE = "\033[0m"
 
     val field = PlayingField(cells)
-
+    print(field.formatLine(0))
     "have a nice String representation" in {
-      field.toString should be("2 0 1 \n0 0 1 \n0 0 2 \n")
+      field.formatLine(0) should be("201")
+      field.formatLine(1) should be ("001")
+      field.formatLine(2) should be("002")
     }
   }}
 }
