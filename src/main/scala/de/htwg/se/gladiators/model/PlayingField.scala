@@ -4,6 +4,7 @@ package de.htwg.se.gladiators.model
 case class PlayingField(var cells: Array[Array[Cell]]) {
 
     var glad: List[Gladiator] = List()
+
     /*
     def this (
         val cells = Array.ofDim[Cell](3, 3)
@@ -32,7 +33,6 @@ case class PlayingField(var cells: Array[Array[Cell]]) {
 
     def formatLine(line: Int): String = {
         var ret = ""
-
         for (i <- cells(line).indices) { //iterate of cells in line
             ret += cells(line)(i).cellType
         }
@@ -75,5 +75,9 @@ case class PlayingField(var cells: Array[Array[Cell]]) {
     def createGladiator(gladiator: Gladiator): PlayingField = {
         glad = glad ::: gladiator :: Nil
         this
+    }
+
+    def size(): Integer = {
+        this.cells.length
     }
 }
