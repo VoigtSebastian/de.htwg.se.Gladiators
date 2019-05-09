@@ -13,8 +13,8 @@ class Controller(var playingField : PlayingField) extends Observable {
     }
 
     def createRandom(): Unit = {
-        notifyObservers
         playingField = playingField.createRandom(DIMENSIONS)
+        notifyObservers
     }
 
     def createCommand(command:String): Vector[String] = {
