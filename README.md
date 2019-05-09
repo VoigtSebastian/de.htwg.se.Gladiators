@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/VoigtSebastian/de.htwg.se.Gladiators.svg?branch=master)](https://travis-ci.org/VoigtSebastian/de.htwg.se.Gladiators)
+
 Gladiators
 A turn-based game developed by Sascha Villing and Sebastian Voigt
 
