@@ -10,7 +10,7 @@ object Gladiators {
         val INPUT_BLUE = "\u001B[34m"
         val WAITING_FOR_INPUT:String = INPUT_BLUE + "▶ " + RESET_ANSI_ESCAPE
 
-        val controller = new Controller(PlayingField(new Array[Array[Cell]](3)))
+        val controller = new Controller(PlayingField())
         controller.createRandom()
         val tui = new Tui(controller)
         controller.notifyObservers

@@ -8,14 +8,14 @@ import org.scalatest.{Matchers, WordSpec}
 class ControllerSpec extends WordSpec with Matchers {
   "A Controller" when {
     "observed by an Observer" should {
-      val controller = new Controller(PlayingField(new Array[Array[Cell]](3)))
+      val controller = new Controller(PlayingField())
       val observer = new Observer {
         var updated: Boolean = false
 
         def isUpdated: Boolean = updated
 
         override def update: Unit = {
-          updated = true;
+          updated = true
           updated
         }
       }
@@ -27,7 +27,7 @@ class ControllerSpec extends WordSpec with Matchers {
       "notify its Observer after adding a gladiator" in {
         controller.addGladiator(0, 0, 10, 10, 100, GladiatorType.SWORD)
         observer.updated should be(true)
-        controller.playingField.glad(0).movementPoints should be (10)
+        controller.playingField.glad.head.movementPoints should be (10)
       }
     }
   }

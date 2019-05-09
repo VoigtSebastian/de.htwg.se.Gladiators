@@ -1,28 +1,17 @@
 package de.htwg.se.gladiators.model
 
 
-case class PlayingField(var cells: Array[Array[Cell]]) {
+case class PlayingField() {
 
     var glad: List[Gladiator] = List()
+    var cells: Array[Array[Cell]] = Array.ofDim[Cell](3,3)
+    createRandom(7)
 
-    /*
-    def this (
-        val cells = Array.ofDim[Cell](3, 3)
-        cells(0)(0) = Cell(CellType.SAND.id)
-        cells(0)(1) = Cell(CellType.BASE.id)
-        cells(0)(2) = Cell(CellType.SAND.id)
+    def setField(cells: Array[Array[Cell]]): PlayingField = {
+        this.cells = cells
+        this
+    }
 
-        cells(1)(0) = Cell(CellType.SAND.id)
-        cells(1)(1) = Cell(CellType.SAND.id)
-        cells(1)(2) = Cell(CellType.SAND.id)
-
-        cells(2)(0) = Cell(CellType.SAND.id)
-        cells(2)(1) = Cell(CellType.BASE.id)
-        cells(2)(2) = Cell(CellType.SAND.id)
-
-        this(cells)
-    )
-    */
     override def toString(): String = {
         var output = ""
         for(i <- cells.indices) {

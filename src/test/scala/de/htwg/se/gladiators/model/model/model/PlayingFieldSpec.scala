@@ -23,7 +23,8 @@ class PlayingFieldSpec extends WordSpec with Matchers{
     val TEXT_COLOR_BLACK = "\33[97m"
     val RESET_ANSI_ESCAPE = "\033[0m"
 
-    val field = PlayingField(cells)
+    val field = PlayingField()
+    field.setField(cells)
     print(field.formatLine(0))
     "have a nice String representation" in {
       field.formatLine(0) should be("201")
