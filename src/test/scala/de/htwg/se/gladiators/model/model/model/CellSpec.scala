@@ -1,7 +1,6 @@
-package de.htwg.se.gladiators.model.model
+package de.htwg.se.gladiators.model.model.model
 
-import de.htwg.se.gladiators.model.CellType
-import de.htwg.se.gladiators.model.Cell
+import de.htwg.se.gladiators.model.{Cell, CellType}
 import org.scalatest.{Matchers, WordSpec}
 
 class CellSpec extends WordSpec with Matchers {
