@@ -11,7 +11,7 @@ class CellSpec extends WordSpec with Matchers {
                 cell.cellType should be(CellType.PALM.id)
             }
             "have a nice String representation" in {
-                cell.toString should be("3")
+                cell.toString should be("1")
             }
         }
     }
