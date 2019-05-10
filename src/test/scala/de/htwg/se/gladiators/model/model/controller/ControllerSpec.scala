@@ -29,6 +29,9 @@ class ControllerSpec extends WordSpec with Matchers {
         observer.updated should be(true)
         controller.playingField.glad.head.movementPoints should be (10)
       }
+      "print a helpmessage" in {
+        controller.printHelpMessage()
+      }
     }
   }
 }

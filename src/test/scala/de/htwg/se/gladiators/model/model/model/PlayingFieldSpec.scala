@@ -6,15 +6,15 @@ import org.scalatest.{Matchers, WordSpec}
 class PlayingFieldSpec extends WordSpec with Matchers{
   "The Playing Field" when { "new" should {
     val cells = Array.ofDim[Cell](3, 3)
-    cells(0)(0) = Cell(CellType.BASE.id)
-    cells(0)(1) = Cell(CellType.SAND.id)
-    cells(0)(2) = Cell(CellType.PALM.id)
-    cells(1)(0) = Cell(CellType.SAND.id)
-    cells(1)(1) = Cell(CellType.SAND.id)
-    cells(1)(2) = Cell(CellType.PALM.id)
-    cells(2)(0) = Cell(CellType.SAND.id)
-    cells(2)(1) = Cell(CellType.SAND.id)
-    cells(2)(2) = Cell(CellType.BASE.id)
+    cells(0)(0) = Cell(CellType.BASE)
+    cells(0)(1) = Cell(CellType.SAND)
+    cells(0)(2) = Cell(CellType.PALM)
+    cells(1)(0) = Cell(CellType.SAND)
+    cells(1)(1) = Cell(CellType.SAND)
+    cells(1)(2) = Cell(CellType.PALM)
+    cells(2)(0) = Cell(CellType.SAND)
+    cells(2)(1) = Cell(CellType.SAND)
+    cells(2)(2) = Cell(CellType.BASE)
 
     val SAND_BACKGROUND = "\033[103m"
     val PALM_BACKGROUND = "\033[43m"
