@@ -33,7 +33,7 @@ case class PlayingField(size: Integer = 7) {
                 if (!(currentCellType == CellType.BASE))
                     gladiator.gladiatorType match {
                         case GladiatorType.TANK => ret = ret.substring(0, gladiator.row) +
-                          'M' + ret.substring(gladiator.row + 1)
+                          'T' + ret.substring(gladiator.row + 1)
                         case GladiatorType.BOW => ret = ret.substring(0, gladiator.row) +
                           'B' + ret.substring(gladiator.row + 1)
                         case GladiatorType.SWORD => ret = ret.substring(0, gladiator.row) +

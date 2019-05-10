@@ -16,6 +16,7 @@ class ControllerSpec extends WordSpec with Matchers {
 
         override def update: Unit = {
           updated = true
+          print(controller.printPlayingField)
           updated
         }
       }
