@@ -13,12 +13,17 @@ class TuiSpec extends WordSpec with Matchers {
   }
   "create a random playingfield" in {
     tui.processInputLine("n")
-    controller.playingField.size() should be (7)
+    controller.playingField.getSize should be (7)
   }
 
   "add a gladiator to the playingfield" in {
     tui.processInputLine("g,0,0")
     controller.playingField.glad.head should be (Gladiator(0,0,10,10,10,GladiatorType.SWORD))
   }
-
+  "show a help message" in {
+    tui.processInputLine("h")
+  }
+  "toggle" in {
+    an [NotImplementedError] should be thrownBy tui.processInputLine("t")
+  }
 }

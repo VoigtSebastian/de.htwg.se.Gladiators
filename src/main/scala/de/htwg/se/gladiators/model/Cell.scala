@@ -1,13 +1,11 @@
 package de.htwg.se.gladiators.model
 
-case class Cell(cellType: Int) {
+import de.htwg.se.gladiators.model.CellType.CellType
 
-    def getCellType(): Int = {
-        return cellType
-    }
+case class Cell(cellType: CellType) {
 
-    override def toString(): String = {
-        return "" + cellType;
+    override def toString: String = {
+        "" + cellType.id
     }
 
 }

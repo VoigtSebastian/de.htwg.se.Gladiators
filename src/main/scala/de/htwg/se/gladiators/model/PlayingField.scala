@@ -1,18 +1,19 @@
 package de.htwg.se.gladiators.model
 
 
-case class PlayingField() {
+case class PlayingField(size: Integer = 7) {
 
     var glad: List[Gladiator] = List()
     var cells: Array[Array[Cell]] = Array.ofDim[Cell](3,3)
-    createRandom(7)
+
+    createRandom(size)
 
     def setField(cells: Array[Array[Cell]]): PlayingField = {
         this.cells = cells
         this
     }
 
-    override def toString(): String = {
+    override def toString: String = {
         var output = ""
         for(i <- cells.indices) {
             output += TuiEvaluator.evalPrintLine(formatLine(i)) + "\n"
@@ -23,13 +24,13 @@ case class PlayingField() {
     def formatLine(line: Int): String = {
         var ret = ""
         for (i <- cells(line).indices) { //iterate of cells in line
-            ret += cells(line)(i).cellType
+            ret += cells(line)(i).cellType.id
         }
         //println("Ausgabe wenn gladiator sich in momentaner line befindet")
         for (gladiator <- glad) //iterate over all gladiators
             if (gladiator.line == line) {
                 val currentCellType = cells(line)(gladiator.row).cellType
-                if (!(currentCellType == CellType.BASE.id))
+                if (!(currentCellType == CellType.BASE))
                     gladiator.gladiatorType match {
                         case GladiatorType.TANK => ret = ret.substring(0, gladiator.row) +
                           'M' + ret.substring(gladiator.row + 1)
@@ -50,14 +51,14 @@ case class PlayingField() {
                 //cells(i)(j) = Cell(scala.util.Random.nextInt(CellType.maxId - 1));
                 val randInt = scala.util.Random.nextInt(100)
                 if (randInt < 83) {
-                    cells(i)(j) = Cell(CellType.SAND.id)
+                    cells(i)(j) = Cell(CellType.SAND)
                 } else {
-                    cells(i)(j) = Cell(CellType.PALM.id)
+                    cells(i)(j) = Cell(CellType.PALM)
                 }
             }
         }
-        cells(0)(length / 2) = Cell(CellType.BASE.id)
-        cells(length - 1)(length / 2) = Cell(CellType.BASE.id)
+        cells(0)(length / 2) = Cell(CellType.BASE)
+        cells(length - 1)(length / 2) = Cell(CellType.BASE)
         this
     }
 
@@ -66,7 +67,8 @@ case class PlayingField() {
         this
     }
 
-    def size(): Integer = {
+    def getSize: Integer = {
         this.cells.length
     }
 }
+
