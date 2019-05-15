@@ -14,7 +14,8 @@ object Gladiators {
        // controller.createRandom()
         val tui = new Tui(controller)
         controller.notifyObservers
-        var input: String = args(0)
+        var input: String  = ""
+        if(args.length > 0) input = args(0)
         var output: String = ""
         if (!input.isEmpty) tui.processInputLine(input)
         else do {

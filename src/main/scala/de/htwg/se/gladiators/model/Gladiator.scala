@@ -8,7 +8,7 @@ case class Gladiator(var line: Int, var row: Int, movementPoints: Double, var ap
   def levelUp(value: Int): Unit = {
     this.ap += value
   }
-  def walk(line: Int, row: Int): Unit = {
+  def move(line: Int, row: Int): Unit = {
     this.line = line
     this.row = row
   }

@@ -67,6 +67,17 @@ case class PlayingField(size: Integer = 7) {
         this
     }
 
+    def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): PlayingField = {
+        var gladiator = Gladiator(0,0,0,0,0,GladiatorType.SWORD)
+        for (g <- glad) {
+            // find gladiator
+            if (g.row == row && g.line == line) {
+                g.move(lineDest, rowDest)
+            }
+        }
+        this
+    }
+
     def getSize: Integer = {
         this.cells.length
     }
