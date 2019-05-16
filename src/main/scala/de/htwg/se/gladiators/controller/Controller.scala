@@ -36,7 +36,12 @@ class Controller(var playingField : PlayingField) extends Observable {
             str = str + TuiEvaluator.evalPrintLine(playingField.formatLine(i)) + "\n"
         str*/
        // notifyObservers
-        playingField.toString()
+        str = playingField.toString + gameStatus + "\n"
+        if(gameStatus == P1)
+            gameStatus = P2
+        else if (gameStatus == P2)
+            gameStatus = P1
+        str
     }
     def addGladiator(line: Int, row: Int, movementPoints: Double, ap: Double, hp: Double, gladiatorType: GladiatorType): Unit = {
 
@@ -50,5 +55,9 @@ class Controller(var playingField : PlayingField) extends Observable {
         //playingField = playingField.moveGladiator(x,y,xDest,yDest)
         undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
         notifyObservers
+    }
+
+    def undoGladiator(): Unit = {
+        undoManager.undoStep
     }
 }
