@@ -1,14 +1,18 @@
 package de.htwg.se.gladiators.aview
-import scala.util.matching.Regex
 
-import de.htwg.se.gladiators.controller.Controller
+import scala.util.matching.Regex
+import de.htwg.se.gladiators.controller.{Controller, GladChanged, PlayingFieldChanged}
 import de.htwg.se.gladiators.model.GladiatorType
 import de.htwg.se.gladiators.util.Observer
 
+import scala.swing.Reactor
 
-class Tui (controller: Controller) extends Observer with ShowMessage {
-    controller.add(this)
+class Tui (controller: Controller) extends Reactor with ShowMessage {
+
+    //controller.add(this)
+    listenTo(controller)
     val REGEX_COMMANDS = new Regex("([a-zA-Z]+)|([0-9]+)")
+
 
     def processInputLine(input: String): Unit = {
         val splitinput = evalCommand(input)//input.split(" ")
@@ -31,12 +35,22 @@ class Tui (controller: Controller) extends Observer with ShowMessage {
                  case _ => grid
              */
         }
+        controller.nextPlayer()
 
     }
 
     override def showMessage(message: String): Unit = super.showMessage(message); println("")
 
-    override def update: Unit = print(controller.printPlayingField())
+    //override def update: Unit = print(controller.printPlayingField())
+
+    reactions += {
+        case event: PlayingFieldChanged => printPf()
+        case event: GladChanged => printPf()
+    }
+
+    def printPf(): Unit = {
+        print(controller.printPlayingField())
+    }
 
     def evalCommand(input: String): Vector[String] = {
         REGEX_COMMANDS.findAllIn(input).toVector

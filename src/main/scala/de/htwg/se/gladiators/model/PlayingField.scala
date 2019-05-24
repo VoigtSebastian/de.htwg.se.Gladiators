@@ -68,7 +68,7 @@ case class PlayingField(size: Integer = 7) {
     }
 
     def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): PlayingField = {
-        var gladiator = Gladiator(0,0,0,0,0,GladiatorType.SWORD)
+        val gladiator: Gladiator = null
         for (g <- glad) {
             // find gladiator
             if (g.row == row && g.line == line) {
@@ -81,5 +81,7 @@ case class PlayingField(size: Integer = 7) {
     def getSize: Integer = {
         this.cells.length
     }
+
+    def cell(line: Int, row: Int): Cell = cells(row)(line)
 }
 
