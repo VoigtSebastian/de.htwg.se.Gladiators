@@ -57,12 +57,5 @@ object TuiEvaluator {
             RESET_ANSI_ESCAPE + "\n\nYour current playingField!"
     }
 
-    /**
-      * Returns a Vector of type String which includes all of the command blocks included in the function parameter.
-      * @param input string that should contain some kind of command blocks
-      * @return Vector that separated all of the commands blocks
-      */
-    def evalCommand(input: String): Vector[String] = {
-        REGEX_COMMANDS.findAllIn(input).toVector
-    }
+
 }
