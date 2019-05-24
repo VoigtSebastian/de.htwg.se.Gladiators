@@ -1,6 +1,6 @@
 package de.htwg.se.gladiators.model.model.model
 
-import de.htwg.se.gladiators.model.Gladiator
+import de.htwg.se.gladiators.model.{Gladiator, Player}
 import de.htwg.se.gladiators.model.GladiatorType._
 import org.scalatest.{Matchers, WordSpec}
 
@@ -8,7 +8,7 @@ class GladiatorSpec extends WordSpec with Matchers {
   "A Gladiator is a fighter in the game. A Gladiator" when {
 
     "new" should {
-      var gladiator = Gladiator(5, 1, 10.0, 50.0, 100.0, SWORD)
+      var gladiator = Gladiator(5, 1, 10.0, 50.0, 100.0, SWORD, new Player)
 
       "have a x coordinate" in {
         gladiator.line should be(5)
@@ -30,7 +30,7 @@ class GladiatorSpec extends WordSpec with Matchers {
       }
     }
     "after levelUp" should {
-      var gladiator2 = Gladiator(5, 5, 10.0, 50.0, 100.0, SWORD)
+      var gladiator2 = Gladiator(5, 5, 10.0, 50.0, 100.0, SWORD, new Player)
 
       gladiator2.levelUp(50)
       "have more ap" in {
@@ -38,7 +38,7 @@ class GladiatorSpec extends WordSpec with Matchers {
       }
     }
     "after move" should {
-      var gladiator3 = Gladiator(5,5,10.0,50.0,100.0, SWORD)
+      var gladiator3 = Gladiator(5,5,10.0,50.0,100.0, SWORD, new Player)
       gladiator3.move(4,4)
       "have a new location" in {
         gladiator3.line should be (4)

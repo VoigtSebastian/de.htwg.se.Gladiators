@@ -16,11 +16,11 @@ class ControllerSpec extends WordSpec with Matchers {
 
         override def update: Unit = {
           updated = true
-          print(controller.printPlayingField)
+          print(controller.printPlayingField())
           updated
         }
       }
-      controller.add(observer)
+     // controller.add(observer)
       "notify its Observer after random creation" in {
         controller.createRandom()
         observer.updated should be(true)

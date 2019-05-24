@@ -1,17 +1,20 @@
 package de.htwg.se.gladiators.aview
 
-import de.htwg.se.gladiators.controller.Controller
+import de.htwg.se.gladiators.controller.{Controller, GladChanged, PlayingFieldChanged}
 import de.htwg.se.gladiators.model.GladiatorType
 import de.htwg.se.gladiators.util.Observer
 
+import scala.swing.Reactor
 
-class Tui (controller: Controller) extends Observer{
+class Tui (controller: Controller) extends Reactor{
 
-    controller.add(this)
+    //controller.add(this)
+    listenTo(controller)
 
     def processInputLine(input: String): Unit = {
+        val vec = controller.createCommand(input)
         val splitinput = input.split(",")
-        splitinput(0) match {
+        vec(0) match {
             case "q" => ""
             case "n" => controller.createRandom();
             case "h" => showOutput(controller.printHelpMessage())
@@ -29,6 +32,7 @@ class Tui (controller: Controller) extends Observer{
                  case _ => grid
              */
         }
+        controller.nextPlayer()
 
     }
 
@@ -36,7 +40,16 @@ class Tui (controller: Controller) extends Observer{
         println(output)
     }
 
-    override def update: Unit = print(controller.printPlayingField())
+    //override def update: Unit = print(controller.printPlayingField())
+
+    reactions += {
+        case event: PlayingFieldChanged => printPf()
+        case event: GladChanged => printPf()
+    }
+
+    def printPf(): Unit = {
+        print(controller.printPlayingField())
+    }
 
 }
 
