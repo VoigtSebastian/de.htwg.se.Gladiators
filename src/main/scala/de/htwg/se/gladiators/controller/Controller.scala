@@ -43,10 +43,10 @@ class Controller(var playingField: PlayingField) extends Observable {
             gameStatus = P1
         str
     }
-    def addGladiator(line: Int, row: Int, movementPoints: Double, ap: Double, hp: Double, gladiatorType: GladiatorType): Unit = {
+    def addGladiator(line: Int, row: Int, gladiatorType: GladiatorType): Unit = {
 
-        var glad = Gladiator(line, row, movementPoints, ap, hp, gladiatorType)
-        playingField = playingField.createGladiator(glad)
+        playingField = playingField.createGladiator(GladiatorFactory.createGladiator(line, row, gladiatorType))
+
         notifyObservers
         playingField
     }
@@ -66,5 +66,9 @@ class Controller(var playingField: PlayingField) extends Observable {
 
     def undoGladiator(): Unit = {
         undoManager.undoStep
+    }
+
+    def redoGladiator(): Unit = {
+      undoManager.redoStep
     }
 }

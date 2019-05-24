@@ -12,6 +12,7 @@ object GameStatus extends Enumeration {
     END -> "End of Game"
   )
 
+
   def message(gameStatus: GameStatus): String = {
     map(gameStatus)
   }
