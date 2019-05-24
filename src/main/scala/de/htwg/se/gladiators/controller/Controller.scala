@@ -37,7 +37,7 @@ class Controller(var playingField : PlayingField) extends Publisher {
     }
     def addGladiator(line: Int, row: Int, gladiatorType: GladiatorType): Unit = {
 
-        playingField = playingField.createGladiator(GladiatorFactory.createGladiator(line, row, gladiatorType))
+        playingField = playingField.createGladiator(GladiatorFactory.createGladiator(line, row, gladiatorType, players(gameStatus.id)))
         players(gameStatus.id).buyItem(10)
         //notifyObservers
         publish(new GladChanged)
