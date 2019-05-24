@@ -9,7 +9,7 @@ import de.htwg.se.gladiators.util.UndoManager
 
 import scala.collection.generic.IdleSignalling
 
-class Controller(var playingField : PlayingField) extends Observable {
+class Controller(var playingField: PlayingField) extends Observable {
     private val undoManager = new UndoManager
     val DIMENSIONS = 7
 
@@ -24,10 +24,10 @@ class Controller(var playingField : PlayingField) extends Observable {
         notifyObservers
     }
 
-    def createCommand(command:String): Vector[String] = {
-        //notifyObservers
-        TuiEvaluator.evalCommand(command)
-    }
+    //def createCommand(command:String): Vector[String] = {
+    //    //notifyObservers
+    //    TuiEvaluator.evalCommand(command)
+    //}
 
     def printPlayingField(): String = {
         var str: String = ""
@@ -35,24 +35,32 @@ class Controller(var playingField : PlayingField) extends Observable {
         for (i <- playingField.cells.indices)
             str = str + TuiEvaluator.evalPrintLine(playingField.formatLine(i)) + "\n"
         str*/
-       // notifyObservers
+        // notifyObservers
         str = playingField.toString + gameStatus + "\n"
-        if(gameStatus == P1)
+        if (gameStatus == P1)
             gameStatus = P2
         else if (gameStatus == P2)
             gameStatus = P1
         str
     }
-    def addGladiator(line: Int, row: Int, gladiatorType: GladiatorType): Unit = {
+    def addGladiator(line: Int, row: Int, movementPoints: Double, ap: Double, hp: Double, gladiatorType: GladiatorType): Unit = {
 
-        playingField = playingField.createGladiator(GladiatorFactory.createGladiator(line, row, gladiatorType))
+        var glad = Gladiator(line, row, movementPoints, ap, hp, gladiatorType)
+        playingField = playingField.createGladiator(glad)
         notifyObservers
         playingField
     }
 
+    def isCoordinateLegal(line: Int, row: Int): Boolean = {
+        if (line < DIMENSIONS && line >=0 && row < DIMENSIONS && row >= 0)
+            return true
+        false
+    }
+
     def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): Unit = {
         //playingField = playingField.moveGladiator(x,y,xDest,yDest)
-        undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
+        if (isCoordinateLegal(lineDest, rowDest))
+            undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
         notifyObservers
     }
 
