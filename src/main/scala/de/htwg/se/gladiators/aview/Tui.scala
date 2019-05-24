@@ -20,6 +20,7 @@ class Tui (controller: Controller) extends Observer with ShowMessage {
             case "g" => controller.addGladiator(splitinput(1).toInt,splitinput(2).toInt,GladiatorType.SWORD); controller.printPlayingField()
             case "m" => controller.moveGladiator(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt,splitinput(4).toInt)
             case "u" => controller.undoGladiator()
+            case "r" => controller.redoGladiator()
             case _=> showMessage(splitinput.toString()) //showMessage(controller.createCommand(input).toString())
             //case "g" =>
             /*
