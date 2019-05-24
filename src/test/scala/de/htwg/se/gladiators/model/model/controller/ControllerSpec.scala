@@ -26,11 +26,11 @@ class ControllerSpec extends WordSpec with Matchers {
         observer.updated should be(true)
       }
       "notify its Observer after adding a gladiator" in {
-        controller.addGladiator(0, 0, 10, 10, 100, GladiatorType.SWORD)
-        controller.addGladiator(1, 1, 10, 10, 100, GladiatorType.BOW)
-        controller.addGladiator(2, 2, 10, 10, 100, GladiatorType.TANK)
+        controller.addGladiator(0, 0,  GladiatorType.SWORD)
+        controller.addGladiator(1, 1, GladiatorType.BOW)
+        controller.addGladiator(2, 2, GladiatorType.TANK)
         observer.updated should be(true)
-        controller.playingField.glad.head.movementPoints should be (10)
+        controller.playingField.glad.head.movementPoints should be (3)
       }
       "print a helpmessage" in {
         controller.printHelpMessage()
