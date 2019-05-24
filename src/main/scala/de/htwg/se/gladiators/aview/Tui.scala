@@ -16,7 +16,7 @@ class Tui (controller: Controller) extends Observer{
             case "n" => controller.createRandom();
             case "h" => showOutput(controller.printHelpMessage())
             case "t" => throw new NotImplementedError("toggle is not implemented yet")
-            case "g" => controller.addGladiator(splitinput(1).toInt,splitinput(2).toInt,10,10,10,GladiatorType.SWORD); controller.printPlayingField()
+            case "g" => controller.addGladiator(splitinput(1).toInt,splitinput(2).toInt,GladiatorType.SWORD); controller.printPlayingField()
             case "m" => controller.moveGladiator(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt,splitinput(4).toInt)
             case "u" => controller.undoGladiator()
             case _=> showOutput(controller.createCommand(input).toString())
