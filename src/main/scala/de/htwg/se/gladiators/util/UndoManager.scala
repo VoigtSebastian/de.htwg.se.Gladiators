@@ -3,10 +3,12 @@ package de.htwg.se.gladiators.util
 class UndoManager {
   private var undoStack: List[Command]= Nil
   private var redoStack: List[Command]= Nil
+
   def doStep(command: Command): Unit = {
     undoStack = command::undoStack
     command.doStep
   }
+
   def undoStep: Unit  = {
     undoStack match {
       case  Nil =>
@@ -17,6 +19,7 @@ class UndoManager {
       }
     }
   }
+
   def redoStep: Unit = {
     redoStack match {
       case Nil =>
