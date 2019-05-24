@@ -7,13 +7,14 @@ import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
 import de.htwg.se.gladiators.util.Observable
 import de.htwg.se.gladiators.util.UndoManager
 
-import scala.collection.generic.IdleSignalling
+import scala.swing.Publisher
 
-class Controller(var playingField: PlayingField) extends Observable {
+class Controller(var playingField : PlayingField) extends Publisher {
+
     private val undoManager = new UndoManager
     val DIMENSIONS = 7
-
-    var gameStatus: GameStatus = IDLE
+    var gameStatus: GameStatus = P1
+    var players = Array(Player("Player1"), Player("Player2"))
 
     def printHelpMessage(): String = {
         TuiEvaluator.generateHelpMessage()
@@ -21,7 +22,8 @@ class Controller(var playingField: PlayingField) extends Observable {
 
     def createRandom(): Unit = {
         playingField = playingField.createRandom(DIMENSIONS)
-        notifyObservers
+        //notifyObservers
+        publish(new PlayingFieldChanged)
     }
 
     //def createCommand(command:String): Vector[String] = {
@@ -30,24 +32,15 @@ class Controller(var playingField: PlayingField) extends Observable {
     //}
 
     def printPlayingField(): String = {
-        var str: String = ""
-        /*
-        for (i <- playingField.cells.indices)
-            str = str + TuiEvaluator.evalPrintLine(playingField.formatLine(i)) + "\n"
-        str*/
         // notifyObservers
-        str = playingField.toString + gameStatus + "\n"
-        if (gameStatus == P1)
-            gameStatus = P2
-        else if (gameStatus == P2)
-            gameStatus = P1
-        str
+        playingField.toString + players(gameStatus.id) + "\n"
     }
     def addGladiator(line: Int, row: Int, gladiatorType: GladiatorType): Unit = {
 
         playingField = playingField.createGladiator(GladiatorFactory.createGladiator(line, row, gladiatorType))
-
-        notifyObservers
+        players(gameStatus.id).buyItem(10)
+        //notifyObservers
+        publish(new GladChanged)
         playingField
     }
 
@@ -58,15 +51,25 @@ class Controller(var playingField: PlayingField) extends Observable {
     }
 
     def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): Unit = {
-        //playingField = playingField.moveGladiator(x,y,xDest,yDest)
         if (isCoordinateLegal(lineDest, rowDest))
             undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
-        notifyObservers
+            publish(new GladChanged)
     }
 
     def undoGladiator(): Unit = {
         undoManager.undoStep
     }
+
+    def nextPlayer(): Unit = {
+        if (gameStatus == P1) {
+            gameStatus = P2
+        } else {
+            gameStatus = P1
+        }
+    }
+
+    def cell(line: Int, row: Int) = playingField.cell(line, row)
+
 
     def redoGladiator(): Unit = {
       undoManager.redoStep

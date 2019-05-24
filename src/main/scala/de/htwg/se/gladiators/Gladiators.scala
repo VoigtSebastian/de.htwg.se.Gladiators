@@ -1,6 +1,7 @@
 package de.htwg.se.gladiators
 import de.htwg.se.gladiators.aview.Tui
-import de.htwg.se.gladiators.controller.Controller
+import de.htwg.se.gladiators.aview.gui.SwingGui
+import de.htwg.se.gladiators.controller.{Controller, PlayingFieldChanged}
 import de.htwg.se.gladiators.model.{Cell, PlayingField}
 
 object Gladiators {
@@ -13,7 +14,9 @@ object Gladiators {
         val controller = new Controller(PlayingField())
        // controller.createRandom()
         val tui = new Tui(controller)
-        controller.notifyObservers
+        val gui = new SwingGui(controller)
+        //controller.notifyObservers
+        controller.publish(new PlayingFieldChanged)
         var input: String  = ""
         if(args.length > 0) input = args(0)
         var output: String = ""
