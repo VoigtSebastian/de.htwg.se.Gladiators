@@ -42,20 +42,4 @@ object TuiEvaluator {
         }
         returnValue
     }
-
-    /**
-      * Builds a help message to be printed on screen
-      * @return a formatted help message that can be displayed to aid players on the Terminal version of Gladiators.
-      */
-    def generateHelpMessage():String = {
-        "Gladiators instructions:\n-description-\n" +
-            TEXT_COLOR_BLACK + ""  + SAND_BACKGROUND + " color of a sand tile" + RESET_ANSI_ESCAPE + "\n" +
-            TEXT_COLOR_BLACK + ""  + PALM_BACKGROUND + " color of a palm tile" + RESET_ANSI_ESCAPE + "\n" +
-            TEXT_COLOR_BLACK + ""  + BASE_BACKGROUND + " color of a base tile" + RESET_ANSI_ESCAPE + "\n" +
-            TEXT_COLOR_BLACK + ""  + UNIT_BACKGROUND +
-            " color of a unit tile (S = Sword unit, B = Bow unit, T = Tank unit" +
-            RESET_ANSI_ESCAPE + "\n\nYour current playingField!"
-    }
-
-
 }

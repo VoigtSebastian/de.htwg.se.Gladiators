@@ -17,7 +17,7 @@ class ControllerSpec extends WordSpec with Matchers {
         override def update: Unit = {
           updated = true
           print(controller.printPlayingField())
-          updated
+          //updated
         }
       }
      // controller.add(observer)
@@ -30,10 +30,7 @@ class ControllerSpec extends WordSpec with Matchers {
         controller.addGladiator(1, 1, GladiatorType.BOW)
         controller.addGladiator(2, 2, GladiatorType.TANK)
         observer.updated should be(true)
-        controller.playingField.glad.head.movementPoints should be (3)
-      }
-      "print a helpmessage" in {
-        controller.printHelpMessage()
+        controller.playingField.gladiatorPlayer1.head.movementPoints should be (3)
       }
     }
   }

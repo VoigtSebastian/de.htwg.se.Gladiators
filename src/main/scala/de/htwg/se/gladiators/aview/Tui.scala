@@ -12,6 +12,12 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
     //controller.add(this)
     listenTo(controller)
     val REGEX_COMMANDS = new Regex("([a-zA-Z]+)|([0-9]+)")
+    val SAND_BACKGROUND = "\033[103m"
+    val PALM_BACKGROUND = "\033[43m"
+    val BASE_BACKGROUND = "\033[101m"
+    val UNIT_BACKGROUND = "\033[45m"
+    val TEXT_COLOR_BLACK = "\33[97m"
+    val RESET_ANSI_ESCAPE = "\033[0m"
 
 
     def processInputLine(input: String): Unit = {
@@ -19,21 +25,15 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
         splitinput(0) match {
             case "q" => showMessage("Exiting")
             case "n" => controller.createRandom()
-            case "h" => showMessage(controller.printHelpMessage())
+            case "h" => println(generateHelpMessage())
             case "t" => throw new NotImplementedError("toggle is not implemented yet")
             case "g" => controller.addGladiator(splitinput(1).toInt,splitinput(2).toInt,GladiatorType.SWORD); controller.printPlayingField()
             case "m" => controller.moveGladiator(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt,splitinput(4).toInt)
             case "u" => controller.undoGladiator()
             case "r" => controller.redoGladiator()
+            case "a" => println("Attack is not yet implemented " + splitinput)
+            case "i" => println(controller.gladiatorInfo(splitinput(1).toInt, splitinput(2).toInt))
             case _=> showMessage(splitinput.toString()) //showMessage(controller.createCommand(input).toString())
-            //case "g" =>
-            /*
-             case _ => {
-
-               input.toList.filter(c => c != ' ').map(c => c.toString.toInt) match {
-                 case row :: column :: value :: Nil => grid.set(row, column, value)
-                 case _ => grid
-             */
         }
         controller.nextPlayer()
 
@@ -56,5 +56,14 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
         REGEX_COMMANDS.findAllIn(input).toVector
     }
 
+    def generateHelpMessage():String = {
+        "Gladiators instructions:\n-description-\n" +
+            TEXT_COLOR_BLACK + ""  + SAND_BACKGROUND + " color of a sand tile" + RESET_ANSI_ESCAPE + "\n" +
+            TEXT_COLOR_BLACK + ""  + PALM_BACKGROUND + " color of a palm tile" + RESET_ANSI_ESCAPE + "\n" +
+            TEXT_COLOR_BLACK + ""  + BASE_BACKGROUND + " color of a base tile" + RESET_ANSI_ESCAPE + "\n" +
+            TEXT_COLOR_BLACK + ""  + UNIT_BACKGROUND +
+            " color of a unit tile (S = Sword unit, B = Bow unit, T = Tank unit" +
+            RESET_ANSI_ESCAPE + "\n\nYour current playingField!"
+    }
 }
 

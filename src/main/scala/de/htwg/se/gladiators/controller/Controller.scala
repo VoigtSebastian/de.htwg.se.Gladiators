@@ -9,16 +9,13 @@ import de.htwg.se.gladiators.util.UndoManager
 
 import scala.swing.Publisher
 
-class Controller(var playingField : PlayingField) extends Publisher {
+class Controller(var playingField: PlayingField) extends Publisher {
 
     private val undoManager = new UndoManager
     val DIMENSIONS = 7
     var gameStatus: GameStatus = P1
     var players = Array(Player("Player1"), Player("Player2"))
 
-    def printHelpMessage(): String = {
-        TuiEvaluator.generateHelpMessage()
-    }
 
     def createRandom(): Unit = {
         playingField = playingField.createRandom(DIMENSIONS)
@@ -35,25 +32,37 @@ class Controller(var playingField : PlayingField) extends Publisher {
         // notifyObservers
         playingField.toString + players(gameStatus.id) + "\n"
     }
-    def addGladiator(line: Int, row: Int, gladiatorType: GladiatorType): Unit = {
 
-        playingField = playingField.createGladiator(GladiatorFactory.createGladiator(line, row, gladiatorType, players(gameStatus.id)))
+    def addGladiator(line: Int, row: Int, gladiatorType: GladiatorType): Unit = {
+        playingField = playingField.createGladiator(GladiatorFactory.createGladiator(line, row, gladiatorType), gameStatus)
         players(gameStatus.id).buyItem(10)
         //notifyObservers
         publish(new GladChanged)
-        playingField
+        //playingField
+    }
+
+    def gladiatorInfo (line: Int, row: Int): String = {
+        playingField.gladiatorInfo(line: Int, row: Int) + " and is owned by " + players(gameStatus.id)
     }
 
     def isCoordinateLegal(line: Int, row: Int): Boolean = {
-        if (line < DIMENSIONS && line >=0 && row < DIMENSIONS && row >= 0)
+        if (line < DIMENSIONS && line >= 0 && row < DIMENSIONS && row >= 0)
             return true
         false
+    }
+
+    def attack(line: Int, row: Int): Unit = {
+        if (gameStatus == P1) {
+
+        } else if (gameStatus == P2) {
+
+        }
     }
 
     def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): Unit = {
         if (isCoordinateLegal(lineDest, rowDest))
             undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
-            publish(new GladChanged)
+        publish(new GladChanged)
     }
 
     def undoGladiator(): Unit = {
@@ -61,17 +70,20 @@ class Controller(var playingField : PlayingField) extends Publisher {
     }
 
     def nextPlayer(): Unit = {
-        if (gameStatus == P1) {
+        if (gameStatus == P1)
             gameStatus = P2
-        } else {
+        else
             gameStatus = P1
-        }
     }
 
     def cell(line: Int, row: Int) = playingField.cell(line, row)
 
 
     def redoGladiator(): Unit = {
-      undoManager.redoStep
+        undoManager.redoStep
+    }
+
+    def attack(lineAttack: Int, rowAttack: Int, lineAttacked: Int, rowAttacked: Int): String = {
+        ""
     }
 }

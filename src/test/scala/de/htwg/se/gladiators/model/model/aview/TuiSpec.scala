@@ -18,7 +18,7 @@ class TuiSpec extends WordSpec with Matchers {
 
   "add a gladiator to the playingfield" in {
     tui.processInputLine("g,0,0")
-    controller.playingField.glad.head should be (Gladiator(0,0,10,10,10,GladiatorType.SWORD,controller.players(0)))
+    controller.playingField.gladiatorPlayer1.head should be (Gladiator(0,0,10,10,10,GladiatorType.SWORD))
   }
   "show a help message" in {
     tui.processInputLine("h")
