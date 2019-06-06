@@ -31,7 +31,12 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
             case "m" => controller.moveGladiator(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt,splitinput(4).toInt)
             case "u" => controller.undoGladiator()
             case "r" => controller.redoGladiator()
-            case "a" => println("Attack is not yet implemented " + splitinput)
+            case "a" =>
+                if (splitinput.size == 5)
+                    controller.attack(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt, splitinput(4).toInt)
+                else
+                    println("Please enter the attack command in the correct format")
+
             case "i" => println(controller.gladiatorInfo(splitinput(1).toInt, splitinput(2).toInt))
             case _=> showMessage(splitinput.toString()) //showMessage(controller.createCommand(input).toString())
         }
