@@ -109,5 +109,10 @@ case class PlayingField(size: Integer = 7) {
 
         ret
     }
+
+    def attack(line: Int, row: Int, lineDest: Int, rowDest: Int, gameStatus: GameStatus): String = {
+        println("A debug message")
+        ""
+    }
 }
 

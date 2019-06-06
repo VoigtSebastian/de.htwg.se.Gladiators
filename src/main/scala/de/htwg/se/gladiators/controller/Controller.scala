@@ -51,14 +51,6 @@ class Controller(var playingField: PlayingField) extends Publisher {
         false
     }
 
-    def attack(line: Int, row: Int): Unit = {
-        if (gameStatus == P1) {
-
-        } else if (gameStatus == P2) {
-
-        }
-    }
-
     def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): Unit = {
         if (isCoordinateLegal(lineDest, rowDest))
             undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
@@ -83,7 +75,13 @@ class Controller(var playingField: PlayingField) extends Publisher {
         undoManager.redoStep
     }
 
-    def attack(lineAttack: Int, rowAttack: Int, lineAttacked: Int, rowAttacked: Int): String = {
+    def attack(lineAttack: Int, rowAttack: Int, lineDest: Int, rowDest: Int): String = {
+        playingField.attack(lineAttack, rowAttack, lineDest, rowDest, gameStatus)
+        if (gameStatus == P1) {
+
+        } else if (gameStatus == P2) {
+
+        }
         ""
     }
 }
