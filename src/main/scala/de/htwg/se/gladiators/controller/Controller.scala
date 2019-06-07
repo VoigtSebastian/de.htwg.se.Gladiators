@@ -34,7 +34,10 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def addGladiator(line: Int, row: Int, gladiatorType: GladiatorType): Unit = {
-        playingField = playingField.createGladiator(GladiatorFactory.createGladiator(line, row, gladiatorType), gameStatus)
+        if (gameStatus == P1)
+            playingField = playingField.addGladPlayerOne(GladiatorFactory.createGladiator(line, row, gladiatorType, players(gameStatus.id)))
+        else if (gameStatus == P2)
+                playingField = playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, gladiatorType, players(gameStatus.id)))
         players(gameStatus.id).buyItem(10)
         //notifyObservers
         nextPlayer()
@@ -42,7 +45,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
         //playingField
     }
 
-    def gladiatorInfo (line: Int, row: Int): String = {
+    def gladiatorInfo(line: Int, row: Int): String = {
         playingField.gladiatorInfo(line: Int, row: Int) + " and is owned by " + players(gameStatus.id)
     }
 
@@ -79,13 +82,38 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def attack(lineAttack: Int, rowAttack: Int, lineDest: Int, rowDest: Int): String = {
-        playingField.attack(lineAttack, rowAttack, lineDest, rowDest, gameStatus)
-        if (gameStatus == P1) {
-
-        } else if (gameStatus == P2) {
-
+        if (isCoordinateLegal(lineAttack, rowAttack) && isCoordinateLegal(lineDest, rowDest)) {
+            var gladA = GladiatorFactory.createGladiator(Int.MinValue, Int.MinValue, GladiatorType.SWORD, players(P1.id))
+            var gladB = GladiatorFactory.createGladiator(Int.MinValue, Int.MinValue, GladiatorType.SWORD, players(P2.id))
+            if (gameStatus == P1) {
+                println("Player one should attack")
+                val gladAttack = attackFindGladiator(playingField.gladiatorPlayer1, lineAttack, rowAttack, gladA)
+                val gladDest = attackFindGladiator(playingField.gladiatorPlayer2, lineDest, rowDest, gladB)
+                if (gladAttack._2 && gladDest._2)
+                    playingField.attack(gladAttack._1, gladDest._1)
+                else
+                    "There was no gladiator at this position"
+            } else if (gameStatus == P2) {
+                println("Player two should attack")
+                val gladAttack = attackFindGladiator(playingField.gladiatorPlayer2, lineAttack, rowAttack, gladA)
+                val gladDest = attackFindGladiator(playingField.gladiatorPlayer1, lineDest, rowDest, gladB)
+                if (gladAttack._2 && gladDest._2)
+                    playingField.attack(gladAttack._1, gladDest._1)
+                else
+                    "Please enter correct coordinates"
+            } else
+                "It is not possible to attack in this state"
         }
-        ""
+        else
+            "Coordinates are out of bounds!"
+    }
+
+    def attackFindGladiator (gladiatorList: List[Gladiator], line: Int, row: Int, gladiatorDestination: Gladiator): (Gladiator, Boolean) = {
+        for (g <- gladiatorList) {
+            if (g.line == line && g.row == row)
+                return (g, true)
+        }
+        (gladiatorDestination, false)
     }
 
     def cellSelected(line: Int, row: Int): Unit = {

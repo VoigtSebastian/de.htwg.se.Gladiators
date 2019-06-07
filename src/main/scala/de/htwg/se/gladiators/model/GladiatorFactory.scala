@@ -4,7 +4,7 @@ import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
 
 object GladiatorFactory {
 
-  def createGladiator(line: Int, row: Int, gladiatorType: GladiatorType) = {
+  def createGladiator(line: Int, row: Int, gladiatorType: GladiatorType, player: Player) = {
     var ap : Int = 0
     var hp : Int = 0
     var mp : Int = 0
@@ -24,7 +24,7 @@ object GladiatorFactory {
         mp = 2
     }
 
-    Gladiator(line, row, mp, ap, hp , gladiatorType)
+    Gladiator(line, row, mp, ap, hp , gladiatorType, player)
   }
 
 }

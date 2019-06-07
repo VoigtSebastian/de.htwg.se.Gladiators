@@ -1,7 +1,5 @@
 package de.htwg.se.gladiators.model
 
-import de.htwg.se.gladiators.controller.GameStatus._
-
 
 case class PlayingField(size: Integer = 7) {
 
@@ -71,11 +69,13 @@ case class PlayingField(size: Integer = 7) {
         this
     }
 
-    def createGladiator(gladiator: Gladiator, gameStatus: GameStatus): PlayingField = {
-        if (gameStatus == P1)
-            gladiatorPlayer1 = gladiatorPlayer1 ::: gladiator :: Nil
-        else
-            gladiatorPlayer2 = gladiatorPlayer2 ::: gladiator ::Nil
+    def addGladPlayerOne (gladiator: Gladiator): PlayingField = {
+        gladiatorPlayer1 = gladiatorPlayer1 ::: gladiator :: Nil
+        this
+    }
+
+    def addGladPlayerTwo (gladiator: Gladiator): PlayingField = {
+        gladiatorPlayer2 = gladiatorPlayer2 ::: gladiator :: Nil
         this
     }
 
@@ -110,9 +110,8 @@ case class PlayingField(size: Integer = 7) {
         ret
     }
 
-    def attack(line: Int, row: Int, lineDest: Int, rowDest: Int, gameStatus: GameStatus): String = {
-        println("A debug message")
-        ""
+    def attack(gladiatorAttack: Gladiator, gladiatorDest: Gladiator): String = {
+        gladiatorAttack + " attackes " + gladiatorDest
     }
 }
 
