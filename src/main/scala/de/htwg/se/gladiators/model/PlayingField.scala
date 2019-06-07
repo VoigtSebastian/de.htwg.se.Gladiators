@@ -80,8 +80,7 @@ case class PlayingField(size: Integer = 7) {
     }
 
     def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): PlayingField = {
-        val gladiator: Gladiator = null
-        for (g <- gladiatorPlayer1) {
+        for (g <- gladiatorPlayer1 ::: gladiatorPlayer2) {
             // find gladiator
             if (g.row == row && g.line == line) {
                 g.move(lineDest, rowDest)

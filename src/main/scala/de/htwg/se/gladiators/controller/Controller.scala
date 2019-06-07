@@ -2,6 +2,7 @@ package de.htwg.se.gladiators.controller
 
 import de.htwg.se.gladiators.model._
 import de.htwg.se.gladiators.aview.Tui
+import de.htwg.se.gladiators.controller.CommandStatus._
 import de.htwg.se.gladiators.controller.GameStatus._
 import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
 import de.htwg.se.gladiators.util.Observable
@@ -13,7 +14,8 @@ class Controller(var playingField: PlayingField) extends Publisher {
 
     private val undoManager = new UndoManager
     val DIMENSIONS = 7
-    var gameStatus: GameStatus = P1
+    var gameStatus: GameStatus = GameStatus.P1
+    var commandStatus: CommandStatus = CommandStatus.IDLE
     var players = Array(Player("Player1"), Player("Player2"))
     var selectedCell: (Int, Int) = (0,0)
 
@@ -56,9 +58,11 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): Unit = {
-        if (isCoordinateLegal(lineDest, rowDest))
+        if (isCoordinateLegal(lineDest, rowDest)) {
             undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
-        publish(new GladChanged)
+            nextPlayer()
+            publish(new GladChanged)
+        }
     }
 
     def undoGladiator(): Unit = {
@@ -69,7 +73,6 @@ class Controller(var playingField: PlayingField) extends Publisher {
         publish(new GameStatusChanged)
         if (gameStatus == P1)
             gameStatus = P2
-
         else
             gameStatus = P1
     }
@@ -117,7 +120,21 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def cellSelected(line: Int, row: Int): Unit = {
-        selectedCell = (line, row)
-        publish(new CellClicked)
+        if (commandStatus == CommandStatus.IDLE) {
+            selectedCell = (line, row)
+            publish(new CellClicked)
+        } else if (commandStatus == CommandStatus.CR) {
+            addGladiator(line, row, GladiatorType.SWORD)
+            commandStatus = CommandStatus.IDLE
+            publish(new GladChanged)
+        } else if (commandStatus == CommandStatus.MV ) {
+            moveGladiator(selectedCell._1, selectedCell._2, line, row)
+            commandStatus = CommandStatus.IDLE
+            publish(new GladChanged)
+        }
+    }
+
+    def changeCommand(commandStatus: CommandStatus): Unit = {
+        this.commandStatus = commandStatus
     }
 }
