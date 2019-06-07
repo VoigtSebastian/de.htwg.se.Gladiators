@@ -94,7 +94,7 @@ case class PlayingField(size: Integer = 7) {
         this.cells.length
     }
 
-    def cell(line: Int, row: Int): Cell = cells(row)(line)
+    def cell(line: Int, row: Int): Cell = cells(line)(row)
 
     def gladiatorInfo(line: Int, row: Int): String = {
         var ret = ""
