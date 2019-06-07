@@ -59,10 +59,12 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
     contents += cell
     cell.background = getCellColor
     cell.border = LineBorder(java.awt.Color.BLACK,3)
+    label.text = getCellText
     repaint
   }
 
   def initialize: Unit = {
+    label.text = getCellText
     cell.background = getCellColor
     cell.border = LineBorder(java.awt.Color.BLACK,3)
   }
@@ -80,9 +82,9 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
   def getCellText: String = {
     var str = ""
     myCell.cellType.id match {
-      case 0 => str = "S"
-      case 1 => str = "P"
-      case 2 => str = "B"
+      case 0 => str = ""
+      case 1 => str = ""
+      case 2 => str = "H"
     }
     str
   }
@@ -99,8 +101,8 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
   def getGladText(gladtype: GladiatorType) : String = {
     var str = ""
     gladtype.id match {
-      case 0 => str = "" + "G"
-      case 1 => str = "" + "X"
+      case 0 => str = "" + "S"
+      case 1 => str = "" + "B"
       case 2 => str = "" + "T"
     }
     str
