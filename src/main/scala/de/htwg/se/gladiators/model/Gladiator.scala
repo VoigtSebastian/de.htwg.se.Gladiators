@@ -3,7 +3,7 @@ package de.htwg.se.gladiators.model
 import de.htwg.se.gladiators.model.GladiatorType._
 
 
-case class Gladiator(var line: Int, var row: Int, movementPoints: Double, var ap: Double, hp: Double, gladiatorType: GladiatorType) {
+case class Gladiator(var line: Int, var row: Int, movementPoints: Double, var ap: Double, hp: Double, gladiatorType: GladiatorType, player: Player) {
 
     def levelUp(value: Int): Unit = {
         this.ap += value
@@ -15,10 +15,11 @@ case class Gladiator(var line: Int, var row: Int, movementPoints: Double, var ap
     }
 
     override def toString: String = {
-        return "The gladiator in line " + line + " and row " + row +
+        "The gladiator in line " + line + " and row " + row +
             " has " + movementPoints + " movement points, " +
             ap + " attack points, " +
-            hp + " health points and has the type of " +
-            gladiatorType.toString
+            hp + " health points, has the type of " +
+            gladiatorType.toString +
+            " and is owned by " + player.name
     }
 }
