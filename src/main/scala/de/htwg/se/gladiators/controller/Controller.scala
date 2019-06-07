@@ -15,7 +15,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
     val DIMENSIONS = 7
     var gameStatus: GameStatus = P1
     var players = Array(Player("Player1"), Player("Player2"))
-
+    var selectedCell: (Int, Int) = (0,0)
 
     def createRandom(): Unit = {
         playingField = playingField.createRandom(DIMENSIONS)
@@ -37,6 +37,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
         playingField = playingField.createGladiator(GladiatorFactory.createGladiator(line, row, gladiatorType), gameStatus)
         players(gameStatus.id).buyItem(10)
         //notifyObservers
+        nextPlayer()
         publish(new GladChanged)
         //playingField
     }
@@ -62,8 +63,10 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def nextPlayer(): Unit = {
+        publish(new GameStatusChanged)
         if (gameStatus == P1)
             gameStatus = P2
+
         else
             gameStatus = P1
     }
@@ -83,5 +86,10 @@ class Controller(var playingField: PlayingField) extends Publisher {
 
         }
         ""
+    }
+
+    def cellSelected(line: Int, row: Int): Unit = {
+        selectedCell = (line, row)
+        publish(new CellClicked)
     }
 }

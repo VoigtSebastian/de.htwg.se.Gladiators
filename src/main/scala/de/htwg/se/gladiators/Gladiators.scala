@@ -22,7 +22,7 @@ object Gladiators {
         var output: String = ""
         if (!input.isEmpty) tui.processInputLine(input)
         else do {
-            print(WAITING_FOR_INPUT)
+            println(WAITING_FOR_INPUT)
             input = scala.io.StdIn.readLine()
             tui.processInputLine(input)
         } while (input != "q")
