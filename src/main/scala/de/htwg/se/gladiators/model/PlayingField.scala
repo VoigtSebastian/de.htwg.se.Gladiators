@@ -1,11 +1,20 @@
 package de.htwg.se.gladiators.model
 
+import scala.util.matching.Regex
 
 case class PlayingField(size: Integer = 7) {
 
     var gladiatorPlayer1: List[Gladiator] = List()
     var gladiatorPlayer2: List[Gladiator] = List()
     var cells: Array[Array[Cell]] = Array.ofDim[Cell](3,3)
+
+    val SAND_BACKGROUND = "\033[103m"
+    val PALM_BACKGROUND = "\033[43m"
+    val BASE_BACKGROUND = "\033[101m"
+    val UNIT_BACKGROUND = "\033[45m"
+    val TEXT_COLOR_BLACK = "\33[97m"
+    val RESET_ANSI_ESCAPE = "\033[0m"
+    val REGEX_COMMANDS = new Regex("([a-zA-Z]+)|([0-9]+)")
 
     createRandom(size)
 
@@ -17,7 +26,7 @@ case class PlayingField(size: Integer = 7) {
     override def toString: String = {
         var output = ""
         for(i <- cells.indices) {
-            output += TuiEvaluator.evalPrintLine(formatLine(i)) + "\n"
+            output += evalPrintLine(formatLine(i)) + "\n"
         }
         output
     }
@@ -107,6 +116,30 @@ case class PlayingField(size: Integer = 7) {
                 ret = glad.toString()
 
         ret
+    }
+
+
+    def evalPrintLine(line: String): String = {
+        var returnValue = ""
+        for (c <- line) {
+            c match {
+                //gladiators
+                case 'S' => returnValue = returnValue + (TEXT_COLOR_BLACK +
+                    UNIT_BACKGROUND + " S " + RESET_ANSI_ESCAPE) //-> SWORD
+                case 'B' => returnValue = returnValue + (TEXT_COLOR_BLACK +
+                    UNIT_BACKGROUND + " B " + RESET_ANSI_ESCAPE) //-> BOW
+                case 'T' => returnValue = returnValue + (TEXT_COLOR_BLACK +
+                    UNIT_BACKGROUND + " T " + RESET_ANSI_ESCAPE) //-> TANK
+                //cells
+                case '0' => returnValue = returnValue + (TEXT_COLOR_BLACK +
+                    SAND_BACKGROUND + " S " + RESET_ANSI_ESCAPE) //-> SAND
+                case '1' => returnValue = returnValue + (TEXT_COLOR_BLACK +
+                    PALM_BACKGROUND + " P " + RESET_ANSI_ESCAPE) //-> PALM
+                case '2' => returnValue = returnValue + (TEXT_COLOR_BLACK +
+                    BASE_BACKGROUND + " B " + RESET_ANSI_ESCAPE) //-> BASE
+            }
+        }
+        returnValue
     }
 
     def attack(gladiatorAttack: Gladiator, gladiatorDest: Gladiator): String = {
