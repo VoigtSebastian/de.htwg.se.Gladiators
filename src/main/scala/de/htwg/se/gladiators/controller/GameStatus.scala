@@ -1,7 +1,5 @@
 package de.htwg.se.gladiators.controller
 
-import de.htwg.se.gladiators.controller.GameStatus.IDLE
-
 object GameStatus extends Enumeration {
 
   type GameStatus = Value

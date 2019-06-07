@@ -30,11 +30,12 @@ class SwingGui(controller: Controller) extends MainFrame {
       credits.foreground = java.awt.Color.GREEN.darker().darker()
       credits.horizontalAlignment = Alignment.Center
 
-      val coordinates = new TextField("", 1)
-      coordinates.font = new Font("Verdana", 1, 30)
-      coordinates.horizontalAlignment = Alignment.Center
+      val command = new TextField("", 1)
+      command.font = new Font("Verdana", 1, 30)
+      command.foreground = java.awt.Color.ORANGE.darker()
+      command.horizontalAlignment = Alignment.Center
 
-      contents += coordinates
+      contents += command
       contents += statusline
       contents += credits
     }
@@ -44,20 +45,25 @@ class SwingGui(controller: Controller) extends MainFrame {
         val button_c = new Button("Create")
         val button_m = new Button("Move")
 
-      button_c.font = new Font("Verdana", 0, 30)
-      button_m.font = new Font("Verdana", 0, 30)
+        button_c.font = new Font("Verdana", 0, 30)
+        button_m.font = new Font("Verdana", 0, 30)
 
         contents += button_c
         contents += button_m
         listenTo(button_c)
+        listenTo(button_m)
         reactions += {
-            case ButtonClicked(b)
-              if b == button_c =>
-                controller.addGladiator(controller.selectedCell._1, controller.selectedCell._2, GladiatorType.SWORD)
-            case ButtonClicked(b)
-              if b == button_m =>
-                controller.addGladiator(controller.selectedCell._1, controller.selectedCell._2, GladiatorType.BOW)
+            case ButtonClicked(b) => {
+              if (b == button_c) {
+                controller.changeCommand(CommandStatus.CR)
+                refreshStatus
+              } else if (b == button_m) {
+                controller.changeCommand(CommandStatus.MV)
+                refreshStatus
+              }
+            }
         }
+
 
     }
 
@@ -100,7 +106,8 @@ class SwingGui(controller: Controller) extends MainFrame {
     menuBar = new MenuBar {
 
       contents += new Menu("Menu") {
-        contents += new MenuItem(Action("New Game") {controller.createRandom()} )
+        contents += new MenuItem(Action("New Map") {controller.createRandom()} )
+        contents += new MenuItem(Action("Exit") {System.exit(0)})
       }
       pack
       visible = true
@@ -109,7 +116,7 @@ class SwingGui(controller: Controller) extends MainFrame {
         case event: GladChanged => redraw()
         case event: PlayingFieldChanged => redraw()
         case event: CellClicked => initialize()
-        case event: GameStatusChanged => refreshStatus()
+        case event: GameStatusChanged => refreshStatus
     }
 
     def redraw(): Unit = {
@@ -118,7 +125,7 @@ class SwingGui(controller: Controller) extends MainFrame {
           row <- 0 until controller.playingField.size
         } cells(line)(row).redraw
         showGladiators()
-        refreshStatus()
+        refreshStatus
         repaint
     }
 
@@ -129,12 +136,12 @@ class SwingGui(controller: Controller) extends MainFrame {
         } cells(line)(row).initialize
         repaint
         showGladiators()
-        refreshStatus()
+        refreshStatus
     }
 
-    def refreshStatus(): Unit = {
+    def refreshStatus: Unit = {
         statusPanel.statusline.text = "" + controller.players(controller.gameStatus.id).name
-        statusPanel.coordinates.text = "" + controller.selectedCell
+        statusPanel.command.text = "" + CommandStatus.message(controller.commandStatus)
         statusPanel.credits.text = "" + controller.players(controller.gameStatus.id).credits.toString + " $"
     }
 
