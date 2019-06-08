@@ -30,7 +30,7 @@ class GladiatorSpec extends WordSpec with Matchers {
       }
     }
     "after levelUp" should {
-      var gladiator2 = Gladiator(5, 5, 10.0, 50.0, 100.0, SWORD, new Player)
+      var gladiator2 = Gladiator(5, 5, 10.0, 50.0, 100.0, BOW, new Player)
 
       gladiator2.levelUp(50)
       "have more ap" in {
@@ -38,7 +38,7 @@ class GladiatorSpec extends WordSpec with Matchers {
       }
     }
     "after move" should {
-      var gladiator3 = Gladiator(5,5,10.0,50.0,100.0, SWORD, new Player)
+      var gladiator3 = Gladiator(5,5,10.0,50.0,100.0, TANK, new Player)
       gladiator3.move(4,4)
       "have a new location" in {
         gladiator3.line should be (4)
