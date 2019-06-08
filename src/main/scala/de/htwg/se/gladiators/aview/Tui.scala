@@ -27,7 +27,7 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
             case "q" => showMessage("Exiting")
             case "n" => controller.createRandom()
             case "h" => println(generateHelpMessage())
-            case "t" => throw new NotImplementedError("toggle is not implemented yet")
+            case "t" => controller.toggleUnitStats()
             case "g" => controller.addGladiator(splitinput(1).toInt,splitinput(2).toInt,GladiatorType.SWORD); controller.printPlayingField()
             case "m" => println(controller.moveGladiator(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt,splitinput(4).toInt))
             case "u" => controller.undoGladiator()

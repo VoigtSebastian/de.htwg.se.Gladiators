@@ -7,6 +7,7 @@ case class PlayingField(size: Integer = 7) {
     var gladiatorPlayer1: List[Gladiator] = List()
     var gladiatorPlayer2: List[Gladiator] = List()
     var cells: Array[Array[Cell]] = Array.ofDim[Cell](3,3)
+    var toggleUnitStats = true
 
     val SAND_BACKGROUND = "\033[103m"
     val PALM_BACKGROUND = "\033[43m"
@@ -28,6 +29,8 @@ case class PlayingField(size: Integer = 7) {
         for(i <- cells.indices) {
             output += evalPrintLine(formatLine(i)) + "\n"
         }
+        if (toggleUnitStats)
+            return formatPlayingFieldAddStats(output)
         output
     }
 
@@ -57,6 +60,17 @@ case class PlayingField(size: Integer = 7) {
                         'S' + ret.substring(gladiator.row + 1)
                 }
         }
+        ret
+    }
+
+    def formatPlayingFieldAddStats(playingField: String): String = {
+        var ret = playingField + "Gladiators of player one: \n"
+        for (g <- gladiatorPlayer1)
+            ret = ret + g.toString + "\n"
+
+        ret = ret + "Gladiators of player two: \n"
+        for (g <- gladiatorPlayer2)
+            ret = ret + g.toString + "\n"
         ret
     }
 
