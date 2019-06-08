@@ -1,11 +1,10 @@
 package de.htwg.se.gladiators.controller
 
 import de.htwg.se.gladiators.model._
-import de.htwg.se.gladiators.aview.Tui
 import de.htwg.se.gladiators.controller.CommandStatus._
 import de.htwg.se.gladiators.controller.GameStatus._
+import de.htwg.se.gladiators.controller.MoveType.MoveType
 import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
-import de.htwg.se.gladiators.util.Observable
 import de.htwg.se.gladiators.util.UndoManager
 
 import scala.swing.Publisher
@@ -77,7 +76,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
             gameStatus = P1
     }
 
-    def cell(line: Int, row: Int) = playingField.cell(line, row)
+    def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
 
 
     def redoGladiator(): Unit = {
@@ -85,38 +84,15 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def attack(lineAttack: Int, rowAttack: Int, lineDest: Int, rowDest: Int): String = {
-        if (isCoordinateLegal(lineAttack, rowAttack) && isCoordinateLegal(lineDest, rowDest)) {
-            var gladA = GladiatorFactory.createGladiator(Int.MinValue, Int.MinValue, GladiatorType.SWORD, players(P1.id))
-            var gladB = GladiatorFactory.createGladiator(Int.MinValue, Int.MinValue, GladiatorType.SWORD, players(P2.id))
-            if (gameStatus == P1) {
-                println("Player one should attack")
-                val gladAttack = attackFindGladiator(playingField.gladiatorPlayer1, lineAttack, rowAttack, gladA)
-                val gladDest = attackFindGladiator(playingField.gladiatorPlayer2, lineDest, rowDest, gladB)
-                if (gladAttack._2 && gladDest._2)
-                    playingField.attack(gladAttack._1, gladDest._1)
-                else
-                    "There was no gladiator at this position"
-            } else if (gameStatus == P2) {
-                println("Player two should attack")
-                val gladAttack = attackFindGladiator(playingField.gladiatorPlayer2, lineAttack, rowAttack, gladA)
-                val gladDest = attackFindGladiator(playingField.gladiatorPlayer1, lineDest, rowDest, gladB)
-                if (gladAttack._2 && gladDest._2)
-                    playingField.attack(gladAttack._1, gladDest._1)
-                else
-                    "Please enter correct coordinates"
-            } else
-                "It is not possible to attack in this state"
-        }
-        else
-            "Coordinates are out of bounds!"
-    }
+        val status: MoveType.MoveType = categorizeMove(lineAttack, rowAttack, lineDest, rowDest)
 
-    def attackFindGladiator (gladiatorList: List[Gladiator], line: Int, row: Int, gladiatorDestination: Gladiator): (Gladiator, Boolean) = {
-        for (g <- gladiatorList) {
-            if (g.line == line && g.row == row)
-                return (g, true)
+        status match {
+            case MoveType.ATTACK        => playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
+            case MoveType.LEGAL_MOVE    => "Please use the move command to move your units"
+            case MoveType.ILLEGAL_MOVE  => "This move is not possible"
+            case _                      => "You can not attack your own units"
+
         }
-        (gladiatorDestination, false)
     }
 
     def checkGladiator(line: Int, row: Int): Boolean = {
@@ -153,5 +129,33 @@ class Controller(var playingField: PlayingField) extends Publisher {
 
     def changeCommand(commandStatus: CommandStatus): Unit = {
         this.commandStatus = commandStatus
+    }
+
+    def categorizeMove (lineAttack: Int, rowAttack: Int, lineDest: Int, rowDest: Int): MoveType = {
+        if (!isCoordinateLegal(lineAttack, rowAttack) ||
+            !isCoordinateLegal(lineDest, rowDest))
+            MoveType.ILLEGAL_MOVE
+
+        if (gameStatus == P1 &&
+            isGladiatorInList(playingField.gladiatorPlayer1, lineAttack, rowAttack) &&
+            isGladiatorInList(playingField.gladiatorPlayer2, lineDest, rowDest))
+            MoveType.ATTACK
+
+        if (gameStatus == P2 &&
+            isGladiatorInList(playingField.gladiatorPlayer2, lineAttack, rowAttack) &&
+            isGladiatorInList(playingField.gladiatorPlayer1, lineDest, rowDest))
+            MoveType.ATTACK
+
+        if (isGladiatorInList(playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2, lineDest, rowDest))
+            MoveType.BLOCKED
+
+        MoveType.LEGAL_MOVE
+    }
+
+    def isGladiatorInList (list: List[Gladiator], line: Int, row: Int): Boolean = {
+        for (g <- list)
+            if (g.row == row && g.line == line)
+                true
+        false
     }
 }
