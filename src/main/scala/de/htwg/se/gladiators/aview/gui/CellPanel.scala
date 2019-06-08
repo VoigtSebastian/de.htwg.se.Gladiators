@@ -8,8 +8,9 @@ import javax.swing.table._
 import scala.swing.event._
 import de.htwg.se.gladiators.controller.{Controller, GameStatus}
 import de.htwg.se.gladiators.controller.GameStatus.GameStatus
-import de.htwg.se.gladiators.model.Cell
+import de.htwg.se.gladiators.model.{Cell, Gladiator}
 import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
+import javax.swing.ImageIcon
 //import de.htwg.se.gladiators.controller.CellChanged
 import scala.swing.Swing.LineBorder
 
@@ -25,7 +26,7 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
     new Label {
       //text = cellText(row, column)
       text = getCellText
-      font = new Font("Verdana", 0, 36)
+      font = new Font("Verdana", 0, 5)
       horizontalAlignment = Alignment.Center
     }
 
@@ -49,7 +50,8 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
       case MouseClicked(src, pt, mod, clicks, pops) =>
         //controller.showCandidates(row, column)
         controller.cellSelected(line, row)
-        border = LineBorder(java.awt.Color.RED, 4)
+        border = LineBorder(java.awt.Color.MAGENTA.darker(), 4)
+
         //background = java.awt.Color.ORANGE
     }
   }
@@ -59,12 +61,14 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
     contents += cell
     cell.background = getCellColor
     cell.border = LineBorder(java.awt.Color.BLACK,3)
-    label.text = getCellText
+    setCellTexture
+    //label.text = getCellText
     repaint
   }
 
   def initialize: Unit = {
-    label.text = getCellText
+    setCellTexture
+    //label.text = getCellText
     cell.background = getCellColor
     cell.border = LineBorder(java.awt.Color.BLACK,3)
   }
@@ -74,7 +78,11 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
     myCell.cellType.id match {
       case 0 => color = java.awt.Color.YELLOW
       case 1 => color = java.awt.Color.GREEN
-      case 2 => color = java.awt.Color.GRAY
+      case 2 =>
+        if (line == 0)
+          color = java.awt.Color.RED
+        else
+          color = java.awt.Color.BLUE.darker()
     }
     color
   }
@@ -84,27 +92,41 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
     myCell.cellType.id match {
       case 0 => str = ""
       case 1 => str = ""
-      case 2 => str = "H"
+      case 2 => str = ""
     }
     str
   }
 
-  def setGlad(gameStatus: GameStatus, gladtype: GladiatorType): Unit = {
-    label.text = getGladText(gladtype)
+  def setCellTexture: Unit = {
+    myCell.cellType.id match {
+      case 0 => label.icon = resizedTexture("textures/sand_small.png", 70, 70)
+      case 1 => label.icon = resizedTexture("textures/palmsand_small_color.png", 70, 70)
+      case 2 => label.icon = resizedTexture("textures/housesand_small.png", 70, 70)
+
+    }
+  }
+
+  def setGlad(gameStatus: GameStatus, glad: Gladiator): Unit = {
+    //label.text = getGladText(glad)
     if(gameStatus == GameStatus.P1) {
-      cell.background = java.awt.Color.CYAN
+      //cell.background = java.awt.Color.CYAN
+      label.icon = resizedTexture("textures/sandsword_small_p1.png", 70, 70)
     } else {
-      cell.background = java.awt.Color.PINK
+      //cell.background = java.awt.Color.PINK
+      label.icon = resizedTexture("textures/sandsword_small_p2.png", 70, 70)
+
     }
   }
 
-  def getGladText(gladtype: GladiatorType) : String = {
-    var str = ""
-    gladtype.id match {
-      case 0 => str = "" + "S"
-      case 1 => str = "" + "B"
-      case 2 => str = "" + "T"
-    }
-    str
+  def getGladText(glad: Gladiator) : String = {
+    glad.hp.toString
+  }
+
+  def resizedTexture(path:String, width:Int, height:Int): ImageIcon = {
+    var imageIcon = new ImageIcon(path)
+    var image = imageIcon.getImage; // transform it
+    var newimg = image.getScaledInstance(width, height,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+    imageIcon = new ImageIcon(newimg);  // transform it back
+    imageIcon
   }
 }
