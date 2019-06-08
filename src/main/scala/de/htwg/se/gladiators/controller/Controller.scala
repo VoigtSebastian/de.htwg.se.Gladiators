@@ -119,6 +119,23 @@ class Controller(var playingField: PlayingField) extends Publisher {
         (gladiatorDestination, false)
     }
 
+    def checkGladiator(line: Int, row: Int): Boolean = {
+        for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
+            if (g.line == line && g.row == row)
+                return true
+        }
+        false
+    }
+
+    def getGladiator (line: Int, row: Int): Gladiator = {
+        var glad = GladiatorFactory.createGladiator(Int.MinValue, Int.MinValue, GladiatorType.SWORD, players(P1.id))
+        for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
+            if (g.line == line && g.row == row)
+                glad = g
+        }
+        glad
+    }
+
     def cellSelected(line: Int, row: Int): Unit = {
         if (commandStatus == CommandStatus.IDLE) {
             selectedCell = (line, row)
