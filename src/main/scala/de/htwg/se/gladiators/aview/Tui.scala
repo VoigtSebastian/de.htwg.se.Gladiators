@@ -1,7 +1,7 @@
 package de.htwg.se.gladiators.aview
 
 import scala.util.matching.Regex
-import de.htwg.se.gladiators.controller.{Controller, GladChanged, PlayingFieldChanged}
+import de.htwg.se.gladiators.controller.{Controller, GameStatus, GladChanged, PlayingFieldChanged}
 import de.htwg.se.gladiators.model.GladiatorType
 import de.htwg.se.gladiators.util.Observer
 
@@ -21,6 +21,7 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
 
 
     def processInputLine(input: String): Unit = {
+
         val splitinput = evalCommand(input)//input.split(" ")
         splitinput(0) match {
             case "q" => showMessage("Exiting")
@@ -28,7 +29,7 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
             case "h" => println(generateHelpMessage())
             case "t" => throw new NotImplementedError("toggle is not implemented yet")
             case "g" => controller.addGladiator(splitinput(1).toInt,splitinput(2).toInt,GladiatorType.SWORD); controller.printPlayingField()
-            case "m" => controller.moveGladiator(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt,splitinput(4).toInt)
+            case "m" => println(controller.moveGladiator(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt,splitinput(4).toInt))
             case "u" => controller.undoGladiator()
             case "r" => controller.redoGladiator()
             case "a" =>
@@ -40,8 +41,7 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
             case "i" => println(controller.gladiatorInfo(splitinput(1).toInt, splitinput(2).toInt))
             case _=> showMessage(splitinput.toString()) //showMessage(controller.createCommand(input).toString())
         }
-        controller.nextPlayer()
-
+        //controller.nextPlayer()
     }
 
     override def showMessage(message: String): Unit = super.showMessage(message); println("")
