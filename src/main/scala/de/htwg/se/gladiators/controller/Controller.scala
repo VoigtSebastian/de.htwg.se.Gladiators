@@ -69,6 +69,13 @@ class Controller(var playingField: PlayingField) extends Publisher {
         }
     }
 
+    def toggleUnitStats(): Unit = {
+        if (playingField.toggleUnitStats)
+            playingField.toggleUnitStats = false
+        else
+            playingField.toggleUnitStats = true
+    }
+
     def undoGladiator(): Unit = {
         undoManager.undoStep
     }
