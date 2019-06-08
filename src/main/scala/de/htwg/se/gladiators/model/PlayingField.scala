@@ -6,7 +6,7 @@ case class PlayingField(size: Integer = 7) {
 
     var gladiatorPlayer1: List[Gladiator] = List()
     var gladiatorPlayer2: List[Gladiator] = List()
-    var cells: Array[Array[Cell]] = Array.ofDim[Cell](3,3)
+    var cells: Array[Array[Cell]] = Array.ofDim[Cell](3, 3)
     var toggleUnitStats = true
 
     val SAND_BACKGROUND = "\033[103m"
@@ -26,7 +26,7 @@ case class PlayingField(size: Integer = 7) {
 
     override def toString: String = {
         var output = ""
-        for(i <- cells.indices) {
+        for (i <- cells.indices) {
             output += evalPrintLine(formatLine(i)) + "\n"
         }
         if (toggleUnitStats)
@@ -46,7 +46,7 @@ case class PlayingField(size: Integer = 7) {
         ret
     }
 
-    def formatLineAddGladiators (gladiator: Gladiator, retString: String, line: Int): String = {
+    def formatLineAddGladiators(gladiator: Gladiator, retString: String, line: Int): String = {
         var ret = retString
         if (gladiator.line == line) {
             val currentCellType = cells(line)(gladiator.row).cellType
@@ -64,13 +64,17 @@ case class PlayingField(size: Integer = 7) {
     }
 
     def formatPlayingFieldAddStats(playingField: String): String = {
-        var ret = playingField + "Gladiators of player one: \n"
-        for (g <- gladiatorPlayer1)
-            ret = ret + g.toString + "\n"
-
-        ret = ret + "Gladiators of player two: \n"
-        for (g <- gladiatorPlayer2)
-            ret = ret + g.toString + "\n"
+        var ret = playingField
+        if (gladiatorPlayer1.nonEmpty) {
+            ret = ret + "Gladiators of player one: \n"
+            for (g <- gladiatorPlayer1)
+                ret = ret + g.toString + "\n"
+        }
+        if (gladiatorPlayer2.nonEmpty) {
+            ret = ret + "Gladiators of player two: \n"
+            for (g <- gladiatorPlayer2)
+                ret = ret + g.toString + "\n"
+        }
         ret
     }
 
@@ -92,12 +96,12 @@ case class PlayingField(size: Integer = 7) {
         this
     }
 
-    def addGladPlayerOne (gladiator: Gladiator): PlayingField = {
+    def addGladPlayerOne(gladiator: Gladiator): PlayingField = {
         gladiatorPlayer1 = gladiatorPlayer1 ::: gladiator :: Nil
         this
     }
 
-    def addGladPlayerTwo (gladiator: Gladiator): PlayingField = {
+    def addGladPlayerTwo(gladiator: Gladiator): PlayingField = {
         gladiatorPlayer2 = gladiatorPlayer2 ::: gladiator :: Nil
         this
     }
