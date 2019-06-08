@@ -24,17 +24,15 @@ class Controller(var playingField: PlayingField) extends Publisher {
         publish(new PlayingFieldChanged)
     }
 
-    //def createCommand(command:String): Vector[String] = {
-    //    //notifyObservers
-    //    TuiEvaluator.evalCommand(command)
-    //}
-
     def printPlayingField(): String = {
         // notifyObservers
-        playingField.toString + players(gameStatus.id) + "\n"
+        playingField.toString +
+            GameStatus.message(gameStatus) +
+            "\n"
     }
 
     def addGladiator(line: Int, row: Int, gladiatorType: GladiatorType): Unit = {
+        println(GameStatus.message(gameStatus))
         if (gameStatus == P1)
             playingField = playingField.addGladPlayerOne(GladiatorFactory.createGladiator(line, row, gladiatorType, players(gameStatus.id)))
         else if (gameStatus == P2)
@@ -56,11 +54,18 @@ class Controller(var playingField: PlayingField) extends Publisher {
         false
     }
 
-    def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): Unit = {
-        if (isCoordinateLegal(lineDest, rowDest)) {
-            undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
-            nextPlayer()
-            publish(new GladChanged)
+    def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): String = {
+        val status: MoveType.MoveType = categorizeMove(line, row, lineDest, rowDest)
+
+        status match {
+            case MoveType.ATTACK        => MoveType.message(status) //TODO: Change this behaviour?
+            case MoveType.LEGAL_MOVE    =>
+                undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
+                nextPlayer()
+                publish(new GladChanged)
+                "Move successful!"
+            case MoveType.ILLEGAL_MOVE  => MoveType.message(status)
+            case MoveType.BLOCKED       => MoveType.message(status)
         }
     }
 
@@ -69,11 +74,11 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def nextPlayer(): Unit = {
-        publish(new GameStatusChanged)
         if (gameStatus == P1)
             gameStatus = P2
         else
             gameStatus = P1
+        publish(new GameStatusChanged)
     }
 
     def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
@@ -87,11 +92,10 @@ class Controller(var playingField: PlayingField) extends Publisher {
         val status: MoveType.MoveType = categorizeMove(lineAttack, rowAttack, lineDest, rowDest)
 
         status match {
-            case MoveType.ATTACK        => playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
+            case MoveType.ATTACK        => nextPlayer(); playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
             case MoveType.LEGAL_MOVE    => "Please use the move command to move your units"
-            case MoveType.ILLEGAL_MOVE  => "This move is not possible"
-            case _                      => "You can not attack your own units"
-
+            case MoveType.ILLEGAL_MOVE  => MoveType.message(status)
+            case MoveType.BLOCKED       => "You can not attack your own units"
         }
     }
 
@@ -131,23 +135,23 @@ class Controller(var playingField: PlayingField) extends Publisher {
         this.commandStatus = commandStatus
     }
 
-    def categorizeMove (lineAttack: Int, rowAttack: Int, lineDest: Int, rowDest: Int): MoveType = {
-        if (!isCoordinateLegal(lineAttack, rowAttack) ||
+    def categorizeMove (lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): MoveType = {
+        if (!isCoordinateLegal(lineStart, rowStart) ||
             !isCoordinateLegal(lineDest, rowDest))
-            MoveType.ILLEGAL_MOVE
+            return MoveType.ILLEGAL_MOVE
 
         if (gameStatus == P1 &&
-            isGladiatorInList(playingField.gladiatorPlayer1, lineAttack, rowAttack) &&
+            isGladiatorInList(playingField.gladiatorPlayer1, lineStart, rowStart) &&
             isGladiatorInList(playingField.gladiatorPlayer2, lineDest, rowDest))
-            MoveType.ATTACK
+            return MoveType.ATTACK
 
         if (gameStatus == P2 &&
-            isGladiatorInList(playingField.gladiatorPlayer2, lineAttack, rowAttack) &&
+            isGladiatorInList(playingField.gladiatorPlayer2, lineStart, rowStart) &&
             isGladiatorInList(playingField.gladiatorPlayer1, lineDest, rowDest))
-            MoveType.ATTACK
+            return MoveType.ATTACK
 
         if (isGladiatorInList(playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2, lineDest, rowDest))
-            MoveType.BLOCKED
+            return MoveType.BLOCKED
 
         MoveType.LEGAL_MOVE
     }
@@ -155,7 +159,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
     def isGladiatorInList (list: List[Gladiator], line: Int, row: Int): Boolean = {
         for (g <- list)
             if (g.row == row && g.line == line)
-                true
+                return true
         false
     }
 }
