@@ -64,8 +64,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
                 nextPlayer()
                 publish(new GladChanged)
                 "Move successful!"
-            case MoveType.ILLEGAL_MOVE  => MoveType.message(status)
-            case MoveType.BLOCKED       => MoveType.message(status)
+            case _                        => MoveType.message(status)
         }
     }
 
@@ -103,6 +102,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
             case MoveType.LEGAL_MOVE    => "Please use the move command to move your units"
             case MoveType.ILLEGAL_MOVE  => MoveType.message(status)
             case MoveType.BLOCKED       => "You can not attack your own units"
+            case _                      => MoveType.message(status)
         }
     }
 
@@ -143,22 +143,30 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def categorizeMove (lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): MoveType = {
+        //TODO: Check for movementPoints
         if (!isCoordinateLegal(lineStart, rowStart) ||
             !isCoordinateLegal(lineDest, rowDest))
             return MoveType.ILLEGAL_MOVE
 
-        if (gameStatus == P1 &&
-            isGladiatorInList(playingField.gladiatorPlayer1, lineStart, rowStart) &&
-            isGladiatorInList(playingField.gladiatorPlayer2, lineDest, rowDest))
-            return MoveType.ATTACK
+        if (gameStatus == P1)
+            if (isGladiatorInList(playingField.gladiatorPlayer1, lineStart, rowStart)) {
+                if (isGladiatorInList(playingField.gladiatorPlayer2, lineDest, rowDest))
+                    return MoveType.ATTACK
+            } else
+                return MoveType.UNIT_NOT_OWNED_BY_PLAYER
 
-        if (gameStatus == P2 &&
-            isGladiatorInList(playingField.gladiatorPlayer2, lineStart, rowStart) &&
-            isGladiatorInList(playingField.gladiatorPlayer1, lineDest, rowDest))
-            return MoveType.ATTACK
+        if (gameStatus == P2)
+            if (isGladiatorInList(playingField.gladiatorPlayer2, lineStart, rowStart)) {
+                if (isGladiatorInList(playingField.gladiatorPlayer1, lineDest, rowDest))
+                    return MoveType.ATTACK
+            } else
+                return MoveType.UNIT_NOT_OWNED_BY_PLAYER
 
         if (isGladiatorInList(playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2, lineDest, rowDest))
             return MoveType.BLOCKED
+
+        if (playingField.cells(lineDest)(rowDest).cellType == CellType.PALM)
+            return MoveType.MOVE_TO_PALM
 
         MoveType.LEGAL_MOVE
     }
