@@ -28,17 +28,35 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
             case "n" => controller.createRandom()
             case "h" => println(generateHelpMessage())
             case "t" => controller.toggleUnitStats()
-            case "g" => controller.addGladiator(splitinput(1).toInt,splitinput(2).toInt,GladiatorType.SWORD); controller.printPlayingField()
-            case "m" => println(controller.moveGladiator(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt,splitinput(4).toInt))
+            case "g" =>
+                if (splitinput.size == 3) {
+                    controller.addGladiator(splitinput(1).toInt, splitinput(2).toInt, GladiatorType.SWORD)
+                    controller.printPlayingField()
+                }
+                else
+                    println("Please enter the create command in the correct format")
+
+            case "m" =>
+                if (splitinput.size == 5)
+                    println(controller.moveGladiator(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt,splitinput(4).toInt))
+                else
+                    println("Please enter the move command in the correct format")
+
             case "u" => controller.undoGladiator()
             case "r" => controller.redoGladiator()
+
             case "a" =>
                 if (splitinput.size == 5)
                     println(controller.attack(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt, splitinput(4).toInt))
                 else
                     println("Please enter the attack command in the correct format")
 
-            case "i" => println(controller.gladiatorInfo(splitinput(1).toInt, splitinput(2).toInt))
+            case "i" =>
+                if (splitinput.size == 3)
+                    println(controller.gladiatorInfo(splitinput(1).toInt, splitinput(2).toInt))
+                else
+                    println("Please enter the information command in the correct format")
+
             case _=> showMessage(splitinput.toString()) //showMessage(controller.createCommand(input).toString())
         }
         //controller.nextPlayer()
