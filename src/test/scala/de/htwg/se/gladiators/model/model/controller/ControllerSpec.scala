@@ -1,6 +1,6 @@
 package de.htwg.se.gladiators.model.model.controller
 
-import de.htwg.se.gladiators.controller.Controller
+import de.htwg.se.gladiators.controller.{Controller, MoveType}
 import de.htwg.se.gladiators.model.{Cell, GladiatorType, PlayingField}
 import de.htwg.se.gladiators.util.Observer
 import org.scalatest.{Matchers, WordSpec}
@@ -13,11 +13,31 @@ class ControllerSpec extends WordSpec with Matchers {
 
         val xIllegal = 10
         val yIllegal = 12
-        "when checking coordinates " + xLegal + " " + yLegal in {
+        "checking coordinates " + xLegal + " " + yLegal in {
             controller.isCoordinateLegal(xLegal, yLegal) should be(true)
             controller.isCoordinateLegal(xIllegal, yIllegal) should be(false)
         }
     }
+
+
+    "A controller " when {
+        var pf = PlayingField()
+        var controller = new Controller(pf)
+
+        controller.addGladiator(0, 0, GladiatorType.SWORD)
+        controller.addGladiator(1, 1, GladiatorType.SWORD)
+        controller.addGladiator(2, 2, GladiatorType.SWORD)
+        controller.addGladiator(3, 3, GladiatorType.SWORD)
+
+        "trying to move to/attack a blocked position" in {
+            controller.categorizeMove(0, 0, 2,2 ) should be(MoveType.BLOCKED)
+        }
+
+        "trying to move a unit that is not owned by the current player " in {
+            controller.categorizeMove(1,1,4,4)  should be (MoveType.UNIT_NOT_OWNED_BY_PLAYER)
+        }
+    }
+
 
     //TODO: ControllerSpecUpdate
     //"A Controller" when {

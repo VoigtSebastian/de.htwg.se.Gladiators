@@ -143,22 +143,28 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def categorizeMove (lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): MoveType = {
-        //TODO: Check for movementPoints
         if (!isCoordinateLegal(lineStart, rowStart) ||
             !isCoordinateLegal(lineDest, rowDest))
             return MoveType.ILLEGAL_MOVE
 
+
         if (gameStatus == P1)
             if (isGladiatorInList(playingField.gladiatorPlayer1, lineStart, rowStart)) {
                 if (isGladiatorInList(playingField.gladiatorPlayer2, lineDest, rowDest))
-                    return MoveType.ATTACK
+                    if (checkMovementPoints(playingField.gladiatorPlayer1, lineStart, rowStart, lineDest, rowDest))
+                        return MoveType.ATTACK
+                    else
+                        return MoveType.INSUFFICIENT_MOVEMENT_POINTS
             } else
                 return MoveType.UNIT_NOT_OWNED_BY_PLAYER
 
         if (gameStatus == P2)
             if (isGladiatorInList(playingField.gladiatorPlayer2, lineStart, rowStart)) {
                 if (isGladiatorInList(playingField.gladiatorPlayer1, lineDest, rowDest))
-                    return MoveType.ATTACK
+                    if (checkMovementPoints(playingField.gladiatorPlayer2, lineStart, rowStart, lineDest, rowDest))
+                        return MoveType.ATTACK
+                    else
+                        return MoveType.INSUFFICIENT_MOVEMENT_POINTS
             } else
                 return MoveType.UNIT_NOT_OWNED_BY_PLAYER
 
@@ -168,12 +174,24 @@ class Controller(var playingField: PlayingField) extends Publisher {
         if (playingField.cells(lineDest)(rowDest).cellType == CellType.PALM)
             return MoveType.MOVE_TO_PALM
 
-        MoveType.LEGAL_MOVE
+        if (gameStatus == P1 && checkMovementPoints(playingField.gladiatorPlayer1, lineStart, rowStart, lineDest, rowDest) ||
+            gameStatus == P2 && checkMovementPoints(playingField.gladiatorPlayer2, lineStart, rowStart, lineDest, rowDest))
+            return MoveType.LEGAL_MOVE
+        MoveType.INSUFFICIENT_MOVEMENT_POINTS
     }
 
     def isGladiatorInList (list: List[Gladiator], line: Int, row: Int): Boolean = {
         for (g <- list)
             if (g.row == row && g.line == line)
+                return true
+        false
+    }
+
+    def checkMovementPoints (list: List[Gladiator], lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
+        for (g <- list)
+            if (g.row == rowStart &&
+                g.line == lineStart &&
+                g.movementPoints >= (Math.abs(lineDest - lineStart) + Math.abs(rowDest - rowStart)))
                 return true
         false
     }
