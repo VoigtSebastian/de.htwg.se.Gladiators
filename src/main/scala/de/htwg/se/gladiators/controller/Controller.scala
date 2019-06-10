@@ -17,12 +17,16 @@ class Controller(var playingField: PlayingField) extends Publisher {
     var commandStatus: CommandStatus = CommandStatus.IDLE
     var players = Array(Player("Player1"), Player("Player2"))
     var selectedCell: (Int, Int) = (0, 0)
+    val shop = new Shop(10)
 
     def createRandom(): Unit = {
         playingField = playingField.createRandom(DIMENSIONS)
         //notifyObservers
         publish(new PlayingFieldChanged)
     }
+
+    def getShop(): String = shop.toString
+
 
     def printPlayingField(): String = {
         // notifyObservers
