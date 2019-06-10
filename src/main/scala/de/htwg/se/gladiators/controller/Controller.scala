@@ -16,7 +16,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
     var gameStatus: GameStatus = GameStatus.P1
     var commandStatus: CommandStatus = CommandStatus.IDLE
     var players = Array(Player("Player1"), Player("Player2"))
-    var selectedCell: (Int, Int) = (0,0)
+    var selectedCell: (Int, Int) = (0, 0)
 
     def createRandom(): Unit = {
         playingField = playingField.createRandom(DIMENSIONS)
@@ -32,11 +32,12 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def addGladiator(line: Int, row: Int, gladiatorType: GladiatorType): Unit = {
-        println(GameStatus.message(gameStatus))
+        if (playingField.cells(line)(row).cellType == CellType.PALM)
+            return
         if (gameStatus == P1)
             playingField = playingField.addGladPlayerOne(GladiatorFactory.createGladiator(line, row, gladiatorType, players(gameStatus.id)))
         else if (gameStatus == P2)
-                playingField = playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, gladiatorType, players(gameStatus.id)))
+            playingField = playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, gladiatorType, players(gameStatus.id)))
         players(gameStatus.id).buyItem(10)
         //notifyObservers
         nextPlayer()
@@ -58,13 +59,13 @@ class Controller(var playingField: PlayingField) extends Publisher {
         val status: MoveType.MoveType = categorizeMove(line, row, lineDest, rowDest)
 
         status match {
-            case MoveType.ATTACK        => MoveType.message(status) //TODO: Change this behaviour?
-            case MoveType.LEGAL_MOVE    =>
+            case MoveType.ATTACK => MoveType.message(status) //TODO: Change this behaviour?
+            case MoveType.LEGAL_MOVE =>
                 undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
                 nextPlayer()
                 publish(new GladChanged)
                 "Move successful!"
-            case _                        => MoveType.message(status)
+            case _ => MoveType.message(status)
         }
     }
 
@@ -98,11 +99,11 @@ class Controller(var playingField: PlayingField) extends Publisher {
         val status: MoveType.MoveType = categorizeMove(lineAttack, rowAttack, lineDest, rowDest)
 
         status match {
-            case MoveType.ATTACK        => nextPlayer(); playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
-            case MoveType.LEGAL_MOVE    => "Please use the move command to move your units"
-            case MoveType.ILLEGAL_MOVE  => MoveType.message(status)
-            case MoveType.BLOCKED       => "You can not attack your own units"
-            case _                      => MoveType.message(status)
+            case MoveType.ATTACK => nextPlayer(); playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
+            case MoveType.LEGAL_MOVE => "Please use the move command to move your units"
+            case MoveType.ILLEGAL_MOVE => MoveType.message(status)
+            case MoveType.BLOCKED => "You can not attack your own units"
+            case _ => MoveType.message(status)
         }
     }
 
@@ -123,6 +124,14 @@ class Controller(var playingField: PlayingField) extends Publisher {
         glad
     }
 
+    def getGladiatorOption(line: Int, row: Int): Option[Gladiator] = {
+        for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
+            if (g.line == line && g.row == row)
+                return Some(g)
+        }
+        None
+    }
+
     def cellSelected(line: Int, row: Int): Unit = {
         if (commandStatus == CommandStatus.IDLE) {
             selectedCell = (line, row)
@@ -131,7 +140,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
             addGladiator(line, row, GladiatorType.SWORD)
             commandStatus = CommandStatus.IDLE
             publish(new GladChanged)
-        } else if (commandStatus == CommandStatus.MV ) {
+        } else if (commandStatus == CommandStatus.MV) {
             moveGladiator(selectedCell._1, selectedCell._2, line, row)
             commandStatus = CommandStatus.IDLE
             publish(new GladChanged)
@@ -142,52 +151,56 @@ class Controller(var playingField: PlayingField) extends Publisher {
         this.commandStatus = commandStatus
     }
 
-    def categorizeMove (lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): MoveType = {
+    def categorizeMove(lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): MoveType = {
         if (!isCoordinateLegal(lineStart, rowStart) ||
             !isCoordinateLegal(lineDest, rowDest))
             return MoveType.ILLEGAL_MOVE
 
+        val gladStartOption = getGladiatorOption(lineStart, rowStart)
+        val gladDestOption = getGladiatorOption(lineDest, rowDest)
 
-        if (gameStatus == P1)
-            if (isGladiatorInList(playingField.gladiatorPlayer1, lineStart, rowStart)) {
-                if (isGladiatorInList(playingField.gladiatorPlayer2, lineDest, rowDest))
-                    if (checkMovementPoints(playingField.gladiatorPlayer1, lineStart, rowStart, lineDest, rowDest))
-                        return MoveType.ATTACK
-                    else
-                        return MoveType.INSUFFICIENT_MOVEMENT_POINTS
-            } else
-                return MoveType.UNIT_NOT_OWNED_BY_PLAYER
+        gladStartOption match {
+            case Some(gladiatorStart) =>
+                if (gladiatorStart.player != players(gameStatus.id))
+                    return MoveType.UNIT_NOT_OWNED_BY_PLAYER
 
-        if (gameStatus == P2)
-            if (isGladiatorInList(playingField.gladiatorPlayer2, lineStart, rowStart)) {
-                if (isGladiatorInList(playingField.gladiatorPlayer1, lineDest, rowDest))
-                    if (checkMovementPoints(playingField.gladiatorPlayer2, lineStart, rowStart, lineDest, rowDest))
-                        return MoveType.ATTACK
-                    else
-                        return MoveType.INSUFFICIENT_MOVEMENT_POINTS
-            } else
-                return MoveType.UNIT_NOT_OWNED_BY_PLAYER
-
-        if (isGladiatorInList(playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2, lineDest, rowDest))
-            return MoveType.BLOCKED
-
-        if (playingField.cells(lineDest)(rowDest).cellType == CellType.PALM)
-            return MoveType.MOVE_TO_PALM
-
-        if (gameStatus == P1 && checkMovementPoints(playingField.gladiatorPlayer1, lineStart, rowStart, lineDest, rowDest) ||
-            gameStatus == P2 && checkMovementPoints(playingField.gladiatorPlayer2, lineStart, rowStart, lineDest, rowDest))
-            return MoveType.LEGAL_MOVE
-        MoveType.INSUFFICIENT_MOVEMENT_POINTS
+                gladDestOption match {
+                    case Some(gladiatorDest) =>
+                        if (gladiatorStart.player == gladiatorDest.player)
+                            return MoveType.BLOCKED
+                        if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
+                            MoveType.ATTACK
+                        else
+                            MoveType.INSUFFICIENT_MOVEMENT_POINTS
+                    case None =>
+                        if (playingField.cells(lineDest)(rowDest).cellType != CellType.PALM)
+                            if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
+                                MoveType.LEGAL_MOVE
+                            else
+                                MoveType.INSUFFICIENT_MOVEMENT_POINTS
+                        else
+                            MoveType.MOVE_TO_PALM
+                }
+            case None => MoveType.UNIT_NOT_EXISTING
+        }
     }
 
-    def isGladiatorInList (list: List[Gladiator], line: Int, row: Int): Boolean = {
+    def isGladiatorInList(list: List[Gladiator], line: Int, row: Int): Boolean = {
         for (g <- list)
             if (g.row == row && g.line == line)
                 return true
         false
     }
 
-    def checkMovementPoints (list: List[Gladiator], lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
+    def checkMovementPoints(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
+        if (g.row == rowStart &&
+            g.line == lineStart &&
+            g.movementPoints >= (Math.abs(lineDest - lineStart) + Math.abs(rowDest - rowStart)))
+            return true
+        false
+    }
+
+    def checkMovementPoints(list: List[Gladiator], lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
         for (g <- list)
             if (g.row == rowStart &&
                 g.line == lineStart &&
