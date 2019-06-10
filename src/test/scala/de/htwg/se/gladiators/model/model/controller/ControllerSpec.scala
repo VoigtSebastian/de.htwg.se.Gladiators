@@ -21,8 +21,8 @@ class ControllerSpec extends WordSpec with Matchers {
 
 
     "A controller " when {
-        var pf = PlayingField()
-        var controller = new Controller(pf)
+        val pf = PlayingField()
+        val controller = new Controller(pf)
 
         controller.addGladiator(0, 0, GladiatorType.SWORD)
         controller.addGladiator(1, 1, GladiatorType.SWORD)
