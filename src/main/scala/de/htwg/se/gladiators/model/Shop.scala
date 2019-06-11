@@ -46,14 +46,21 @@ class Shop(amountGladiatorsInStock: Int) {
     }
 
     def calcCost(gladiator: Gladiator): Int = {
-        //TODO: calculateCost
-        Int.MaxValue
+        (((gladiator.ap + gladiator.hp) * gladiator.movementPoints) / 50).toInt
     }
 
-    def buy(index: Int): Gladiator = {
+    def buy(index: Int, player: Player): Option[Gladiator] = {
+        if (index >= stock.size || index < 0)
+            return None
         val glad = stock(index)
-        stock = stock.filter(f => f == glad)
-        glad
+        val cost = calcCost(glad)
+        if (cost > player.credits)
+            return None
+
+        player.buyItem(cost)
+        stock = stock.filter(f => f != glad)
+        stock = stock ::: genGlad() :: Nil
+        Option(glad)
     }
 
     override def toString: String = {
@@ -64,9 +71,9 @@ class Shop(amountGladiatorsInStock: Int) {
                 ":\n\tAttackPoints\t-> " + g.ap.toInt +
                 "\n\tMovementPoints\t-> " + g.movementPoints.toInt +
                 "\n\tHealth Points\t-> " + g.hp.toInt +
+                "\n\tCost\t\t\t-> " + calcCost(g) +
                 "\n"
             i = i + 1
-            //TODO: Add costs
         }
         ret
     }
