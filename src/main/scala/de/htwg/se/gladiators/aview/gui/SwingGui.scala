@@ -43,6 +43,7 @@ class SwingGui(controller: Controller) extends MainFrame {
       val statusline = new TextField(controller.gameStatus.toString, 1)
       statusline.font = new Font("Verdana", 1, 30)
       statusline.horizontalAlignment = Alignment.Center
+      statusline.editable = false
 
       val credits = new TextField(controller.players(controller.gameStatus.id).credits.toString + " $", 1)
       credits.font = new Font("Verdana", 1, 30)
@@ -59,13 +60,17 @@ class SwingGui(controller: Controller) extends MainFrame {
       contents += credits
     }
 
-    val navPanel = new GridPanel(1,2) {
+    val navPanel = new GridPanel(1,3) {
         preferredSize = new Dimension(700,50)
         val button_c = new Button("Create")
         val button_m = new Button("Move")
 
         button_c.font = new Font("Verdana", 0, 30)
         button_m.font = new Font("Verdana", 0, 30)
+
+        val button_glad_s = new Button("Sword")
+        val button_glad_b = new Button("Bow")
+        val button_glad_t = new Button("Tank")
 
         contents += button_c
         contents += button_m
@@ -162,7 +167,6 @@ class SwingGui(controller: Controller) extends MainFrame {
         statusPanel.statusline.text = "" + controller.players(controller.gameStatus.id).name
         statusPanel.command.text = "" + CommandStatus.message(controller.commandStatus)
         statusPanel.credits.text = "" + controller.players(controller.gameStatus.id).credits.toString + " $"
-      //changePlayerNames()
     }
 
     def refreshGladPanel: Unit = {
