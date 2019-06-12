@@ -3,7 +3,7 @@ package de.htwg.se.gladiators.model
 import de.htwg.se.gladiators.model.GladiatorType._
 
 
-case class Gladiator(var line: Int, var row: Int, movementPoints: Double, var ap: Double, hp: Double, gladiatorType: GladiatorType, player: Player) {
+case class Gladiator(var line: Int, var row: Int, movementPoints: Double, var ap: Double, var hp: Double, gladiatorType: GladiatorType, player: Player) {
 
     def levelUp(value: Int): Unit = {
         this.ap += value

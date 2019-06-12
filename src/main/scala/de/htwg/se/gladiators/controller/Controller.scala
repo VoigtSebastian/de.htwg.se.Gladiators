@@ -143,10 +143,17 @@ class Controller(var playingField: PlayingField) extends Publisher {
         } else if (commandStatus == CommandStatus.CR) {
             addGladiator(line, row, GladiatorType.SWORD)
             commandStatus = CommandStatus.IDLE
+            selectedCell = (line, row)
             publish(new GladChanged)
         } else if (commandStatus == CommandStatus.MV) {
             moveGladiator(selectedCell._1, selectedCell._2, line, row)
             commandStatus = CommandStatus.IDLE
+            selectedCell = (line, row)
+            publish(new GladChanged)
+        } else if (commandStatus == CommandStatus.AT) {
+            attack(selectedCell._1, selectedCell._2, line, row)
+            commandStatus = CommandStatus.IDLE
+            selectedCell = (line, row)
             publish(new GladChanged)
         }
     }
