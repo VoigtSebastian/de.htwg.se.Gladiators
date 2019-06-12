@@ -25,17 +25,20 @@ class SwingGui(controller: Controller) extends MainFrame {
       val gladType= new TextField("TY:\nTest")
       gladType.font = new Font("Verdana", 1, 20)
       gladType.horizontalAlignment = Alignment.Center
-      contents += gladType
 
-      val gladAP= new TextField("AP:")
-      gladAP.font = new Font("Verdana", 1, 20)
+      val gladAP= new Button("")
+      gladAP.font = new Font("Algeria", 1, 20)
+      gladAP.background = java.awt.Color.CYAN.darker().darker().darker()
+      gladAP.foreground = java.awt.Color.WHITE
       gladAP.horizontalAlignment = Alignment.Center
 
-      val gladHP= new TextField("HP:")
+      val gladHP= new Button("")
       gladHP.font = new Font("Verdana", 1, 20)
+      gladHP.background = java.awt.Color.CYAN.darker().darker().darker()
+      gladHP.foreground = java.awt.Color.WHITE
       gladHP.horizontalAlignment = Alignment.Center
 
-      contents += gladType
+     // contents += gladType
       contents += gladAP
       contents += gladHP
     }
@@ -44,15 +47,16 @@ class SwingGui(controller: Controller) extends MainFrame {
       statusline.font = new Font("Verdana", 1, 30)
       statusline.horizontalAlignment = Alignment.Center
       statusline.editable = false
+      background = java.awt.Color.BLACK
 
       val credits = new TextField(controller.players(controller.gameStatus.id).credits.toString + " $", 1)
-      credits.font = new Font("Verdana", 1, 30)
+      credits.font = new Font("Verdana", 1, 25)
       credits.foreground = java.awt.Color.GREEN.darker().darker()
       credits.horizontalAlignment = Alignment.Center
 
       val command = new TextField("", 1)
-      command.font = new Font("Verdana", 1, 30)
-      command.foreground = java.awt.Color.ORANGE.darker()
+      command.font = new Font("Verdana", 1, 25)
+      command.foreground = java.awt.Color.GREEN.darker().darker()
       command.horizontalAlignment = Alignment.Center
 
       contents += command
@@ -62,11 +66,14 @@ class SwingGui(controller: Controller) extends MainFrame {
 
     val navPanel = new GridPanel(1,3) {
         preferredSize = new Dimension(700,50)
-        val button_c = new Button("Create")
-        val button_m = new Button("Move")
+        val button_c = new Button("")
+        val button_m = new Button("")
+        val button_a = new Button("")
 
-        button_c.font = new Font("Verdana", 0, 30)
-        button_m.font = new Font("Verdana", 0, 30)
+        button_c.icon = resizedTexture("textures/create.png", 300, 70)
+        button_m.icon = resizedTexture("textures/move_blue.png", 300, 70)
+        button_a.icon = resizedTexture("textures/attack_red.png", 300, 70)
+
 
         val button_glad_s = new Button("Sword")
         val button_glad_b = new Button("Bow")
@@ -74,8 +81,10 @@ class SwingGui(controller: Controller) extends MainFrame {
 
         contents += button_c
         contents += button_m
+        contents += button_a
         listenTo(button_c)
         listenTo(button_m)
+        listenTo(button_a)
         reactions += {
             case ButtonClicked(b) =>
               if (b == button_c) {
@@ -83,6 +92,9 @@ class SwingGui(controller: Controller) extends MainFrame {
                 refreshStatus
               } else if (b == button_m) {
                 controller.changeCommand(CommandStatus.MV)
+                refreshStatus
+              } else if (b == button_a) {
+                controller.changeCommand(CommandStatus.AT)
                 refreshStatus
               }
 
@@ -173,12 +185,19 @@ class SwingGui(controller: Controller) extends MainFrame {
         if (controller.checkGladiator(controller.selectedCell._1, controller.selectedCell._2)) {
           val glad = controller.getGladiator(controller.selectedCell._1, controller.selectedCell._2)
           gladPanel.gladType.text = glad.gladiatorType.toString
-          gladPanel.gladAP.text = "AP: " + glad.ap.toString
-          gladPanel.gladHP.text = "HP: " + glad.hp.toString
+          gladPanel.gladAP.text =  glad.ap.toString
+          gladPanel.gladHP.text =  glad.hp.toString
+          gladPanel.gladHP.icon = resizedTexture("textures/hp.png", 40, 40)
+          gladPanel.gladAP.icon = resizedTexture("textures/ap.png", 40, 40)
+
+
         } else {
           gladPanel.gladType.text = ""
           gladPanel.gladAP.text = ""
           gladPanel.gladHP.text = ""
+          gladPanel.gladAP.icon = new ImageIcon("disable")
+          gladPanel.gladHP.icon = new ImageIcon("disable")
+
         }
     }
 
@@ -203,4 +222,12 @@ class SwingGui(controller: Controller) extends MainFrame {
       JOptionPane.showMessageDialog(textArea, "jo")
       val info = textArea.getText()
     }
+
+  def resizedTexture(path:String, width:Int, height:Int): ImageIcon = {
+    var imageIcon = new ImageIcon(path)
+    var image = imageIcon.getImage; // transform it
+    var newimg = image.getScaledInstance(width, height,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+    imageIcon = new ImageIcon(newimg);  // transform it back
+    imageIcon
+  }
 }

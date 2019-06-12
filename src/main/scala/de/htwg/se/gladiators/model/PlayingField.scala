@@ -161,7 +161,9 @@ case class PlayingField(size: Integer = 7) {
     }
 
     def attack(gladiatorAttack: Gladiator, gladiatorDest: Gladiator): String = {
+        gladiatorDest.hp -= gladiatorAttack.ap
         gladiatorAttack + " attackes " + gladiatorDest
+
     }
 }
 
