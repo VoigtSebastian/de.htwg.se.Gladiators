@@ -2,19 +2,19 @@ package de.htwg.se.gladiators.controller
 
 object GameStatus extends Enumeration {
 
-  type GameStatus = Value
-   val  P1, P2, END, IDLE = Value
+    type GameStatus = Value
+    val P1, P2, END, IDLE = Value
 
-  val map = Map[GameStatus, String](
-    P1 -> "Player One",
-    P2 -> "Player Two",
-    END -> "End of Game",
-    IDLE -> ""
-  )
+    val map = Map[GameStatus, String](
+        P1 -> "Player One",
+        P2 -> "Player Two",
+        END -> "End of Game",
+        IDLE -> ""
+    )
 
 
-  def message(gameStatus: GameStatus): String = {
-    map(gameStatus)
-  }
+    def message(gameStatus: GameStatus): String = {
+        map(gameStatus)
+    }
 
 }
