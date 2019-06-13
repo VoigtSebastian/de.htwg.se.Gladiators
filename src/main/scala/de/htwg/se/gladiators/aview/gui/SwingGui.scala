@@ -20,6 +20,15 @@ class SwingGui(controller: Controller) extends MainFrame {
     listenTo(controller)
     background = java.awt.Color.BLACK
 
+    val shopPanel = new GridPanel(5,1) {
+      val glad1 = new Button("")
+      val glad2 = new Button("")
+      val glad3 = new Button("")
+      val glad4 = new Button("")
+      val glad5 = new Button("")
+      contents += glad1 += glad2 += glad3 += glad4 += glad5
+    }
+
     val gladPanel = new GridPanel(1,3) {
 
       val gladType= new TextField("TY:\nTest")
@@ -108,17 +117,10 @@ class SwingGui(controller: Controller) extends MainFrame {
     }
 
     contents = new BorderPanel {
+      add(shopPanel, BorderPanel.Position.West)
       add(gridPanel, BorderPanel.Position.Center)
       add(infoPanel, BorderPanel.Position.South)
     }
-
-  /*
-    contents = new BorderPanel {
-        add(gridPanel, BorderPanel.Position.Center)
-        add(navPanel, BorderPanel.Position.Center)
-        add(statusline, BorderPanel.Position.South)
-    }
-    */
 
    // def gridPanel : BoxPanel = new BoxPanel(Orientation.NoOrientation)  {
     def gridPanel: GridPanel = new GridPanel(controller.playingField.size, controller.playingField.size) {
@@ -139,13 +141,14 @@ class SwingGui(controller: Controller) extends MainFrame {
     visible = true
 
     menuBar = new MenuBar {
-      contents += new Menu("Menu") {
+        contents += new Menu("Menu") {
         contents += new MenuItem(scala.swing.Action("New Map") {controller.createRandom()} )
         contents += new MenuItem(scala.swing.Action("Exit") {System.exit(0)})
       }
       pack
       visible = true
     }
+
     reactions += {
         case event: GladChanged => redraw()
         case event: PlayingFieldChanged => redraw()
@@ -189,15 +192,12 @@ class SwingGui(controller: Controller) extends MainFrame {
           gladPanel.gladHP.text =  glad.hp.toString
           gladPanel.gladHP.icon = resizedTexture("textures/hp.png", 40, 40)
           gladPanel.gladAP.icon = resizedTexture("textures/ap.png", 40, 40)
-
-
         } else {
           gladPanel.gladType.text = ""
           gladPanel.gladAP.text = ""
           gladPanel.gladHP.text = ""
           gladPanel.gladAP.icon = new ImageIcon("disable")
           gladPanel.gladHP.icon = new ImageIcon("disable")
-
         }
     }
 
@@ -210,6 +210,18 @@ class SwingGui(controller: Controller) extends MainFrame {
         glad <- controller.playingField.gladiatorPlayer2
       } cells(glad.line)(glad.row).setGlad(GameStatus.P2, glad)
 
+    }
+
+    def shopShop: Unit = {
+     // shopPanel.glad1.icon =
+
+
+      //--------------------
+
+      // new map geht nicht
+
+
+      ///----------------
     }
 
     def changePlayerNames(): Unit = {
