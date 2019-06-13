@@ -14,7 +14,7 @@ import scala.swing.event.ButtonClicked
 
 class SwingGui(controller: Controller) extends MainFrame {
 
-    preferredSize = new Dimension(590,800)
+    preferredSize = new Dimension(650,820)
     title = "Gladiators"
     var cells = Array.ofDim[CellPanel](controller.playingField.size, controller.playingField.size)
     listenTo(controller)
