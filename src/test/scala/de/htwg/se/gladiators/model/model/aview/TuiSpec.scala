@@ -23,7 +23,4 @@ class TuiSpec extends WordSpec with Matchers {
   "show a help message" in {
     tui.processInputLine("h")
   }
-  "toggle" in {
-    an [NotImplementedError] should be thrownBy tui.processInputLine("t")
-  }
 }
