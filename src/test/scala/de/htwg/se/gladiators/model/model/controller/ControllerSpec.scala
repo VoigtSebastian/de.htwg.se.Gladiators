@@ -24,10 +24,10 @@ class ControllerSpec extends WordSpec with Matchers {
         val pf = PlayingField()
         val controller = new Controller(pf)
 
-        controller.addGladiator(0, 0, GladiatorType.SWORD)
-        controller.addGladiator(1, 1, GladiatorType.SWORD)
-        controller.addGladiator(2, 2, GladiatorType.SWORD)
-        controller.addGladiator(3, 3, GladiatorType.SWORD)
+        controller.addGladiator(0, 0)
+        controller.addGladiator(1, 1)
+        controller.addGladiator(2, 2)
+        controller.addGladiator(3, 3)
 
         "trying to move to/attack a blocked position" in {
             controller.gameStatus = GameStatus.P1

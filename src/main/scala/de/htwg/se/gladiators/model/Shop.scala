@@ -14,7 +14,7 @@ class Shop(amountGladiatorsInStock: Int) {
         val movementPoints = genMovementPointsByType(gladiatorType)
         val attackPoints = genAttackPointsByType(gladiatorType)
         val healthPoints = genHealthPointsByType(gladiatorType)
-        Gladiator(-1, -1, movementPoints, attackPoints, healthPoints, gladiatorType, Player())
+        Gladiator(-2, -2, movementPoints, attackPoints, healthPoints, gladiatorType, Player())
     }
 
     def genMovementPointsByType(gladiatorType: GladiatorType): Double = {
@@ -27,17 +27,17 @@ class Shop(amountGladiatorsInStock: Int) {
 
     def genHealthPointsByType(gladiatorType: GladiatorType): Double = {
         gladiatorType match {
-            case GladiatorType.TANK => randomNumberInterval(80, 100)
-            case GladiatorType.BOW => randomNumberInterval(30, 50)
-            case GladiatorType.SWORD => randomNumberInterval(50, 80)
+            case GladiatorType.TANK => randomNumberInterval(80, 100).toInt
+            case GladiatorType.BOW => randomNumberInterval(30, 50).toInt
+            case GladiatorType.SWORD => randomNumberInterval(50, 80).toInt
         }
     }
 
     def genAttackPointsByType(gladiatorType: GladiatorType): Double = {
         gladiatorType match {
-            case GladiatorType.TANK => randomNumberInterval(30, 50)
-            case GladiatorType.BOW => randomNumberInterval(50, 80)
-            case GladiatorType.SWORD => randomNumberInterval(50, 80)
+            case GladiatorType.TANK => randomNumberInterval(30, 50).toInt
+            case GladiatorType.BOW => randomNumberInterval(50, 80).toInt
+            case GladiatorType.SWORD => randomNumberInterval(50, 80).toInt
         }
     }
 

@@ -30,7 +30,7 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
             case "t" => controller.toggleUnitStats()
             case "g" =>
                 if (splitinput.size == 3) {
-                    controller.addGladiator(splitinput(1).toInt, splitinput(2).toInt, GladiatorType.SWORD)
+                    controller.addGladiator(splitinput(1).toInt, splitinput(2).toInt)
                     controller.printPlayingField()
                 }
                 else

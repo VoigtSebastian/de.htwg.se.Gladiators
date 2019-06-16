@@ -17,6 +17,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
     var commandStatus: CommandStatus = CommandStatus.IDLE
     var players = Array(Player("Player1"), Player("Player2"))
     var selectedCell: (Int, Int) = (0, 0)
+    var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     val shop = new Shop(10)
 
     def createRandom(): Unit = {
@@ -25,29 +26,55 @@ class Controller(var playingField: PlayingField) extends Publisher {
         publish(new PlayingFieldChanged)
     }
 
-    def getShop(): String = shop.toString
+    def getShop: String = shop.toString
 
 
     def printPlayingField(): String = {
         // notifyObservers
         playingField.toString +
-            GameStatus.message(gameStatus) +
-            "\n"
+          GameStatus.message(gameStatus) +
+          "\n"
     }
 
-    def addGladiator(line: Int, row: Int, gladiatorType: GladiatorType): Unit = {
+    def addGladiator(line: Int, row: Int): Unit = {
         if (playingField.cells(line)(row).cellType == CellType.PALM)
             return
-        if (gameStatus == P1)
-            playingField = playingField.addGladPlayerOne(GladiatorFactory.createGladiator(line, row, gladiatorType, players(gameStatus.id)))
-        else if (gameStatus == P2)
-            playingField = playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, gladiatorType, players(gameStatus.id)))
-        players(gameStatus.id).buyItem(10)
-        //notifyObservers
+
+        if (checkGladiator(line, row))
+            return
+
+        if (selectedGlad.line == -2) {
+            for((g,i) <- shop.stock.zipWithIndex) {
+                if(g == selectedGlad) {
+                    shop.buy(i, players(gameStatus.id))
+                }
+            }
+            selectedGlad.line = line
+            selectedGlad.row = row
+            selectedGlad.player = players(gameStatus.id)
+            if (gameStatus == P1)
+                playingField = playingField.addGladPlayerOne(selectedGlad)
+            else if (gameStatus == P2)
+                playingField = playingField.addGladPlayerTwo(selectedGlad)
+
+        } else {
+            selectedGlad = shop.genGlad()
+            selectedGlad.line = line
+            selectedGlad.row = row
+            selectedGlad.player = players(gameStatus.id)
+            if (gameStatus == P1)
+                playingField = playingField.addGladPlayerOne(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
+            else if (gameStatus == P2)
+                playingField = playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
+        }
+
+       // players(gameStatus.id).buyItem(10)
+
         nextPlayer()
         publish(new GladChanged)
         //playingField
     }
+
 
     def gladiatorInfo(line: Int, row: Int): String = {
         playingField.gladiatorInfo(line: Int, row: Int) + " and is owned by " + players(gameStatus.id)
@@ -141,7 +168,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
             selectedCell = (line, row)
             publish(new CellClicked)
         } else if (commandStatus == CommandStatus.CR) {
-            addGladiator(line, row, GladiatorType.SWORD)
+            addGladiator(line, row)
             commandStatus = CommandStatus.IDLE
             selectedCell = (line, row)
             publish(new GladChanged)
