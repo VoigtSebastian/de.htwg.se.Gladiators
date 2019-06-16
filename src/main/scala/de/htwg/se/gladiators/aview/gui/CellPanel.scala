@@ -8,7 +8,7 @@ import javax.swing.table._
 import scala.swing.event._
 import de.htwg.se.gladiators.controller.{Controller, GameStatus}
 import de.htwg.se.gladiators.controller.GameStatus.GameStatus
-import de.htwg.se.gladiators.model.{Cell, Gladiator}
+import de.htwg.se.gladiators.model.{Cell, Gladiator, GladiatorType}
 import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
 import javax.swing.ImageIcon
 //import de.htwg.se.gladiators.controller.CellChanged
@@ -64,6 +64,7 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
     setCellTexture
     //label.text = getCellText
     repaint
+
   }
 
   def initialize: Unit = {
@@ -110,11 +111,24 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
     //label.text = getGladText(glad)
     if(gameStatus == GameStatus.P1) {
       //cell.background = java.awt.Color.CYAN
-      label.icon = resizedTexture("textures/sandsword_small_p1.png", 70, 70)
+      glad.gladiatorType match {
+        case GladiatorType.SWORD =>
+          label.icon = resizedTexture("textures/sandsword_small_p1.png", 70, 70)
+        case GladiatorType.BOW =>
+          label.icon = resizedTexture("textures/sandbow_small_p1.png", 70, 70)
+        case GladiatorType.TANK =>
+          label.icon = resizedTexture("textures/sandaxe_small_p1.png", 70, 70)
+      }
     } else {
       //cell.background = java.awt.Color.PINK
-      label.icon = resizedTexture("textures/sandsword_small_p2.png", 70, 70)
-
+      glad.gladiatorType match {
+        case GladiatorType.SWORD =>
+          label.icon = resizedTexture("textures/sandsword_small_p2.png", 70, 70)
+        case GladiatorType.BOW =>
+          label.icon = resizedTexture("textures/sandbow_small_p2.png", 70, 70)
+        case GladiatorType.TANK =>
+          label.icon = resizedTexture("textures/sandaxe_small_p2.png", 70, 70)
+      }
     }
   }
 
