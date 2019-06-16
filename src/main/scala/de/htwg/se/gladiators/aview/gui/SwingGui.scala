@@ -157,7 +157,7 @@ class SwingGui(controller: Controller) extends MainFrame {
               if (b == button_c) {
                 controller.changeCommand(CommandStatus.CR)
                 for(i <- controller.createArea(controller.players(controller.gameStatus.id))) {
-                  cells(i._1)(i._2).cell.border = LineBorder(java.awt.Color.GREEN.darker().darker(), 8)
+                  cells(i._1)(i._2).cell.border = LineBorder(java.awt.Color.GREEN.darker().darker(), 7)
                 }
                 refreshStatus
               } else if (b == button_m) {
