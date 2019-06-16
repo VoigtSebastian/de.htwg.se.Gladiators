@@ -56,7 +56,7 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
                     println(controller.gladiatorInfo(splitinput(1).toInt, splitinput(2).toInt))
                 else
                     println("Please enter the information command in the correct format")
-            case "s" => println(controller.getShop())
+            case "s" => println(controller.getShop)
             case "b" => println("Will at some point enable buying units from the shop")
 
             case _=> showMessage(splitinput.toString()) //showMessage(controller.createCommand(input).toString())
