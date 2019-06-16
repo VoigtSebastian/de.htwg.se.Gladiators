@@ -100,9 +100,9 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
 
   def setCellTexture: Unit = {
     myCell.cellType.id match {
-      case 0 => label.icon = resizedTexture("textures/sand_small.png", 70, 70)
-      case 1 => label.icon = resizedTexture("textures/palmsand_small_color.png", 70, 70)
-      case 2 => label.icon = resizedTexture("textures/housesand_small.png", 70, 70)
+      case 0 => label.icon = resizedTexture("textures/sand_small.png", 90, 90)
+      case 1 => label.icon = resizedTexture("textures/palmsand_small_color.png", 68, 68)
+      case 2 => label.icon = resizedTexture("textures/housesand_small.png", 65, 65)
 
     }
   }
@@ -113,21 +113,21 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
       //cell.background = java.awt.Color.CYAN
       glad.gladiatorType match {
         case GladiatorType.SWORD =>
-          label.icon = resizedTexture("textures/sandsword_small_p1.png", 70, 70)
+          label.icon = resizedTexture("textures/sandsword_small_p1.png", 80, 80)
         case GladiatorType.BOW =>
-          label.icon = resizedTexture("textures/sandbow_small_p1.png", 70, 70)
+          label.icon = resizedTexture("textures/sandbow_small_p1.png", 80, 80)
         case GladiatorType.TANK =>
-          label.icon = resizedTexture("textures/sandaxe_small_p1.png", 70, 70)
+          label.icon = resizedTexture("textures/sandaxe_small_p1.png", 80, 80)
       }
     } else {
       //cell.background = java.awt.Color.PINK
       glad.gladiatorType match {
         case GladiatorType.SWORD =>
-          label.icon = resizedTexture("textures/sandsword_small_p2.png", 70, 70)
+          label.icon = resizedTexture("textures/sandsword_small_p2.png", 80, 80)
         case GladiatorType.BOW =>
-          label.icon = resizedTexture("textures/sandbow_small_p2.png", 70, 70)
+          label.icon = resizedTexture("textures/sandbow_small_p2.png", 80, 80)
         case GladiatorType.TANK =>
-          label.icon = resizedTexture("textures/sandaxe_small_p2.png", 70, 70)
+          label.icon = resizedTexture("textures/sandaxe_small_p2.png", 80, 80)
       }
     }
   }

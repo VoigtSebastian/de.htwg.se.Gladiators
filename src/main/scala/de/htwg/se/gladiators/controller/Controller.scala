@@ -21,7 +21,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
     val shop = new Shop(10)
 
     def createRandom(): Unit = {
-        playingField = playingField.createRandom(DIMENSIONS)
+        playingField = playingField.createRandom(playingField.size)
         //notifyObservers
         publish(new PlayingFieldChanged)
     }
@@ -43,7 +43,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
         if (checkGladiator(line, row))
             return
 
-        if (!createArea(players(gameStatus.id)).exists(c => c == (line,row)))
+        if (!baseArea(players(gameStatus.id)).contains((line,row)))
             return
 
         if (selectedGlad.line == -2) {
@@ -78,7 +78,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
         //playingField
     }
 
-    def createArea(player: Player): List[(Int, Int)] = {
+    def baseArea(player: Player): List[(Int, Int)] = {
         var base1: (Int, Int) = (0,0)
         var area: List[(Int, Int)] = Nil
         if(player == players(0)) {

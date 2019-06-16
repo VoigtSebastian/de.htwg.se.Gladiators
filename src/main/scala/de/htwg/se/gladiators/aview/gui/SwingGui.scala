@@ -40,22 +40,22 @@ class SwingGui(controller: Controller) extends MainFrame {
 
       glad1_l.verticalAlignment = Alignment.Top
 
-      add(header, constraints(0,0,1,1,0,0.1))
+      add(header, constraints(0,0,1,1,0, 0.1))
 
-      add(glad1, constraints(0,1, 1, 1, 0, 0.1))
-      add(glad1_l, constraints(0,2))
+      add(glad1, constraints(0,1))
+      add(glad1_l, constraints(0,2, 1, 1, 0, 0.1))
 
-      add(glad2, constraints(0,3, 1, 1, 0, 0.1))
-      add(glad2_l, constraints(0,4))
+      add(glad2, constraints(0,4))
+      add(glad2_l, constraints(0,5, 1,1, 0, 0.1))
 
-      add(glad3, constraints(0,5, 1, 1, 0, 0.1))
-      add(glad3_l, constraints(0,6))
+      add(glad3, constraints(0,7))
+      add(glad3_l, constraints(0,8, 1, 1, 0, 0.1))
 
-      add(glad4, constraints(0,7, 1, 1, 0, 0.1))
-      add(glad4_l, constraints(0,8))
+      add(glad4, constraints(0,10))
+      add(glad4_l, constraints(0,11, 1, 1, 0, 0.1))
 
-      add(glad5, constraints(0,9, 1, 1, 0, 0.1))
-      add(glad5_l, constraints(0,10))
+      add(glad5, constraints(0,13))
+      add(glad5_l, constraints(0,14, 1, 1, 0, 0.1))
 
 
       listenTo(glad1, glad2, glad3, glad4, glad5)
@@ -83,6 +83,7 @@ class SwingGui(controller: Controller) extends MainFrame {
         c.weightx = weightx
         c.weighty = weighty
         c.fill = fill
+        c.anchor = GridBagPanel.Anchor.North
         c
 
       }
@@ -118,7 +119,7 @@ class SwingGui(controller: Controller) extends MainFrame {
       background = java.awt.Color.BLACK
 
       val credits = new TextField(controller.players(controller.gameStatus.id).credits.toString + " $", 1)
-      credits.font = new Font("Verdana", 1, 25)
+      credits.font = new Font("Dialog", 1, 25)
       credits.foreground = java.awt.Color.GREEN.darker().darker()
       credits.horizontalAlignment = Alignment.Center
 
@@ -156,7 +157,7 @@ class SwingGui(controller: Controller) extends MainFrame {
             case ButtonClicked(b) =>
               if (b == button_c) {
                 controller.changeCommand(CommandStatus.CR)
-                for(i <- controller.createArea(controller.players(controller.gameStatus.id))) {
+                for(i <- controller.baseArea(controller.players(controller.gameStatus.id))) {
                   cells(i._1)(i._2).cell.border = LineBorder(java.awt.Color.GREEN.darker().darker(), 7)
                 }
                 refreshStatus
@@ -171,14 +172,15 @@ class SwingGui(controller: Controller) extends MainFrame {
         }
     }
 
-    val infoPanel = new GridPanel(3,1) {
+    val infoPanel = new GridPanel(2,1) {
       contents += gladPanel
       contents += navPanel
-      contents += statusPanel
+      //contents += statusPanel
     }
 
     contents = new BorderPanel {
       add(shopPanel, BorderPanel.Position.West)
+      add(statusPanel, BorderPanel.Position.North)
       add(gridPanel, BorderPanel.Position.Center)
       add(infoPanel, BorderPanel.Position.South)
     }
@@ -204,19 +206,19 @@ class SwingGui(controller: Controller) extends MainFrame {
     menuBar = new MenuBar {
         contents += new Menu("Menu") {
         contents += new MenuItem(scala.swing.Action("New Map") {controller.createRandom()} )
-          contents += new MenuItem(scala.swing.Action("Rename Players") {
+          contents += new MenuItem(scala.swing.Action("Playernames") {
             var nameInput = JOptionPane.showInputDialog(
               null,
               "Player One",
               "Change Names",
-              JOptionPane.WARNING_MESSAGE
+              JOptionPane.QUESTION_MESSAGE
             )
             controller.players(0).name = nameInput
             nameInput = JOptionPane.showInputDialog(
               null,
               "Player Two",
               "Change Names",
-              JOptionPane.WARNING_MESSAGE
+              JOptionPane.QUESTION_MESSAGE
             )
             controller.players(1).name = nameInput
             refreshStatus
@@ -266,9 +268,13 @@ class SwingGui(controller: Controller) extends MainFrame {
     }
 
     def refreshStatus: Unit = {
-        statusPanel.statusline.text = "" + controller.players(controller.gameStatus.id).name
         statusPanel.command.text = "" + CommandStatus.message(controller.commandStatus)
         statusPanel.credits.text = "" + controller.players(controller.gameStatus.id).credits.toString + " $"
+        statusPanel.statusline.text = "" + controller.players(controller.gameStatus.id).name
+        if (controller.gameStatus.id == 0)
+          statusPanel.statusline.foreground = java.awt.Color.BLUE.darker()
+        else
+          statusPanel.statusline.foreground = java.awt.Color.RED.darker()
     }
 
     def refreshGladPanel: Unit = {
