@@ -93,7 +93,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
         area = area ::: (base1._1, base1._2 + 1) :: Nil
 
         for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
-            area.filter(c => c._1 == g.line && c._2 == g.row)
+            area = area.filter(c => !(c._1 == g.line && c._2 == g.row))
         }
         area.filter(c => playingField.cells(c._1)(c._2).cellType != CellType.PALM)
     }
