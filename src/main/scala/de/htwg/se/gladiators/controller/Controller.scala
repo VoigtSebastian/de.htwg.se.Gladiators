@@ -43,6 +43,9 @@ class Controller(var playingField: PlayingField) extends Publisher {
         if (checkGladiator(line, row))
             return
 
+        if (!createArea(players(gameStatus.id)).exists(c => c == (line,row)))
+            return
+
         if (selectedGlad.line == -2) {
             for((g,i) <- shop.stock.zipWithIndex) {
                 if(g == selectedGlad) {
@@ -75,6 +78,25 @@ class Controller(var playingField: PlayingField) extends Publisher {
         //playingField
     }
 
+    def createArea(player: Player): List[(Int, Int)] = {
+        var base1: (Int, Int) = (0,0)
+        var area: List[(Int, Int)] = Nil
+        if(player == players(0)) {
+            base1 = (playingField.size - 1, playingField.size / 2)
+            area = area ::: (base1._1 - 1, base1._2) :: Nil
+        } else if (player == players(1)) {
+            base1 = (0, playingField.size / 2)
+            area = area ::: (base1._1 + 1, base1._2) :: Nil
+        }
+
+        area = area ::: (base1._1, base1._2 - 1) :: Nil
+        area = area ::: (base1._1, base1._2 + 1) :: Nil
+
+        for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
+            area.filter(c => c._1 == g.line && c._2 == g.row)
+        }
+        area.filter(c => playingField.cells(c._1)(c._2).cellType != CellType.PALM)
+    }
 
     def gladiatorInfo(line: Int, row: Int): String = {
         playingField.gladiatorInfo(line: Int, row: Int) + " and is owned by " + players(gameStatus.id)

@@ -50,7 +50,7 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
       case MouseClicked(src, pt, mod, clicks, pops) =>
         //controller.showCandidates(row, column)
         controller.cellSelected(line, row)
-        border = LineBorder(java.awt.Color.MAGENTA.darker(), 4)
+        border = LineBorder(java.awt.Color.MAGENTA.darker().darker(), 6)
 
         //background = java.awt.Color.ORANGE
     }
@@ -78,7 +78,7 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
     var color = java.awt.Color.BLACK
     myCell.cellType.id match {
       case 0 => color = java.awt.Color.YELLOW
-      case 1 => color = java.awt.Color.GREEN
+      case 1 => color = java.awt.Color.YELLOW.darker()
       case 2 =>
         if (line == 0)
           color = java.awt.Color.RED
