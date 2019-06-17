@@ -12,11 +12,13 @@ class MoveGladiatorCommandSpec extends WordSpec with Matchers {
 
   "A MoveGladiatorcommand" when {
     "create a move command" in {
+      controller.gameStatus = GameStatus.P1
       command.doStep
       controller.playingField.gladiatorPlayer1.head.line should be (4)
     }
     "undo that step " in {
       //command.doStep
+      command.doStep
       controller.gameStatus = GameStatus.P1
       command.undoStep
       controller.playingField.gladiatorPlayer1.head.line should be (5)
