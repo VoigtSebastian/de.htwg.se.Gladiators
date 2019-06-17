@@ -205,7 +205,7 @@ class SwingGui(controller: Controller) extends MainFrame {
 
     menuBar = new MenuBar {
         contents += new Menu("Menu") {
-        contents += new MenuItem(scala.swing.Action("New Map") {controller.createRandom()} )
+        contents += new MenuItem(scala.swing.Action("New Map") {controller.createRandom(7, 17)} )
           contents += new MenuItem(scala.swing.Action("Playernames") {
             var nameInput = JOptionPane.showInputDialog(
               null,

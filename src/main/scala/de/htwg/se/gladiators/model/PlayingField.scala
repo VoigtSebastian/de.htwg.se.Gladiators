@@ -78,13 +78,13 @@ case class PlayingField(size: Integer = 7) {
         ret
     }
 
-    def createRandom(length: Int): PlayingField = {
+    def createRandom(length: Int, palmRate: Int = 17): PlayingField = {
         cells = Array.ofDim[Cell](length, length)
         for (i <- cells.indices) {
             for (j <- cells(i).indices) {
                 //cells(i)(j) = Cell(scala.util.Random.nextInt(CellType.maxId - 1));
                 val randInt = scala.util.Random.nextInt(100)
-                if (randInt < 83) {
+                if (randInt >= palmRate) {
                     cells(i)(j) = Cell(CellType.SAND)
                 } else {
                     cells(i)(j) = Cell(CellType.PALM)
