@@ -4,7 +4,7 @@ import de.htwg.se.gladiators.controller.{Controller, GameStatus, MoveGladiatorCo
 import de.htwg.se.gladiators.model.PlayingField
 import org.scalatest.{Matchers, WordSpec}
 
-class MoveGladiatorCommandSpec extends WordSpec with Matchers {
+class UndoManagerSpec extends WordSpec with Matchers {
   var controller = new Controller(PlayingField())
   controller.createRandom(7, 0)
   controller.addGladiator(5, 3)
@@ -13,6 +13,7 @@ class MoveGladiatorCommandSpec extends WordSpec with Matchers {
   "A MoveGladiatorcommand" when {
     "create a move command" in {
       command.doStep
+      controller.gameStatus = GameStatus.P1
       controller.playingField.gladiatorPlayer1.head.line should be (4)
     }
     "undo that step " in {
