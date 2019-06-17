@@ -10,7 +10,6 @@ object CommandStatus extends Enumeration {
     MV -> "Move",
     AT -> "Attack",
     IDLE -> "Waiting"
-
   )
 
   def message(commandStatus: CommandStatus): String = {
