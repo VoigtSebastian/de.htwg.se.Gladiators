@@ -20,8 +20,8 @@ class Controller(var playingField: PlayingField) extends Publisher {
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     val shop = new Shop(10)
 
-    def createRandom(): Unit = {
-        playingField = playingField.createRandom(playingField.size)
+    def createRandom(size: Int, palmRate: Int = 17): Unit = {
+        playingField = playingField.createRandom(size, palmRate)
         //notifyObservers
         publish(new PlayingFieldChanged)
     }
