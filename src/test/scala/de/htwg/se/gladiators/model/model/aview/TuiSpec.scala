@@ -8,6 +8,7 @@ import org.scalatest.{Matchers, WordSpec}
 class TuiSpec extends WordSpec with Matchers {
     val controller = new Controller(PlayingField())
     val tui = new Tui(controller)
+    controller.createRandom(7,0)
     "do nothing on input 'q'" in {
         tui.processInputLine("q")
     }
