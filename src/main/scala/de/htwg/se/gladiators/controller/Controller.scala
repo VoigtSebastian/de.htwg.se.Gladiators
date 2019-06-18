@@ -153,7 +153,8 @@ class Controller(var playingField: PlayingField) extends Publisher {
 
         status match {
             case MoveType.ATTACK => nextPlayer(); playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
-            case MoveType.GOLD => nextPlayer(); mineGold(getGladiator(lineAttack, rowAttack))
+            case MoveType.GOLD => nextPlayer(); mineGold(getGladiator(lineAttack, rowAttack), lineDest, rowDest)
+            case MoveType.MOVE_TO_BASE => nextPlayer(); players(gameStatus.id).baseHP -= getGladiator(lineAttack,rowAttack).ap.toInt; "Base of Player " + players(gameStatus.id).name + " has been attacked"
             case MoveType.LEGAL_MOVE => "Please use the move command to move your units"
             case MoveType.ILLEGAL_MOVE => MoveType.message(status)
             case MoveType.BLOCKED => "You can not attack your own units"
@@ -235,13 +236,16 @@ class Controller(var playingField: PlayingField) extends Publisher {
                             MoveType.INSUFFICIENT_MOVEMENT_POINTS
                     case None =>
                         if (playingField.cells(lineDest)(rowDest).cellType != CellType.PALM)
-                            if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
-                                if (playingField.cells(lineDest)(rowDest).cellType == CellType.GOLD)
-                                    MoveType.GOLD
+                            if (playingField.cells(lineDest)(rowDest).cellType != CellType.BASE)
+                                if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
+                                    if (playingField.cells(lineDest)(rowDest).cellType == CellType.GOLD)
+                                        MoveType.GOLD
+                                    else
+                                        MoveType.LEGAL_MOVE
                                 else
-                                    MoveType.LEGAL_MOVE
+                                    MoveType.INSUFFICIENT_MOVEMENT_POINTS
                             else
-                                MoveType.INSUFFICIENT_MOVEMENT_POINTS
+                                MoveType.MOVE_TO_BASE
                         else
                             MoveType.MOVE_TO_PALM
                 }
@@ -273,13 +277,23 @@ class Controller(var playingField: PlayingField) extends Publisher {
         false
     }
 
-    def mineGold(gladiatorAttack: Gladiator) = {
+    def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int) = {
         var player: Int = 0
         if (gladiatorAttack.player == players(0))
             player = 0
         else
             player = 1
-        players(player).credits += 100
+        players(player).credits += (gladiatorAttack.ap / 10).toInt
+        var randLine = scala.util.Random.nextInt(playingField.size - 4) + 2
+        var randRow = scala.util.Random.nextInt(playingField.size)
+        while (playingField.cells(randLine)(randRow).cellType != CellType.SAND
+                || checkGladiator(randLine, randRow)) {
+            randLine = scala.util.Random.nextInt(playingField.size - 4) + 2
+            randRow = scala.util.Random.nextInt(playingField.size)
+        }
+        playingField.cells(line)(row) = Cell(CellType.SAND)
+        playingField.cells(randLine)(randRow) = Cell(CellType.GOLD)
         gladiatorAttack + "is goldmining"
+
     }
 }
