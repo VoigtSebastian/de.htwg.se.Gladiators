@@ -5,7 +5,6 @@ import de.htwg.se.gladiators.model.PlayingField
 import org.scalatest.{Matchers, WordSpec}
 
 class UndoManagerSpec extends WordSpec with Matchers {
-  {
 
     var controller = new Controller(PlayingField())
     controller.createRandom(7, 0)
