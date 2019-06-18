@@ -153,6 +153,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
 
         status match {
             case MoveType.ATTACK => nextPlayer(); playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
+            case MoveType.GOLD => nextPlayer(); mineGold(getGladiator(lineAttack, rowAttack))
             case MoveType.LEGAL_MOVE => "Please use the move command to move your units"
             case MoveType.ILLEGAL_MOVE => MoveType.message(status)
             case MoveType.BLOCKED => "You can not attack your own units"
@@ -235,7 +236,10 @@ class Controller(var playingField: PlayingField) extends Publisher {
                     case None =>
                         if (playingField.cells(lineDest)(rowDest).cellType != CellType.PALM)
                             if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
-                                MoveType.LEGAL_MOVE
+                                if (playingField.cells(lineDest)(rowDest).cellType == CellType.GOLD)
+                                    MoveType.GOLD
+                                else
+                                    MoveType.LEGAL_MOVE
                             else
                                 MoveType.INSUFFICIENT_MOVEMENT_POINTS
                         else
@@ -267,5 +271,15 @@ class Controller(var playingField: PlayingField) extends Publisher {
                 g.movementPoints >= (Math.abs(lineDest - lineStart) + Math.abs(rowDest - rowStart)))
                 return true
         false
+    }
+
+    def mineGold(gladiatorAttack: Gladiator) = {
+        var player: Int = 0
+        if (gladiatorAttack.player == players(0))
+            player = 0
+        else
+            player = 1
+        players(player).credits += 100
+        gladiatorAttack + "is goldmining"
     }
 }

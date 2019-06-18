@@ -91,6 +91,8 @@ case class PlayingField(size: Integer = 7) {
                 }
             }
         }
+        val goldInd = scala.util.Random.nextInt(length)
+        cells(length / 2)( goldInd) = Cell(CellType.GOLD)
         cells(0)(length / 2) = Cell(CellType.BASE)
         cells(length - 1)(length / 2) = Cell(CellType.BASE)
         this
@@ -155,6 +157,8 @@ case class PlayingField(size: Integer = 7) {
                     PALM_BACKGROUND + " P " + RESET_ANSI_ESCAPE) //-> PALM
                 case '2' => returnValue = returnValue + (TEXT_COLOR_BLACK +
                     BASE_BACKGROUND + " B " + RESET_ANSI_ESCAPE) //-> BASE
+                case '3' => returnValue = returnValue + (TEXT_COLOR_BLACK +
+                  BASE_BACKGROUND + " G " + RESET_ANSI_ESCAPE) //-> BASE
             }
         }
         returnValue
@@ -163,7 +167,7 @@ case class PlayingField(size: Integer = 7) {
     def attack(gladiatorAttack: Gladiator, gladiatorDest: Gladiator): String = {
         gladiatorDest.hp -= gladiatorAttack.ap
         gladiatorAttack + " attackes " + gladiatorDest
-
     }
+
 }
 

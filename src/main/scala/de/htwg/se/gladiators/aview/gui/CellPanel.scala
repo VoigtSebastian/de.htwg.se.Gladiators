@@ -25,7 +25,6 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
   val label =
     new Label {
       //text = cellText(row, column)
-      text = getCellText
       font = new Font("Verdana", 0, 5)
       horizontalAlignment = Alignment.Center
     }
@@ -84,6 +83,7 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
           color = java.awt.Color.RED
         else
           color = java.awt.Color.BLUE.darker()
+      case 3 => color = java.awt.Color.YELLOW.darker()
     }
     color
   }
@@ -94,6 +94,7 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
       case 0 => str = ""
       case 1 => str = ""
       case 2 => str = ""
+
     }
     str
   }
@@ -103,7 +104,7 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
       case 0 => label.icon = resizedTexture("textures/sand_small.png", 90, 90)
       case 1 => label.icon = resizedTexture("textures/palmsand_small_color.png", 68, 68)
       case 2 => label.icon = resizedTexture("textures/housesand_small.png", 65, 65)
-
+      case 3 => label.icon = resizedTexture("textures/hp.png", 65, 65)
     }
   }
 
