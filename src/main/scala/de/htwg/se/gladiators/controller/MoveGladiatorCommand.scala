@@ -8,12 +8,12 @@ class MoveGladiatorCommand(x:Int, y: Int, xDest:Int, yDest: Int, controller: Con
   override def doStep: Unit = {
     xOld = x
     yOld = y
-    xNew = yDest
+    xNew = xDest
     yNew = yDest
     controller.playingField.moveGladiator(x, y, xDest, yDest)
   }
 
   override def undoStep: Unit = controller.moveGladiator(xNew, yNew, xOld, yOld)
-  override def redoStep: Unit = controller.moveGladiator(x, y, xDest, yDest)
+  override def redoStep: Unit = controller.moveGladiator(xOld, yOld, xNew, yNew)
 
 }
