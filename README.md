@@ -20,3 +20,6 @@ TODO:
 - show error messages in GUI (?)
 - random names for gladiators (?) 
 - prevent "jumping" over palms (extends checkmovingpoints)
+
+- (ist ok in swingui in navpanel reactions ?? dass die gui das selber macht mit controller vals)
+- müssten wir funktionsorientierter?? zB keine parameterlosen Unit funktionen sondern zustand objekt wird geliefert

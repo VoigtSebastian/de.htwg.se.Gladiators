@@ -268,6 +268,8 @@ class Controller(var playingField: PlayingField) extends Publisher {
         false
     }
 
+/*
+
     def checkMovementPoints(list: List[Gladiator], lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
         for (g <- list)
             if (g.row == rowStart &&
@@ -276,7 +278,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
                 return true
         false
     }
-
+*/
     def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int) = {
         var player: Int = 0
         if (gladiatorAttack.player == players(0))
@@ -286,8 +288,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
         players(player).credits += (gladiatorAttack.ap / 10).toInt
         var randLine = scala.util.Random.nextInt(playingField.size - 4) + 2
         var randRow = scala.util.Random.nextInt(playingField.size)
-        while (playingField.cells(randLine)(randRow).cellType != CellType.SAND
-                || checkGladiator(randLine, randRow)) {
+        while (!checkCellEmpty(randLine, randRow)){
             randLine = scala.util.Random.nextInt(playingField.size - 4) + 2
             randRow = scala.util.Random.nextInt(playingField.size)
         }
@@ -295,5 +296,12 @@ class Controller(var playingField: PlayingField) extends Publisher {
         playingField.cells(randLine)(randRow) = Cell(CellType.GOLD)
         gladiatorAttack + "is goldmining"
 
+    }
+
+    def checkCellEmpty(line: Int, row: Int): Boolean = {
+        if (playingField.cells(line)(row).cellType == CellType.SAND
+        && !checkGladiator(line, row))
+            return true
+        return false
     }
 }

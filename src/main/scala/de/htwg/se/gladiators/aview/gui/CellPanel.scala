@@ -137,7 +137,7 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
         case GladiatorType.BOW =>
           label.icon = resizedTexture("textures/sandbow_small_p1.png", 80, 80)
         case GladiatorType.TANK =>
-          label.icon = resizedTexture("textures/sandaxe_small_p1.png", 80, 80)
+          label.icon = resizedTexture("textures/sandshield_small_p1.png", 80, 60);
       }
     } else {
       //cell.background = java.awt.Color.PINK
@@ -147,9 +147,13 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
         case GladiatorType.BOW =>
           label.icon = resizedTexture("textures/sandbow_small_p2.png", 80, 80)
         case GladiatorType.TANK =>
-          label.icon = resizedTexture("textures/sandaxe_small_p2.png", 80, 80)
+          label.icon = resizedTexture("textures/sandshield_small_p2.png", 80, 60);
       }
     }
+  }
+
+  def setHighlightedSand() = {
+    label.icon = resizedTexture("textures/sand_small_green.png", 90, 90)
   }
 
   def getGladText(glad: Gladiator) : String = {

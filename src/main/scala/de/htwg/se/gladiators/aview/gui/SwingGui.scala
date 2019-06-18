@@ -160,12 +160,24 @@ class SwingGui(controller: Controller) extends MainFrame {
               if (b == button_c) {
                 controller.changeCommand(CommandStatus.CR)
                 for(i <- controller.baseArea(controller.players(controller.gameStatus.id))) {
-                  cells(i._1)(i._2).cell.border = LineBorder(java.awt.Color.GREEN.darker().darker(), 7)
+                 // cells(i._1)(i._2).cell.border = LineBorder(java.awt.Color.GREEN, 7)
+                  cells(i._1)(i._2).setHighlightedSand()
                 }
                 refreshStatus
               } else if (b == button_m) {
                 controller.changeCommand(CommandStatus.MV)
                 refreshStatus
+                if (controller.checkGladiator(controller.selectedCell._1, controller.selectedCell._2)) {
+                  val selectedGlad: Gladiator = controller.getGladiator(controller.selectedCell._1, controller.selectedCell._2)
+                  for (i <- 0 to cells.length - 1) {
+                    for (j <- 0 to cells.length - 1) {
+                      if (controller.checkMovementPoints(selectedGlad, selectedGlad.line, selectedGlad.row, i, j))
+                        if (controller.checkCellEmpty(i, j))
+                          cells(i)(j).setHighlightedSand()
+                      //cells(i)(j).cell.border = LineBorder(java.awt.Color.GREEN, 7)
+                    }
+                  }
+                }
               } else if (b == button_a) {
                 controller.changeCommand(CommandStatus.AT)
                 refreshStatus
