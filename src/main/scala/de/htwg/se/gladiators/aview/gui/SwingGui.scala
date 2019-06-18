@@ -121,11 +121,13 @@ class SwingGui(controller: Controller) extends MainFrame {
       val credits = new TextField(controller.players(controller.gameStatus.id).credits.toString + " $", 1)
       credits.font = new Font("Dialog", 1, 25)
       credits.foreground = java.awt.Color.GREEN.darker().darker()
+      credits.editable = false
       credits.horizontalAlignment = Alignment.Center
 
       val command = new TextField("", 1)
       command.font = new Font("Verdana", 1, 25)
       command.foreground = java.awt.Color.GREEN.darker().darker()
+      command.editable = false
       command.horizontalAlignment = Alignment.Center
 
       contents += command
@@ -240,7 +242,7 @@ class SwingGui(controller: Controller) extends MainFrame {
     reactions += {
         case event: GladChanged => redraw()
         case event: PlayingFieldChanged => redraw()
-        case event: CellClicked => initialize()
+        case event: CellClicked => redraw()
         case event: GameStatusChanged => refreshStatus
     }
 
@@ -255,7 +257,7 @@ class SwingGui(controller: Controller) extends MainFrame {
         showShop
         repaint
     }
-
+/*
     def initialize(): Unit = {
         for {
             line <- 0 until controller.playingField.size
@@ -266,7 +268,7 @@ class SwingGui(controller: Controller) extends MainFrame {
         refreshGladPanel
         repaint
     }
-
+*/
     def refreshStatus: Unit = {
         statusPanel.command.text = "" + CommandStatus.message(controller.commandStatus)
         statusPanel.credits.text = "" + controller.players(controller.gameStatus.id).credits.toString + " $"
