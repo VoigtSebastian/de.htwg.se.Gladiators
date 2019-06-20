@@ -2,7 +2,7 @@ package de.htwg.se.gladiators.model
 
 import scala.util.matching.Regex
 
-case class PlayingField(size: Integer = 7) {
+case class PlayingField(size: Integer = 9) {
 
     var gladiatorPlayer1: List[Gladiator] = List()
     var gladiatorPlayer2: List[Gladiator] = List()
@@ -167,11 +167,8 @@ case class PlayingField(size: Integer = 7) {
     def attack(gladiatorAttack: Gladiator, gladiatorDest: Gladiator): String = {
         gladiatorDest.hp -= gladiatorAttack.ap
         if (gladiatorDest.hp <= 0) {
-            if (gladiatorPlayer1 contains gladiatorDest) {
-                gladiatorPlayer1 = gladiatorPlayer1.filter(g => g != gladiatorDest)
-            } else {
-                gladiatorPlayer2 = gladiatorPlayer2.filter(g => g != gladiatorDest)
-            }
+            gladiatorPlayer1 = gladiatorPlayer1.filter(g => g != gladiatorDest)
+            gladiatorPlayer2 = gladiatorPlayer2.filter(g => g != gladiatorDest)
         }
         gladiatorAttack + " attackes " + gladiatorDest
     }
