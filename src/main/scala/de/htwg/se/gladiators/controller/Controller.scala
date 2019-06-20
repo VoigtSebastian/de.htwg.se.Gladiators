@@ -175,7 +175,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
         status match {
             case MoveType.ATTACK => nextPlayer(); playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
             case MoveType.GOLD => nextPlayer(); mineGold(getGladiator(lineAttack, rowAttack), lineDest, rowDest)
-            case MoveType.MOVE_TO_BASE =>
+            case MoveType.BASE_ATTACK =>
                 nextPlayer()
                 players(gameStatus.id).baseHP -= getGladiator(lineAttack,rowAttack).ap.toInt
                 if (players(gameStatus.id).baseHP <= 0) {
@@ -183,7 +183,6 @@ class Controller(var playingField: PlayingField) extends Publisher {
                 }
                 "Base of Player " + players(gameStatus.id).name + " has been attacked"
             case MoveType.LEGAL_MOVE => "Please use the move command to move your units"
-            case MoveType.ILLEGAL_MOVE => MoveType.message(status)
             case MoveType.BLOCKED => "You can not attack your own units"
             case _ => MoveType.message(status)
         }
@@ -267,11 +266,12 @@ class Controller(var playingField: PlayingField) extends Publisher {
                                 if (playingField.cells(lineDest)(rowDest).cellType == CellType.BASE)
                                     if (gameStatus == P1 && lineDest == 0)
                                         MoveType.BASE_ATTACK
-                                    else if (gameStatus == P2 && lineDest == DIMENSIONS)
+                                    else if (gameStatus == P2 && lineDest == playingField.size - 1)
                                         MoveType.BASE_ATTACK
                                     else
                                         MoveType.ILLEGAL_MOVE
                                 else if (playingField.cells(lineDest)(rowDest).cellType == CellType.GOLD)
+                                    MoveType.GOLD
                                 else
                                     MoveType.LEGAL_MOVE
                             else
