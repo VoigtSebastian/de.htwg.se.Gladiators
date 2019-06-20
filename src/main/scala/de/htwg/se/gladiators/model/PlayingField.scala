@@ -166,6 +166,13 @@ case class PlayingField(size: Integer = 7) {
 
     def attack(gladiatorAttack: Gladiator, gladiatorDest: Gladiator): String = {
         gladiatorDest.hp -= gladiatorAttack.ap
+        if (gladiatorDest.hp <= 0) {
+            if (gladiatorPlayer1 contains gladiatorDest) {
+                gladiatorPlayer1 = gladiatorPlayer1.filter(g => g != gladiatorDest)
+            } else {
+                gladiatorPlayer2 = gladiatorPlayer2.filter(g => g != gladiatorDest)
+            }
+        }
         gladiatorAttack + " attackes " + gladiatorDest
     }
 

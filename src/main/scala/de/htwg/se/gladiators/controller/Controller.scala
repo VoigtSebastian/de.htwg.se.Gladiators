@@ -12,7 +12,6 @@ import scala.swing.Publisher
 class Controller(var playingField: PlayingField) extends Publisher {
 
     private val undoManager = new UndoManager
-    val DIMENSIONS = 7
     var gameStatus: GameStatus = GameStatus.P1
     var commandStatus: CommandStatus = CommandStatus.IDLE
     var players = Array(Player("Player1"), Player("Player2"))
@@ -20,6 +19,15 @@ class Controller(var playingField: PlayingField) extends Publisher {
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     val shop = new Shop(10)
 
+    def resetGame(): Controller = {
+        playingField = PlayingField()
+        gameStatus = GameStatus.P1
+        commandStatus = CommandStatus.IDLE
+        players = Array(Player("Player1"), Player("Player2"))
+        selectedCell= (0, 0)
+        selectedGlad = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
+        this
+    }
     def createRandom(size: Int, palmRate: Int = 17): Unit = {
         playingField = playingField.createRandom(size, palmRate)
         //notifyObservers
@@ -103,7 +111,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def isCoordinateLegal(line: Int, row: Int): Boolean = {
-        if (line < DIMENSIONS && line >= 0 && row < DIMENSIONS && row >= 0)
+        if (line < playingField.size && line >= 0 && row < playingField.size && row >= 0)
             return true
         false
     }
@@ -154,7 +162,13 @@ class Controller(var playingField: PlayingField) extends Publisher {
         status match {
             case MoveType.ATTACK => nextPlayer(); playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
             case MoveType.GOLD => nextPlayer(); mineGold(getGladiator(lineAttack, rowAttack), lineDest, rowDest)
-            case MoveType.MOVE_TO_BASE => nextPlayer(); players(gameStatus.id).baseHP -= getGladiator(lineAttack,rowAttack).ap.toInt; "Base of Player " + players(gameStatus.id).name + " has been attacked"
+            case MoveType.MOVE_TO_BASE =>
+                nextPlayer()
+                players(gameStatus.id).baseHP -= getGladiator(lineAttack,rowAttack).ap.toInt
+                if (players(gameStatus.id).baseHP <= 0) {
+                    publish(new GameOver)
+                }
+                "Base of Player " + players(gameStatus.id).name + " has been attacked"
             case MoveType.LEGAL_MOVE => "Please use the move command to move your units"
             case MoveType.ILLEGAL_MOVE => MoveType.message(status)
             case MoveType.BLOCKED => "You can not attack your own units"
@@ -279,7 +293,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
         false
     }
 */
-    def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int) = {
+    def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int): String = {
         var player: Int = 0
         if (gladiatorAttack.player == players(0))
             player = 0
@@ -300,8 +314,10 @@ class Controller(var playingField: PlayingField) extends Publisher {
 
     def checkCellEmpty(line: Int, row: Int): Boolean = {
         if (playingField.cells(line)(row).cellType == CellType.SAND
-        && !checkGladiator(line, row))
-            return true
-        return false
+        && !checkGladiator(line, row)) {
+            true
+        } else {
+            false
+        }
     }
 }
