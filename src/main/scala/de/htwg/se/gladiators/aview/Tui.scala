@@ -25,7 +25,7 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
         val splitinput = evalCommand(input)//input.split(" ")
         splitinput(0) match {
             case "q" => showMessage("Exiting")
-            case "n" => controller.createRandom()
+            case "n" => controller.createRandom(controller.playingField.size)
             case "h" => println(generateHelpMessage())
             case "t" => controller.toggleUnitStats()
             case "g" =>
