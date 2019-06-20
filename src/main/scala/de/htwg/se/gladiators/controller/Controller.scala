@@ -152,7 +152,11 @@ class Controller(var playingField: PlayingField) extends Publisher {
         val status: MoveType.MoveType = categorizeMove(lineAttack, rowAttack, lineDest, rowDest)
 
         status match {
-            case MoveType.ATTACK => nextPlayer(); playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
+            case MoveType.ATTACK =>
+                val ret = playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
+                nextPlayer()
+                publish(new GladChanged)
+                ret
             case MoveType.LEGAL_MOVE => "Please use the move command to move your units"
             case MoveType.ILLEGAL_MOVE => MoveType.message(status)
             case MoveType.BLOCKED => "You can not attack your own units"

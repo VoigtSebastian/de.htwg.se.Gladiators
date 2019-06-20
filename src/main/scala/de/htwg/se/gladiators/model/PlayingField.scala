@@ -161,9 +161,18 @@ case class PlayingField(size: Integer = 7) {
     }
 
     def attack(gladiatorAttack: Gladiator, gladiatorDest: Gladiator): String = {
-        gladiatorDest.hp -= gladiatorAttack.ap
-        gladiatorAttack + " attackes " + gladiatorDest
+        var ret = ""
+        val damage = gladiatorAttack.ap
+        val hpAfterAttack = (gladiatorDest.hp - gladiatorAttack.ap).toInt
+        gladiatorDest.hp = hpAfterAttack
+        ret = "Gladiator " + gladiatorDest + " takes " + damage + " damage.\n"
 
+        if (hpAfterAttack <= 0) {
+            ret = ret + "The attacking gladiator defeated the attacked gladiator"
+            gladiatorPlayer1 = gladiatorPlayer1.filter(f => f != gladiatorDest)
+            gladiatorPlayer2 = gladiatorPlayer2.filter(f => f != gladiatorDest)
+        }
+        ret
     }
 }
 
