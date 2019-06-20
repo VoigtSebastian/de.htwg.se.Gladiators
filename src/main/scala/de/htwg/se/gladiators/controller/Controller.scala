@@ -32,8 +32,8 @@ class Controller(var playingField: PlayingField) extends Publisher {
     def printPlayingField(): String = {
         // notifyObservers
         playingField.toString +
-          GameStatus.message(gameStatus) +
-          "\n"
+            GameStatus.message(gameStatus) +
+            "\n"
     }
 
     def addGladiator(line: Int, row: Int): Unit = {
@@ -43,12 +43,12 @@ class Controller(var playingField: PlayingField) extends Publisher {
         if (checkGladiator(line, row))
             return
 
-        if (!baseArea(players(gameStatus.id)).contains((line,row)))
+        if (!baseArea(players(gameStatus.id)).contains((line, row)))
             return
 
         if (selectedGlad.line == -2) {
-            for((g,i) <- shop.stock.zipWithIndex) {
-                if(g == selectedGlad) {
+            for ((g, i) <- shop.stock.zipWithIndex) {
+                if (g == selectedGlad) {
                     shop.buy(i, players(gameStatus.id))
                 }
             }
@@ -71,17 +71,30 @@ class Controller(var playingField: PlayingField) extends Publisher {
                 playingField = playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
         }
 
-       // players(gameStatus.id).buyItem(10)
+        // players(gameStatus.id).buyItem(10)
 
         nextPlayer()
         publish(new GladChanged)
         //playingField
     }
 
+    def buyGladiator(index: Int): String = {
+        val glad = shop.buy(index, players(gameStatus.id))
+        glad match {
+            case Some(g) =>
+                if (gameStatus == P1)
+                    playingField.addGladPlayerOne(g)
+                if (gameStatus == P2)
+                    playingField.addGladPlayerTwo(g)
+                "Gladiator " + g.toString + " added successfully"
+            case None => "Please enter a legal index"
+        }
+    }
+
     def baseArea(player: Player): List[(Int, Int)] = {
-        var base1: (Int, Int) = (0,0)
+        var base1: (Int, Int) = (0, 0)
         var area: List[(Int, Int)] = Nil
-        if(player == players(0)) {
+        if (player == players(0)) {
             base1 = (playingField.size - 1, playingField.size / 2)
             area = area ::: (base1._1 - 1, base1._2) :: Nil
         } else if (player == players(1)) {
@@ -172,7 +185,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
         false
     }
 
-    def getGladiator (line: Int, row: Int): Gladiator = {
+    def getGladiator(line: Int, row: Int): Gladiator = {
         var glad = GladiatorFactory.createGladiator(Int.MinValue, Int.MinValue, GladiatorType.SWORD, players(P1.id))
         for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
             if (g.line == line && g.row == row)
@@ -239,7 +252,15 @@ class Controller(var playingField: PlayingField) extends Publisher {
                     case None =>
                         if (playingField.cells(lineDest)(rowDest).cellType != CellType.PALM)
                             if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
-                                MoveType.LEGAL_MOVE
+                                if (playingField.cells(lineDest)(rowDest).cellType == CellType.BASE)
+                                    if (gameStatus == P1 && lineDest == 0)
+                                        MoveType.BASE_ATTACK
+                                    else if (gameStatus == P2 && lineDest == DIMENSIONS)
+                                        MoveType.BASE_ATTACK
+                                    else
+                                        MoveType.ILLEGAL_MOVE
+                                else
+                                    MoveType.LEGAL_MOVE
                             else
                                 MoveType.INSUFFICIENT_MOVEMENT_POINTS
                         else
