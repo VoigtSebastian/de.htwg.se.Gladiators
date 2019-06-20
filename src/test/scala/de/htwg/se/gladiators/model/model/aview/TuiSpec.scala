@@ -14,13 +14,13 @@ class TuiSpec extends WordSpec with Matchers {
     }
     "create a random playingfield" in {
         tui.processInputLine("n")
-        controller.playingField.getSize should be(7)
+        controller.playingField.getSize should be(9)
     }
 
     "add a gladiator to the playingfield" in {
         controller.gameStatus = GameStatus.P1
-        tui.processInputLine("g,5,3")
-        controller.playingField.gladiatorPlayer1.head.line should be(5)
+        tui.processInputLine("g,7,4")
+        controller.playingField.gladiatorPlayer1.head.line should be(7)
     }
     "show a help message" in {
         tui.processInputLine("h")

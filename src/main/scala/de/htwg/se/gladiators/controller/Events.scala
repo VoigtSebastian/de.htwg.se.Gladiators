@@ -9,3 +9,5 @@ class PlayingFieldChanged extends Event
 class CellClicked extends Event
 
 class GameStatusChanged extends Event
+
+class GameOver extends Event

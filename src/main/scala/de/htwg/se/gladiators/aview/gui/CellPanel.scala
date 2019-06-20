@@ -20,18 +20,27 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
   val cellColor = new Color(224, 224, 255)
   val highlightedCellColor = new Color(192, 255, 192)
 
-  def myCell = controller.cell(line, row)
+  def myCell: Cell = controller.cell(line, row)
 
-  val label =
+  val label: Label =
     new Label {
-      //text = cellText(row, column)
-      text = getCellText
-      font = new Font("Verdana", 0, 5)
-      horizontalAlignment = Alignment.Center
+     // text = getCellText
+      foreground = java.awt.Color.YELLOW
+      font = new Font("Verdana", 1, 10)
+      //horizontalAlignment = Alignment.Center
     }
 
-  val cell = new BorderPanel() {
+  val hp: Label =
+    new Label {
+      text = getCellText
+      foreground = java.awt.Color.WHITE
+      font = new Font("Verdana", 1, 12)
+     // verticalAlignment = Alignment.Bottom
+    }
+
+  val cell: BorderPanel = new BorderPanel() {
     add(label, BorderPanel.Position.Center)
+    add(hp, BorderPanel.Position.South)
     background = getCellColor
     preferredSize = new Dimension(80, 80)
     //background = if (controller.isGiven(row, column)) givenCellColor else cellColor
@@ -62,18 +71,19 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
     cell.background = getCellColor
     cell.border = LineBorder(java.awt.Color.BLACK,3)
     setCellTexture
+    hp.text = getCellText
     //label.text = getCellText
     repaint
 
   }
-
+/*
   def initialize: Unit = {
     setCellTexture
     //label.text = getCellText
     cell.background = getCellColor
     cell.border = LineBorder(java.awt.Color.BLACK,3)
   }
-
+*/
   def getCellColor: java.awt.Color = {
     var color = java.awt.Color.BLACK
     myCell.cellType.id match {
@@ -84,6 +94,7 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
           color = java.awt.Color.RED
         else
           color = java.awt.Color.BLUE.darker()
+      case 3 => color = java.awt.Color.YELLOW.darker()
     }
     color
   }
@@ -93,7 +104,12 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
     myCell.cellType.id match {
       case 0 => str = ""
       case 1 => str = ""
-      case 2 => str = ""
+      case 2 =>
+        if (line == 0)
+          str = controller.players(1).baseHP.toString
+        else
+          str = controller.players(0).baseHP.toString
+      case 3 => str = ""
     }
     str
   }
@@ -102,8 +118,12 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
     myCell.cellType.id match {
       case 0 => label.icon = resizedTexture("textures/sand_small.png", 90, 90)
       case 1 => label.icon = resizedTexture("textures/palmsand_small_color.png", 68, 68)
-      case 2 => label.icon = resizedTexture("textures/housesand_small.png", 65, 65)
-
+      case 2 =>
+        if (line == 0)
+          label.icon = resizedTexture("textures/sandcolloseum_small.png", 80, 60)
+        else
+          label.icon = resizedTexture("textures/sandtemple_small.png", 80, 60)
+      case 3 => label.icon = resizedTexture("textures/sandgold_small.png", 80, 80)
     }
   }
 
@@ -117,7 +137,7 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
         case GladiatorType.BOW =>
           label.icon = resizedTexture("textures/sandbow_small_p1.png", 80, 80)
         case GladiatorType.TANK =>
-          label.icon = resizedTexture("textures/sandaxe_small_p1.png", 80, 80)
+          label.icon = resizedTexture("textures/sandshield_small_p1.png", 80, 80);
       }
     } else {
       //cell.background = java.awt.Color.PINK
@@ -127,9 +147,13 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
         case GladiatorType.BOW =>
           label.icon = resizedTexture("textures/sandbow_small_p2.png", 80, 80)
         case GladiatorType.TANK =>
-          label.icon = resizedTexture("textures/sandaxe_small_p2.png", 80, 80)
+          label.icon = resizedTexture("textures/sandshield_small_p2.png", 80, 80);
       }
     }
+  }
+
+  def setHighlightedSand(): Unit = {
+    label.icon = resizedTexture("textures/sand_small_green.png", 90, 90)
   }
 
   def getGladText(glad: Gladiator) : String = {

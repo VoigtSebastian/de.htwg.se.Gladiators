@@ -2,7 +2,7 @@ package de.htwg.se.gladiators.model
 
 import scala.util.matching.Regex
 
-case class PlayingField(size: Integer = 7) {
+case class PlayingField(size: Integer = 9) {
 
     var gladiatorPlayer1: List[Gladiator] = List()
     var gladiatorPlayer2: List[Gladiator] = List()
@@ -91,6 +91,8 @@ case class PlayingField(size: Integer = 7) {
                 }
             }
         }
+        val goldInd = scala.util.Random.nextInt(length)
+        cells(length / 2)( goldInd) = Cell(CellType.GOLD)
         cells(0)(length / 2) = Cell(CellType.BASE)
         cells(length - 1)(length / 2) = Cell(CellType.BASE)
         this
@@ -155,24 +157,21 @@ case class PlayingField(size: Integer = 7) {
                     PALM_BACKGROUND + " P " + RESET_ANSI_ESCAPE) //-> PALM
                 case '2' => returnValue = returnValue + (TEXT_COLOR_BLACK +
                     BASE_BACKGROUND + " B " + RESET_ANSI_ESCAPE) //-> BASE
+                case '3' => returnValue = returnValue + (TEXT_COLOR_BLACK +
+                  BASE_BACKGROUND + " G " + RESET_ANSI_ESCAPE) //-> BASE
             }
         }
         returnValue
     }
 
     def attack(gladiatorAttack: Gladiator, gladiatorDest: Gladiator): String = {
-        var ret = ""
-        val damage = gladiatorAttack.ap
-        val hpAfterAttack = (gladiatorDest.hp - gladiatorAttack.ap).toInt
-        gladiatorDest.hp = hpAfterAttack
-        ret = "Gladiator " + gladiatorDest + " takes " + damage + " damage.\n"
-
-        if (hpAfterAttack <= 0) {
-            ret = ret + "The attacking gladiator defeated the attacked gladiator"
-            gladiatorPlayer1 = gladiatorPlayer1.filter(f => f != gladiatorDest)
-            gladiatorPlayer2 = gladiatorPlayer2.filter(f => f != gladiatorDest)
+        gladiatorDest.hp -= gladiatorAttack.ap
+        if (gladiatorDest.hp <= 0) {
+            gladiatorPlayer1 = gladiatorPlayer1.filter(g => g != gladiatorDest)
+            gladiatorPlayer2 = gladiatorPlayer2.filter(g => g != gladiatorDest)
         }
-        ret
+        gladiatorAttack + " attackes " + gladiatorDest
     }
+
 }
 
