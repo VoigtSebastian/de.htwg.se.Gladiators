@@ -19,6 +19,15 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
     val TEXT_COLOR_BLACK = "\33[97m"
     val RESET_ANSI_ESCAPE = "\033[0m"
 
+    val WRONG_FORMAT: String = "Please enter the create command in the correct format, press h to get help"
+    val HELP_MESSAGE: String = "Gladiators instructions:\n-description-\n" +
+        TEXT_COLOR_BLACK + ""  + SAND_BACKGROUND + " color of a sand tile" + RESET_ANSI_ESCAPE + "\n" +
+        TEXT_COLOR_BLACK + ""  + PALM_BACKGROUND + " color of a palm tile" + RESET_ANSI_ESCAPE + "\n" +
+        TEXT_COLOR_BLACK + ""  + BASE_BACKGROUND + " color of a base tile" + RESET_ANSI_ESCAPE + "\n" +
+        TEXT_COLOR_BLACK + ""  + UNIT_BACKGROUND +
+        " color of a unit tile (S = Sword unit, B = Bow unit, T = Tank unit" +
+        RESET_ANSI_ESCAPE + "\n\nYour current playingField!"
+
 
     def processInputLine(input: String): Unit = {
 
@@ -26,7 +35,7 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
         splitinput(0) match {
             case "q" => showMessage("Exiting")
             case "n" => controller.createRandom(controller.playingField.size)
-            case "h" => println(generateHelpMessage())
+            case "h" => println(HELP_MESSAGE)
             case "t" => controller.toggleUnitStats()
             case "g" =>
                 if (splitinput.size == 3) {
@@ -34,13 +43,13 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
                     controller.printPlayingField()
                 }
                 else
-                    println("Please enter the create command in the correct format")
+                    println(WRONG_FORMAT)
 
             case "m" =>
                 if (splitinput.size == 5)
                     println(controller.moveGladiator(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt,splitinput(4).toInt))
                 else
-                    println("Please enter the move command in the correct format")
+                    println(WRONG_FORMAT)
 
             case "u" => controller.undoGladiator()
             case "r" => controller.redoGladiator()
@@ -49,16 +58,20 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
                 if (splitinput.size == 5)
                     println(controller.attack(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt, splitinput(4).toInt))
                 else
-                    println("Please enter the attack command in the correct format")
+                    println(WRONG_FORMAT)
 
             case "i" =>
                 if (splitinput.size == 3)
                     println(controller.gladiatorInfo(splitinput(1).toInt, splitinput(2).toInt))
                 else
-                    println("Please enter the information command in the correct format")
+                    println(WRONG_FORMAT)
             case "s" => println(controller.getShop)
-            case "b" => println("Will at some point enable buying units from the shop")
-
+            case "b" =>
+                if (splitinput.size == 2)
+                    println(controller.buyGladiator(splitinput(1).toInt))
+                    //TODO: Position for glad
+                else
+                    println(WRONG_FORMAT)
             case _=> showMessage(splitinput.toString()) //showMessage(controller.createCommand(input).toString())
         }
         //controller.nextPlayer()
@@ -79,16 +92,6 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
 
     def evalCommand(input: String): Vector[String] = {
         REGEX_COMMANDS.findAllIn(input).toVector
-    }
-
-    def generateHelpMessage():String = {
-        "Gladiators instructions:\n-description-\n" +
-            TEXT_COLOR_BLACK + ""  + SAND_BACKGROUND + " color of a sand tile" + RESET_ANSI_ESCAPE + "\n" +
-            TEXT_COLOR_BLACK + ""  + PALM_BACKGROUND + " color of a palm tile" + RESET_ANSI_ESCAPE + "\n" +
-            TEXT_COLOR_BLACK + ""  + BASE_BACKGROUND + " color of a base tile" + RESET_ANSI_ESCAPE + "\n" +
-            TEXT_COLOR_BLACK + ""  + UNIT_BACKGROUND +
-            " color of a unit tile (S = Sword unit, B = Bow unit, T = Tank unit" +
-            RESET_ANSI_ESCAPE + "\n\nYour current playingField!"
     }
 }
 
