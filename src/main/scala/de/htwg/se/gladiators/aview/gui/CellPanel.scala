@@ -20,9 +20,9 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
   val cellColor = new Color(224, 224, 255)
   val highlightedCellColor = new Color(192, 255, 192)
 
-  def myCell = controller.cell(line, row)
+  def myCell: Cell = controller.cell(line, row)
 
-  val label =
+  val label: Label =
     new Label {
      // text = getCellText
       foreground = java.awt.Color.YELLOW
@@ -30,7 +30,7 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
       //horizontalAlignment = Alignment.Center
     }
 
-  val hp =
+  val hp: Label =
     new Label {
       text = getCellText
       foreground = java.awt.Color.WHITE
@@ -38,7 +38,7 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
      // verticalAlignment = Alignment.Bottom
     }
 
-  val cell = new BorderPanel() {
+  val cell: BorderPanel = new BorderPanel() {
     add(label, BorderPanel.Position.Center)
     add(hp, BorderPanel.Position.South)
     background = getCellColor
@@ -137,7 +137,7 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
         case GladiatorType.BOW =>
           label.icon = resizedTexture("textures/sandbow_small_p1.png", 80, 80)
         case GladiatorType.TANK =>
-          label.icon = resizedTexture("textures/sandshield_small_p1.png", 80, 60);
+          label.icon = resizedTexture("textures/sandshield_small_p1.png", 80, 80);
       }
     } else {
       //cell.background = java.awt.Color.PINK
@@ -147,12 +147,12 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
         case GladiatorType.BOW =>
           label.icon = resizedTexture("textures/sandbow_small_p2.png", 80, 80)
         case GladiatorType.TANK =>
-          label.icon = resizedTexture("textures/sandshield_small_p2.png", 80, 60);
+          label.icon = resizedTexture("textures/sandshield_small_p2.png", 80, 80);
       }
     }
   }
 
-  def setHighlightedSand() = {
+  def setHighlightedSand(): Unit = {
     label.icon = resizedTexture("textures/sand_small_green.png", 90, 90)
   }
 

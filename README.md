@@ -11,10 +11,11 @@ The corresponding lecture is held by Prof. Marco Boger.
 The goal of this assignment is to build a game which works in a Terminal and a GUI.
 
 TODO:
-- gladiators need to be closer to attack ?? (exception: bow)
-- highlighting legal cells for move command
+- gladiators need to be closer to attack ?? (exception: bow) / move to dest field when attack ??
+- highlighting legal cells for attack command?
+- FERTIG highlighting legal cells for move command
 - FERTIG attack player base 
-- delete gladiator if hp < 0
+- FERTIG delete gladiator if hp < 0
 - FERTIG celltype gold mine (earn money)
 - possibility to move multiple gladiators each turn (?)
 - show error messages in GUI (?)
