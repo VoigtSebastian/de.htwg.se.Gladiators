@@ -3,7 +3,7 @@ package de.htwg.se.gladiators.aview.gui
 import java.awt.GridBagConstraints
 
 import de.htwg.se.gladiators.controller._
-import de.htwg.se.gladiators.model.{Gladiator, GladiatorType}
+import de.htwg.se.gladiators.model.{CellType, Gladiator, GladiatorType}
 import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
 import javax.swing.SpringLayout.Constraints
 import javax.swing._
@@ -169,7 +169,7 @@ class SwingGui(var controller: Controller) extends MainFrame {
         reactions += {
             case ButtonClicked(b) =>
               if (b == button_c) {
-                controller.changeCommand(CommandStatus.CR)
+                controller = controller.changeCommand(CommandStatus.CR)
                 for (i <- controller.baseArea(controller.players(controller.gameStatus.id))) {
                   // cells(i._1)(i._2).cell.border = LineBorder(java.awt.Color.GREEN, 7)
                   cells(i._1)(i._2).setHighlightedSand()
@@ -177,7 +177,7 @@ class SwingGui(var controller: Controller) extends MainFrame {
                 refreshStatus
 
               } else if (b == button_m) {
-                controller.changeCommand(CommandStatus.MV)
+                controller = controller.changeCommand(CommandStatus.MV)
                 refreshStatus
                 if (controller.checkGladiator(controller.selectedCell._1, controller.selectedCell._2)) {
                   val selectedGlad: Gladiator = controller.getGladiator(controller.selectedCell._1, controller.selectedCell._2)
@@ -192,22 +192,24 @@ class SwingGui(var controller: Controller) extends MainFrame {
                     }
                   }
                 }
-                /*
-                if (controller.checkGladiator(controller.selectedCell._1, controller.selectedCell._2)) {
-                  val selectedGlad: Gladiator = controller.getGladiator(controller.selectedCell._1, controller.selectedCell._2)
-                  for {
-                    i <- 0 until controller.playingField.size
-                    j <-  0 until controller.playingField.size
-                  } {
-                      if (controller.checkMovementPoints(selectedGlad, selectedGlad.line, selectedGlad.row, i, j))
-                        if (controller.checkCellEmpty(i, j))
-                          cells(i)(j).setHighlightedSand()
-                  }
-                  */
-
               } else if (b == button_a) {
-                  controller.changeCommand(CommandStatus.AT)
+                  controller = controller.changeCommand(CommandStatus.AT)
                   refreshStatus
+                  if (controller.checkGladiator(controller.selectedCell._1, controller.selectedCell._2)) {
+                    val selectedGlad: Gladiator = controller.getGladiator(controller.selectedCell._1, controller.selectedCell._2)
+                    for {
+                      i <- 0 until controller.playingField.size
+                      j <- 0 until controller.playingField.size
+                    } {
+                      if (controller.checkMovementPointsAttack(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)) {
+                        if (cells(i)(j).myCell.cellType != CellType.PALM
+                              && !(i == selectedGlad.line && j == selectedGlad.row)
+                              && !((i, j) == controller.getBase(controller.players(controller.gameStatus.id)))) {
+                          cells(i)(j).cell.border = LineBorder(java.awt.Color.RED.darker().darker(), 6)
+                        }
+                      }
+                    }
+                  }
                 }
               }
         }
@@ -307,18 +309,7 @@ class SwingGui(var controller: Controller) extends MainFrame {
         showShop
         repaint
     }
-/*
-    def initialize(): Unit = {
-        for {
-            line <- 0 until controller.playingField.size
-            row <- 0 until controller.playingField.size
-        } cells(line)(row).initialize
-        showGladiators
-        refreshStatus
-        refreshGladPanel
-        repaint
-    }
-*/
+
     def refreshStatus: Unit = {
         statusPanel.command.text = "" + CommandStatus.message(controller.commandStatus)
         statusPanel.credits.text = "" + controller.players(controller.gameStatus.id).credits.toString + " $"
@@ -358,28 +349,21 @@ class SwingGui(var controller: Controller) extends MainFrame {
     }
 
     def showShop: Unit = {
-      // shopPanel.glad1.icon
       for ((g, i) <- controller.shop.stock.zipWithIndex) {
         i match {
           case 0 => shopPanel.glad1.icon = getGladIcon(g)
-            shopPanel.glad1_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "</body></html>"
+            shopPanel.glad1_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
           case 1 => shopPanel.glad2.icon = getGladIcon(g)
-            shopPanel.glad2_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "</body></html>"
+            shopPanel.glad2_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
           case 2 => shopPanel.glad3.icon = getGladIcon(g)
-            shopPanel.glad3_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "</body></html>"
+            shopPanel.glad3_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
           case 3 => shopPanel.glad4.icon = getGladIcon(g)
-            shopPanel.glad4_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "</body></html>"
+            shopPanel.glad4_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
           case 4 => shopPanel.glad5.icon = getGladIcon(g)
-            shopPanel.glad5_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "</body></html>"
+            shopPanel.glad5_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
           case _ =>
         }
       }
-      //--------------------
-
-      // new map geht nicht
-
-
-      ///----------------
     }
 
     def getGladIcon(glad: Gladiator): ImageIcon = {
