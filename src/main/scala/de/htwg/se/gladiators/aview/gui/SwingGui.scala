@@ -23,6 +23,8 @@ class SwingGui(var controller: Controller) extends MainFrame {
 
     val shopPanel = new GridBagPanel()  {
       preferredSize = new Dimension(80, 400)
+      background = java.awt.Color.WHITE
+
       val header = new Label("SHOP")
 
       val glad1 = new Button("")
@@ -111,12 +113,13 @@ class SwingGui(var controller: Controller) extends MainFrame {
       //gladAP.background = java.awt.Color.CYAN.darker().darker().darker()
       gladAP.foreground = java.awt.Color.BLACK
       gladAP.horizontalAlignment = Alignment.Center
-
+      gladAP.background = java.awt.Color.WHITE
       val gladHP= new Button("")
       gladHP.font = new Font("Verdana", 1, 20)
       //gladHP.background = java.awt.Color.CYAN.darker().darker().darker()
       gladHP.foreground = java.awt.Color.BLACK
       gladHP.horizontalAlignment = Alignment.Center
+      gladHP.background = java.awt.Color.WHITE
 
      // contents += gladType
       contents += gladHP
@@ -127,13 +130,14 @@ class SwingGui(var controller: Controller) extends MainFrame {
       statusline.font = new Font("Verdana", 1, 30)
       statusline.horizontalAlignment = Alignment.Center
       statusline.editable = false
-      background = java.awt.Color.BLACK
+      statusline.background = java.awt.Color.WHITE
 
       var credits = new TextField(controller.players(controller.gameStatus.id).credits.toString + " $", 1)
       credits.font = new Font("Dialog", 1, 25)
       credits.foreground = java.awt.Color.GREEN.darker().darker()
       credits.editable = false
       credits.horizontalAlignment = Alignment.Center
+      credits.background = java.awt.Color.WHITE
 
       var command = new TextField("", 1)
       command.font = new Font("Verdana", 1, 25)
@@ -141,8 +145,8 @@ class SwingGui(var controller: Controller) extends MainFrame {
       command.editable = false
       command.horizontalAlignment = Alignment.Center
 
-      var next = new Button("next")
-      next.font = new Font("Verdana", 2, 30)
+      var next = new Button("NEXT")
+      next.font = new Font("Verdana", 1, 30)
       next.background = java.awt.Color.WHITE
       listenTo(next)
       reactions += {
@@ -155,6 +159,8 @@ class SwingGui(var controller: Controller) extends MainFrame {
       contents += statusline
       contents += credits
       contents += next
+
+
     }
 
     val navPanel = new GridPanel(1,3) {
