@@ -61,6 +61,7 @@ case class Shop(amountGladiatorsInStock: Int) {
         stock = stock.filter(f => f != glad)
         stock = stock ::: genGlad() :: Nil
         glad.player = player
+        player.boughtGladiator = true
         Option(glad)
     }
 
