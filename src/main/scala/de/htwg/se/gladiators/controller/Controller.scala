@@ -163,7 +163,10 @@ class Controller(var playingField: PlayingField) extends Publisher {
             case MoveType.ATTACK => MoveType.message(status) //TODO: Change this behaviour?
             case MoveType.LEGAL_MOVE =>
                 undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
-                //nextPlayer()
+                getGladiatorOption(lineDest, rowDest) match {
+                    case Some(g) => g.moved = true
+                    case None =>
+                }
                 publish(new GladChanged)
                 "Move successful!"
             case _ => MoveType.message(status)
@@ -201,13 +204,16 @@ class Controller(var playingField: PlayingField) extends Publisher {
 
         status match {
             case MoveType.ATTACK =>
-                nextPlayer()
-                playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
+                val ret = playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
+                getGladiatorOption(lineAttack, rowAttack) match {
+                    case Some(g) =>
+                        g.moved = true
+                        ret
+                    case None => "Something went really wrong in attack"
+                }
             case MoveType.GOLD =>
-                nextPlayer()
                 mineGold(getGladiator(lineAttack, rowAttack), lineDest, rowDest)
             case MoveType.BASE_ATTACK=>
-                //nextPlayer()
                 players(gameStatus.id).baseHP -= getGladiator(lineAttack, rowAttack).ap.toInt
                 if (players(gameStatus.id).baseHP <= 0) {
                     publish(new GameOver)
