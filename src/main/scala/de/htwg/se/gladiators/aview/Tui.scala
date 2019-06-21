@@ -7,7 +7,7 @@ import de.htwg.se.gladiators.util.Observer
 
 import scala.swing.Reactor
 
-class Tui (controller: Controller) extends Reactor with ShowMessage {
+class Tui (controller: Controller) extends Reactor {
 
     //controller.add(this)
     listenTo(controller)
@@ -19,21 +19,21 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
     val TEXT_COLOR_BLACK = "\33[97m"
     val RESET_ANSI_ESCAPE = "\033[0m"
 
-    val WRONG_FORMAT: String = "Please enter the create command in the correct format, press h to get help"
+    val CORRECT_FORMAT_MESSAGE = "Please use the correct format, press h to get help.\n"
     val HELP_MESSAGE: String = "Gladiators instructions:\n-description-\n" +
         TEXT_COLOR_BLACK + ""  + SAND_BACKGROUND + " color of a sand tile" + RESET_ANSI_ESCAPE + "\n" +
         TEXT_COLOR_BLACK + ""  + PALM_BACKGROUND + " color of a palm tile" + RESET_ANSI_ESCAPE + "\n" +
         TEXT_COLOR_BLACK + ""  + BASE_BACKGROUND + " color of a base tile" + RESET_ANSI_ESCAPE + "\n" +
         TEXT_COLOR_BLACK + ""  + UNIT_BACKGROUND +
         " color of a unit tile (S = Sword unit, B = Bow unit, T = Tank unit" +
-        RESET_ANSI_ESCAPE + "\n\nYour current playingField!"
+        RESET_ANSI_ESCAPE + "\n\n"
 
 
     def processInputLine(input: String): Unit = {
 
         val splitinput = evalCommand(input)//input.split(" ")
         splitinput(0) match {
-            case "q" => showMessage("Exiting")
+            case "q" => println("Exiting")
             case "n" => controller.createRandom(controller.playingField.size)
             case "h" => println(HELP_MESSAGE)
             case "t" => controller.toggleUnitStats()
@@ -43,13 +43,13 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
                     controller.printPlayingField()
                 }
                 else
-                    println(WRONG_FORMAT)
+                    println(CORRECT_FORMAT_MESSAGE)
 
             case "m" =>
                 if (splitinput.size == 5)
                     println(controller.moveGladiator(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt,splitinput(4).toInt))
                 else
-                    println(WRONG_FORMAT)
+                    println(CORRECT_FORMAT_MESSAGE)
 
             case "u" => controller.undoGladiator()
             case "r" => controller.redoGladiator()
@@ -58,28 +58,21 @@ class Tui (controller: Controller) extends Reactor with ShowMessage {
                 if (splitinput.size == 5)
                     println(controller.attack(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt, splitinput(4).toInt))
                 else
-                    println(WRONG_FORMAT)
+                    println(CORRECT_FORMAT_MESSAGE)
 
             case "i" =>
                 if (splitinput.size == 3)
                     println(controller.gladiatorInfo(splitinput(1).toInt, splitinput(2).toInt))
                 else
-                    println(WRONG_FORMAT)
+                    println(CORRECT_FORMAT_MESSAGE)
             case "s" => println(controller.getShop)
-            case "b" =>
-                if (splitinput.size == 2)
-                    println(controller.buyGladiator(splitinput(1).toInt))
-                    //TODO: Position for glad
-                else
-                    println(WRONG_FORMAT)
-            case _=> showMessage(splitinput.toString()) //showMessage(controller.createCommand(input).toString())
+            case "b" => println(HELP_MESSAGE)
+                //if (splitinput.length == 4)
+
+            case _=> println(splitinput.toString()) //showMessage(controller.createCommand(input).toString())
         }
         //controller.nextPlayer()
     }
-
-    override def showMessage(message: String): Unit = super.showMessage(message); println("")
-
-    //override def update: Unit = print(controller.printPlayingField())
 
     reactions += {
         case event: PlayingFieldChanged => printPf()
