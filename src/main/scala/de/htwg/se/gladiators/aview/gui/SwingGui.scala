@@ -122,7 +122,7 @@ class SwingGui(var controller: Controller) extends MainFrame {
       contents += gladHP
       contents += gladAP
     }
-    var statusPanel = new GridPanel(1, 3) {
+    var statusPanel = new GridPanel(1, 4) {
       var statusline = new TextField(controller.gameStatus.toString, 1)
       statusline.font = new Font("Verdana", 1, 30)
       statusline.horizontalAlignment = Alignment.Center
@@ -141,9 +141,20 @@ class SwingGui(var controller: Controller) extends MainFrame {
       command.editable = false
       command.horizontalAlignment = Alignment.Center
 
-      contents += command
+      var next = new Button("next")
+      next.font = new Font("Verdana", 2, 30)
+      next.background = java.awt.Color.WHITE
+      listenTo(next)
+      reactions += {
+        case ButtonClicked(b) =>
+          if(b == next)
+            controller.endTurn()
+      }
+
+//      contents += command
       contents += statusline
       contents += credits
+      contents += next
     }
 
     val navPanel = new GridPanel(1,3) {
