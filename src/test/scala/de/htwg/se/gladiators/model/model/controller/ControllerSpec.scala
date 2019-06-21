@@ -7,7 +7,7 @@ import org.scalatest.{Matchers, WordSpec}
 
 class ControllerSpec extends WordSpec with Matchers {
     "A controller" when {
-        val controller = new Controller(PlayingField())
+        val controller = new Controller(PlayingField(7))
         val xLegal = 5
         val yLegal = 5
 
@@ -21,7 +21,7 @@ class ControllerSpec extends WordSpec with Matchers {
 
 
     "A controller " when {
-        val pf = PlayingField()
+        val pf = PlayingField(7)
         val controller = new Controller(pf)
         controller.createRandom(7, 0)
 
@@ -42,7 +42,7 @@ class ControllerSpec extends WordSpec with Matchers {
         }
     }
     "A controller" when {
-        val controller = new Controller(PlayingField())
+        val controller = new Controller(PlayingField(7))
         controller.createRandom(7, 0)
 
         "add a default gladiator" in {
