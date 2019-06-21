@@ -30,6 +30,14 @@ class Controller(var playingField: PlayingField) extends Publisher {
         this
     }
 
+    def endTurn (): String = {
+        playingField.resetGladiatorMoved()
+        players(gameStatus.id).boughtGladiator = false
+        nextPlayer()
+        publish(new GladChanged)
+        "Turn successfully ended"
+    }
+
     def createRandom(size: Int, palmRate: Int = 17): Unit = {
         playingField = playingField.createRandom(size, palmRate)
         //notifyObservers
@@ -37,10 +45,6 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def getShop: String = shop.toString
-
-    def buyGladiator(index: Int): String = {
-        ""
-    }
 
     def printPlayingField(): String = {
         // notifyObservers
@@ -50,6 +54,9 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def addGladiator(line: Int, row: Int): Unit = {
+        if (players(gameStatus.id).boughtGladiator)
+            return
+
         if (playingField.cells(line)(row).cellType == CellType.PALM)
             return
 
@@ -83,24 +90,31 @@ class Controller(var playingField: PlayingField) extends Publisher {
             else if (gameStatus == P2)
                 playingField = playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
         }
-
-        // players(gameStatus.id).buyItem(10)
-
-        nextPlayer()
-        publish(new GladChanged)
-        //playingField
+        endTurn() //TODO: Implement a button for endTurn() in GUI, then this line will unnecessary
     }
 
-    def buyGladiator(index: Int): String = {
+    def buyGladiator(index: Int, line: Int, row: Int): String = {
+        if (players(gameStatus.id).boughtGladiator)
+            return "You already purchased a unit this turn"
+
+        if (playingField.cells(line)(row).cellType == CellType.PALM)
+            return "You can not create units on palm"
+
+        if (!baseArea(players(gameStatus.id)).contains((line, row)))
+            return "You can not create a unit outside you base area"
+
         val glad = shop.buy(index, players(gameStatus.id))
         glad match {
             case Some(g) =>
+                g.line = line
+                g.row = row
                 if (gameStatus == P1)
                     playingField.addGladPlayerOne(g)
                 if (gameStatus == P2)
                     playingField.addGladPlayerTwo(g)
+                publish(new GladChanged)
                 "Gladiator " + g.toString + " added successfully"
-            case None => "Please enter a legal index"
+            case None => "Please enter a legal index and make sure that you have enough credits!"
         }
     }
 
@@ -149,7 +163,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
             case MoveType.ATTACK => MoveType.message(status) //TODO: Change this behaviour?
             case MoveType.LEGAL_MOVE =>
                 undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
-                nextPlayer()
+                //nextPlayer()
                 publish(new GladChanged)
                 "Move successful!"
             case _ => MoveType.message(status)
@@ -186,10 +200,14 @@ class Controller(var playingField: PlayingField) extends Publisher {
         val status: MoveType.MoveType = categorizeMove(lineAttack, rowAttack, lineDest, rowDest)
 
         status match {
-            case MoveType.ATTACK => nextPlayer(); playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
-            case MoveType.GOLD => nextPlayer(); mineGold(getGladiator(lineAttack, rowAttack), lineDest, rowDest)
-            case MoveType.BASE_ATTACK=>
+            case MoveType.ATTACK =>
                 nextPlayer()
+                playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
+            case MoveType.GOLD =>
+                nextPlayer()
+                mineGold(getGladiator(lineAttack, rowAttack), lineDest, rowDest)
+            case MoveType.BASE_ATTACK=>
+                //nextPlayer()
                 players(gameStatus.id).baseHP -= getGladiator(lineAttack, rowAttack).ap.toInt
                 if (players(gameStatus.id).baseHP <= 0) {
                     publish(new GameOver)
@@ -265,6 +283,8 @@ class Controller(var playingField: PlayingField) extends Publisher {
             case Some(gladiatorStart) =>
                 if (gladiatorStart.player != players(gameStatus.id))
                     return MoveType.UNIT_NOT_OWNED_BY_PLAYER
+                if (gladiatorStart.moved)
+                    return MoveType.ALREADY_MOVED
 
                 gladDestOption match {
                     case Some(gladiatorDest) =>

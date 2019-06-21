@@ -4,10 +4,6 @@ import scala.util.matching.Regex
 
 case class PlayingField(size: Integer = 9) {
 
-    //A symmetrical playingField looks nicer
-    if (size % 2 == 0)
-        size += 1
-
     var gladiatorPlayer1: List[Gladiator] = List()
     var gladiatorPlayer2: List[Gladiator] = List()
     var cells: Array[Array[Cell]] = Array.ofDim[Cell](3, 3)
@@ -65,6 +61,11 @@ case class PlayingField(size: Integer = 9) {
                 }
         }
         ret
+    }
+
+    def resetGladiatorMoved (): Unit = {
+        for (glad <- gladiatorPlayer1 ::: gladiatorPlayer2)
+            glad.moved = false
     }
 
     def formatPlayingFieldAddStats(playingField: String): String = {
