@@ -66,8 +66,9 @@ class Tui (controller: Controller) extends Reactor {
                 else
                     println(CORRECT_FORMAT_MESSAGE)
             case "s" => println(controller.getShop)
-            case "b" => println(HELP_MESSAGE)
+            case "b" => println(controller.buyGladiator(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt))
                 //if (splitinput.length == 4)
+            case "e" => println(controller.endTurn())
 
             case _=> println(splitinput.toString()) //showMessage(controller.createCommand(input).toString())
         }

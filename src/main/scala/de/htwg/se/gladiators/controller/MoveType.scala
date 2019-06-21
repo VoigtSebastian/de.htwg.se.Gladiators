@@ -11,7 +11,8 @@ object MoveType extends Enumeration {
         INSUFFICIENT_MOVEMENT_POINTS,
         UNIT_NOT_EXISTING,
         GOLD,
-        BASE_ATTACK = Value
+        BASE_ATTACK,
+        ALREADY_MOVED = Value
 
     val map = Map[MoveType, String](
         LEGAL_MOVE -> "This move is legal",
@@ -23,7 +24,8 @@ object MoveType extends Enumeration {
         INSUFFICIENT_MOVEMENT_POINTS -> "The unit you are trying to move does not have enough movementPoints to move this far",
         UNIT_NOT_EXISTING -> "There is no unit at this coordinate",
         GOLD -> "Mining Gold",
-        BASE_ATTACK -> "This move represents a base attack"
+        BASE_ATTACK -> "This move represents a base attack",
+        ALREADY_MOVED -> "This Gladiator already moved"
     )
 
 
