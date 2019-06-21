@@ -12,7 +12,6 @@ object GameStatus extends Enumeration {
         IDLE -> ""
     )
 
-
     def message(gameStatus: GameStatus): String = {
         map(gameStatus)
     }

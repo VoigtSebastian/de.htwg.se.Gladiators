@@ -6,7 +6,7 @@ import org.scalatest.{Matchers, WordSpec}
 
 class MoveGladiatorCommandSpec extends WordSpec with Matchers {
 
-  var controller = new Controller(PlayingField())
+  var controller = new Controller(PlayingField(7))
   controller.createRandom(7, 0)
   controller.addGladiator(5, 3)
   val command = new MoveGladiatorCommand(5, 3, 5, 4, controller)
