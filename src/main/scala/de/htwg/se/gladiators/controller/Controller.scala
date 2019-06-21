@@ -90,7 +90,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
             else if (gameStatus == P2)
                 playingField = playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
         }
-        endTurn() //TODO: Implement a button for endTurn() in GUI, then this line will unnecessary
+        //endTurn() //TODO: Implement a button for endTurn() in GUI, then this line will unnecessary
     }
 
     def buyGladiator(index: Int, line: Int, row: Int): String = {
