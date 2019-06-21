@@ -24,10 +24,11 @@ class Controller(var playingField: PlayingField) extends Publisher {
         gameStatus = GameStatus.P1
         commandStatus = CommandStatus.IDLE
         players = Array(Player("Player1"), Player("Player2"))
-        selectedCell= (0, 0)
+        selectedCell = (0, 0)
         selectedGlad = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
         this
     }
+
     def createRandom(size: Int, palmRate: Int = 17): Unit = {
         playingField = playingField.createRandom(size, palmRate)
         //notifyObservers
@@ -36,12 +37,15 @@ class Controller(var playingField: PlayingField) extends Publisher {
 
     def getShop: String = shop.toString
 
+    def buyGladiator(index: Int): String = {
+        ""
+    }
 
     def printPlayingField(): String = {
         // notifyObservers
         playingField.toString +
-          GameStatus.message(gameStatus) +
-          "\n"
+            GameStatus.message(gameStatus) +
+            "\n"
     }
 
     def addGladiator(line: Int, row: Int): Unit = {
@@ -51,12 +55,12 @@ class Controller(var playingField: PlayingField) extends Publisher {
         if (checkGladiator(line, row))
             return
 
-        if (!baseArea(players(gameStatus.id)).contains((line,row)))
+        if (!baseArea(players(gameStatus.id)).contains((line, row)))
             return
 
         if (selectedGlad.line == -2) {
-            for((g,i) <- shop.stock.zipWithIndex) {
-                if(g == selectedGlad) {
+            for ((g, i) <- shop.stock.zipWithIndex) {
+                if (g == selectedGlad) {
                     shop.buy(i, players(gameStatus.id))
                 }
             }
@@ -79,7 +83,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
                 playingField = playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
         }
 
-       // players(gameStatus.id).buyItem(10)
+        // players(gameStatus.id).buyItem(10)
 
         nextPlayer()
         publish(new GladChanged)
@@ -87,9 +91,9 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def baseArea(player: Player): List[(Int, Int)] = {
-        var base1: (Int, Int) = (0,0)
+        var base1: (Int, Int) = (0, 0)
         var area: List[(Int, Int)] = Nil
-        if(player == players(0)) {
+        if (player == players(0)) {
             base1 = (playingField.size - 1, playingField.size / 2)
             area = area ::: (base1._1 - 1, base1._2) :: Nil
         } else if (player == players(1)) {
@@ -162,9 +166,9 @@ class Controller(var playingField: PlayingField) extends Publisher {
         status match {
             case MoveType.ATTACK => nextPlayer(); playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
             case MoveType.GOLD => nextPlayer(); mineGold(getGladiator(lineAttack, rowAttack), lineDest, rowDest)
-            case MoveType.MOVE_TO_BASE =>
+            case MoveType.BASE_ATTACK=>
                 nextPlayer()
-                players(gameStatus.id).baseHP -= getGladiator(lineAttack,rowAttack).ap.toInt
+                players(gameStatus.id).baseHP -= getGladiator(lineAttack, rowAttack).ap.toInt
                 if (players(gameStatus.id).baseHP <= 0) {
                     publish(new GameOver)
                 }
@@ -184,7 +188,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
         false
     }
 
-    def getGladiator (line: Int, row: Int): Gladiator = {
+    def getGladiator(line: Int, row: Int): Gladiator = {
         var glad = GladiatorFactory.createGladiator(Int.MinValue, Int.MinValue, GladiatorType.SWORD, players(P1.id))
         for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
             if (g.line == line && g.row == row)
@@ -258,8 +262,12 @@ class Controller(var playingField: PlayingField) extends Publisher {
                                         MoveType.LEGAL_MOVE
                                 else
                                     MoveType.INSUFFICIENT_MOVEMENT_POINTS
+                            else if (gameStatus == P1 && lineDest == playingField.size)
+                                MoveType.BASE_ATTACK
+                            else if (gameStatus == P2 && lineDest == 0)
+                                MoveType.BASE_ATTACK
                             else
-                                MoveType.MOVE_TO_BASE
+                                MoveType.ILLEGAL_MOVE //TODO: Heal at base?
                         else
                             MoveType.MOVE_TO_PALM
                 }
@@ -282,17 +290,17 @@ class Controller(var playingField: PlayingField) extends Publisher {
         false
     }
 
-/*
+    /*
 
-    def checkMovementPoints(list: List[Gladiator], lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
-        for (g <- list)
-            if (g.row == rowStart &&
-                g.line == lineStart &&
-                g.movementPoints >= (Math.abs(lineDest - lineStart) + Math.abs(rowDest - rowStart)))
-                return true
-        false
-    }
-*/
+        def checkMovementPoints(list: List[Gladiator], lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
+            for (g <- list)
+                if (g.row == rowStart &&
+                    g.line == lineStart &&
+                    g.movementPoints >= (Math.abs(lineDest - lineStart) + Math.abs(rowDest - rowStart)))
+                    return true
+            false
+        }
+    */
     def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int): String = {
         var player: Int = 0
         if (gladiatorAttack.player == players(0))
@@ -302,7 +310,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
         players(player).credits += (gladiatorAttack.ap / 10).toInt
         var randLine = scala.util.Random.nextInt(playingField.size - 4) + 2
         var randRow = scala.util.Random.nextInt(playingField.size)
-        while (!checkCellEmpty(randLine, randRow)){
+        while (!checkCellEmpty(randLine, randRow)) {
             randLine = scala.util.Random.nextInt(playingField.size - 4) + 2
             randRow = scala.util.Random.nextInt(playingField.size)
         }
@@ -314,7 +322,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
 
     def checkCellEmpty(line: Int, row: Int): Boolean = {
         if (playingField.cells(line)(row).cellType == CellType.SAND
-        && !checkGladiator(line, row)) {
+            && !checkGladiator(line, row)) {
             true
         } else {
             false
