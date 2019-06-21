@@ -17,7 +17,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
     var players = Array(Player("Player1"), Player("Player2"))
     var selectedCell: (Int, Int) = (0, 0)
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
-    val shop = new Shop(10)
+    var shop = Shop(10)
 
     def resetGame(): Controller = {
         playingField = PlayingField()
@@ -26,6 +26,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
         players = Array(Player("Player1"), Player("Player2"))
         selectedCell= (0, 0)
         selectedGlad = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
+        shop = Shop(10)
         this
     }
     def createRandom(size: Int, palmRate: Int = 17): Unit = {
@@ -104,6 +105,14 @@ class Controller(var playingField: PlayingField) extends Publisher {
             area = area.filter(c => !(c._1 == g.line && c._2 == g.row))
         }
         area.filter(c => playingField.cells(c._1)(c._2).cellType != CellType.PALM)
+    }
+
+    def getBase(player: Player): (Int, Int) = {
+        if(player == players(0)) {
+            (playingField.size - 1, playingField.size / 2)
+        } else {
+            (0, playingField.size / 2)
+        }
     }
 
     def gladiatorInfo(line: Int, row: Int): String = {
@@ -223,8 +232,9 @@ class Controller(var playingField: PlayingField) extends Publisher {
         }
     }
 
-    def changeCommand(commandStatus: CommandStatus): Unit = {
+    def changeCommand(commandStatus: CommandStatus): Controller = {
         this.commandStatus = commandStatus
+        this
     }
 
     def categorizeMove(lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): MoveType = {
@@ -244,20 +254,24 @@ class Controller(var playingField: PlayingField) extends Publisher {
                     case Some(gladiatorDest) =>
                         if (gladiatorStart.player == gladiatorDest.player)
                             return MoveType.BLOCKED
-                        if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
+                        if (checkMovementPointsAttack(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
                             MoveType.ATTACK
                         else
                             MoveType.INSUFFICIENT_MOVEMENT_POINTS
                     case None =>
                         if (playingField.cells(lineDest)(rowDest).cellType != CellType.PALM)
                             if (playingField.cells(lineDest)(rowDest).cellType != CellType.BASE)
-                                if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
-                                    if (playingField.cells(lineDest)(rowDest).cellType == CellType.GOLD)
+
+                                if (playingField.cells(lineDest)(rowDest).cellType == CellType.GOLD)
+                                    if (checkMovementPointsAttack(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
                                         MoveType.GOLD
                                     else
-                                        MoveType.LEGAL_MOVE
+                                        MoveType.INSUFFICIENT_MOVEMENT_POINTS
                                 else
-                                    MoveType.INSUFFICIENT_MOVEMENT_POINTS
+                                    if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
+                                        MoveType.LEGAL_MOVE
+                                    else
+                                        MoveType.INSUFFICIENT_MOVEMENT_POINTS
                             else
                                 MoveType.MOVE_TO_BASE
                         else
@@ -282,17 +296,20 @@ class Controller(var playingField: PlayingField) extends Publisher {
         false
     }
 
-/*
-
-    def checkMovementPoints(list: List[Gladiator], lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
-        for (g <- list)
-            if (g.row == rowStart &&
-                g.line == lineStart &&
-                g.movementPoints >= (Math.abs(lineDest - lineStart) + Math.abs(rowDest - rowStart)))
-                return true
+    def checkMovementPointsAttack(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
+        if (g.row == rowStart &&
+          g.line == lineStart)
+          g.gladiatorType match {
+              case GladiatorType.SWORD | GladiatorType.TANK =>
+                  if (1 >= (Math.abs(lineDest - lineStart) + Math.abs(rowDest - rowStart)))
+                      return true
+              case GladiatorType.BOW =>
+                  if (2 >= (Math.abs(lineDest - lineStart) + Math.abs(rowDest - rowStart)))
+                      return true
+          }
         false
     }
-*/
+
     def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int): String = {
         var player: Int = 0
         if (gladiatorAttack.player == players(0))
@@ -308,8 +325,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
         }
         playingField.cells(line)(row) = Cell(CellType.SAND)
         playingField.cells(randLine)(randRow) = Cell(CellType.GOLD)
-        gladiatorAttack + "is goldmining"
-
+        gladiatorAttack + " is goldmining"
     }
 
     def checkCellEmpty(line: Int, row: Int): Boolean = {

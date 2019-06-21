@@ -2,7 +2,7 @@ package de.htwg.se.gladiators.model
 
 import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
 
-class Shop(amountGladiatorsInStock: Int) {
+case class Shop(amountGladiatorsInStock: Int) {
 
     var stock: List[Gladiator] = List()
     for (i <- 0 until amountGladiatorsInStock) {
