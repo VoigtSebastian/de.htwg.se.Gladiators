@@ -262,7 +262,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
                                         MoveType.LEGAL_MOVE
                                 else
                                     MoveType.INSUFFICIENT_MOVEMENT_POINTS
-                            else if (gameStatus == P1 && lineDest == playingField.size)
+                            else if (gameStatus == P1 && lineDest == playingField.size - 1)
                                 MoveType.BASE_ATTACK
                             else if (gameStatus == P2 && lineDest == 0)
                                 MoveType.BASE_ATTACK
