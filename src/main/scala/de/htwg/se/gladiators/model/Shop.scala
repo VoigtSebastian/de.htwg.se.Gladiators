@@ -19,9 +19,9 @@ case class Shop(amountGladiatorsInStock: Int) {
 
     def genMovementPointsByType(gladiatorType: GladiatorType): Double = {
         gladiatorType match {
-            case GladiatorType.TANK => randomNumberInterval(2, 3).toInt
-            case GladiatorType.BOW => randomNumberInterval(3, 5).toInt
-            case GladiatorType.SWORD => randomNumberInterval(3, 4).toInt
+            case GladiatorType.TANK => randomNumberInterval(1, 2).toInt
+            case GladiatorType.BOW => randomNumberInterval(3, 4).toInt
+            case GladiatorType.SWORD => randomNumberInterval(2, 3).toInt
         }
     }
 
@@ -42,11 +42,11 @@ case class Shop(amountGladiatorsInStock: Int) {
     }
 
     def randomNumberInterval(min: Double, max: Double): Double = {
-        scala.util.Random.nextDouble() * max + min
+        scala.util.Random.nextDouble() * (max - 1) + min
     }
 
     def calcCost(gladiator: Gladiator): Int = {
-        (((gladiator.ap + gladiator.hp) * gladiator.movementPoints) / 50).toInt
+        (((gladiator.ap + gladiator.hp) * (gladiator.movementPoints + 1)) / 35).toInt
     }
 
     def buy(index: Int, player: Player): Option[Gladiator] = {
