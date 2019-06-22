@@ -56,13 +56,16 @@ class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
         repaint
       }
       */
+
       case MouseClicked(src, pt, mod, clicks, pops) =>
         //controller.showCandidates(row, column)
         controller.cellSelected(line, row)
         border = LineBorder(java.awt.Color.MAGENTA.darker().darker(), 6)
 
         //background = java.awt.Color.ORANGE
+
     }
+
   }
 
   def redraw: Unit = {
