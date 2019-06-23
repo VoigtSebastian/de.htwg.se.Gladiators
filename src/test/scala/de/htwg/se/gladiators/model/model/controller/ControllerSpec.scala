@@ -26,15 +26,18 @@ class ControllerSpec extends WordSpec with Matchers {
         controller.createRandom(7, 0)
 
         controller.addGladiator(controller.playingField.size - 2, controller.playingField.size / 2)
+        controller.endTurn()
         controller.addGladiator(1, controller.playingField.size / 2)
+        controller.endTurn()
+
         "trying to move a gladiator that is not existing" in {
             controller.categorizeMove(0, 0, 2, 2) should be(MoveType.UNIT_NOT_EXISTING)
         }
 
-        "move an existing gladiator" in {
+        "moving an existing gladiator" in {
             controller.gameStatus = GameStatus.P2
             controller.endTurn() //Resets the Gladiator moved variable
-            controller.categorizeMove(controller.playingField.size - 2, controller.playingField.size / 2, controller.playingField.size -3, controller.playingField.size / 2) should be(MoveType.ALREADY_MOVED)
+            controller.categorizeMove(controller.playingField.size - 2, controller.playingField.size / 2, controller.playingField.size -3, controller.playingField.size / 2) should be(MoveType.LEGAL_MOVE)
         }
 
         "trying to move a unit that is not owned by the current player " in {
