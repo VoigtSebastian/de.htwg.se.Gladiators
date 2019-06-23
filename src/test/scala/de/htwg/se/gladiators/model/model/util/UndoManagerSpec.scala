@@ -19,12 +19,12 @@ class UndoManagerSpec extends WordSpec with Matchers {
       }
       "undo that step " in {
         controller.gameStatus = GameStatus.P1
-        command.undoStep
+        controller.undoGladiator()
         controller.playingField.gladiatorPlayer1.head.row should be (3)
       }
       "redo that step again " in {
         controller.gameStatus = GameStatus.P1
-        command.redoStep
+        controller.redoGladiator()
         controller.playingField.gladiatorPlayer1.head.row should be (4)
       }
     }
