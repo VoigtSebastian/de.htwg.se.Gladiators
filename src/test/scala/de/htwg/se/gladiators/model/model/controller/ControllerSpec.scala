@@ -25,7 +25,10 @@ class ControllerSpec extends WordSpec with Matchers {
         val controller = new Controller(pf)
         controller.createRandom(7, 0)
 
+        controller.selectedGlad = controller.shop.stock.head
         controller.addGladiator(controller.playingField.size - 2, controller.playingField.size / 2)
+        controller.endTurn()
+        controller.selectedGlad = controller.shop.stock.head
         controller.addGladiator(1, controller.playingField.size / 2)
         "trying to move a gladiator that is not existing" in {
             controller.categorizeMove(0, 0, 2, 2) should be(MoveType.UNIT_NOT_EXISTING)
@@ -33,6 +36,7 @@ class ControllerSpec extends WordSpec with Matchers {
 
         "move an existing gladiator" in {
             controller.gameStatus = GameStatus.P1
+            controller.playingField.gladiatorPlayer1.head.moved = false
             controller.categorizeMove(controller.playingField.size - 2, controller.playingField.size / 2, controller.playingField.size -3, controller.playingField.size / 2) should be(MoveType.LEGAL_MOVE)
         }
 
@@ -44,6 +48,7 @@ class ControllerSpec extends WordSpec with Matchers {
     "A controller" when {
         val controller = new Controller(PlayingField(7))
         controller.createRandom(7, 0)
+        controller.selectedGlad = controller.shop.stock.head
 
         "add a default gladiator" in {
             controller.addGladiator(controller.playingField.size - 2, controller.playingField.size / 2)
