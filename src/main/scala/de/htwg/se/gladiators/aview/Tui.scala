@@ -26,30 +26,28 @@ class Tui (controller: Controller) extends Reactor {
         TEXT_COLOR_BLACK + ""  + BASE_BACKGROUND + " color of a base tile" + RESET_ANSI_ESCAPE + "\n" +
         TEXT_COLOR_BLACK + ""  + UNIT_BACKGROUND +
         " color of a unit tile (S = Sword unit, B = Bow unit, T = Tank unit" +
-        RESET_ANSI_ESCAPE + "\n\n"
+        RESET_ANSI_ESCAPE + "\n"
 
 
     def processInputLine(input: String): Unit = {
 
-        val splitinput = evalCommand(input)//input.split(" ")
+        val splitinput = evalCommand(input)
+        if (splitinput.isEmpty)
+            return
         splitinput(0) match {
             case "q" => println("Exiting")
             case "n" => controller.createRandom(controller.playingField.size)
             case "h" => println(HELP_MESSAGE)
             case "t" => controller.toggleUnitStats()
-            case "g" =>
-                if (splitinput.size == 3) {
-                    controller.addGladiator(splitinput(1).toInt, splitinput(2).toInt)
-                    controller.printPlayingField()
-                }
-                else
-                    println(CORRECT_FORMAT_MESSAGE)
-
             case "m" =>
-                if (splitinput.size == 5)
-                    println(controller.moveGladiator(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt,splitinput(4).toInt))
-                else
-                    println(CORRECT_FORMAT_MESSAGE)
+                moveCommandBuilder(splitinput) match {
+                    case Some(moveCommand) =>
+                        controller.moveGladiator(moveCommand._1,
+                        moveCommand._2,
+                        moveCommand._3,
+                        moveCommand._4)
+                    case None => println(CORRECT_FORMAT_MESSAGE)
+                }
 
             case "u" => controller.undoGladiator()
             case "r" => controller.redoGladiator()
@@ -67,17 +65,33 @@ class Tui (controller: Controller) extends Reactor {
                     println(CORRECT_FORMAT_MESSAGE)
             case "s" => println(controller.getShop)
             case "b" => println(controller.buyGladiator(splitinput(1).toInt, splitinput(2).toInt, splitinput(3).toInt))
-                //if (splitinput.length == 4)
             case "e" => println(controller.endTurn())
 
-            case _=> println(splitinput.toString()) //showMessage(controller.createCommand(input).toString())
+            case _=> println(splitinput.toString())
         }
-        //controller.nextPlayer()
     }
 
     reactions += {
         case event: PlayingFieldChanged => printPf()
         case event: GladChanged => printPf()
+    }
+
+    def moveCommandBuilder(v: Vector[String]): Option[(Int, Int, Int, Int)] = {
+        if (v.size != 5)
+            None
+        val ret = (toInt(v(1)), toInt(v(2)), toInt(v(3)), toInt(v(4)))
+        ret match {
+            case (Some(i), Some(j), Some(k), Some(l)) => Some(i, j, k, l)
+            case _=> None
+        }
+    }
+
+    def toInt(str: String): Option[Int] = {
+        try {
+            Some(str.toInt)
+        } catch {
+            case e: Exception => None
+        }
     }
 
     def printPf(): Unit = {
