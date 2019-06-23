@@ -30,7 +30,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
         this
     }
 
-    def endTurn (): String = {
+    def endTurn(): String = {
         playingField.resetGladiatorMoved()
         players(gameStatus.id).boughtGladiator = false
         nextPlayer()
@@ -83,7 +83,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
                     }
                 }
             }
-            return false
+            false
         } else {
             selectedGlad = shop.genGlad()
             selectedGlad.line = line
@@ -93,7 +93,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
                 playingField = playingField.addGladPlayerOne(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
             else if (gameStatus == P2)
                 playingField = playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
-            return true
+            true
         }
         //endTurn() //TODO: Implement a button for endTurn() in GUI, then this line will unnecessary
     }
@@ -144,7 +144,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def getBase(player: Player): (Int, Int) = {
-        if(player == players(0)) {
+        if (player == players(0)) {
             (playingField.size - 1, playingField.size / 2)
         } else {
             (0, playingField.size / 2)
@@ -161,11 +161,10 @@ class Controller(var playingField: PlayingField) extends Publisher {
         false
     }
 
-    def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): Boolean = {
+    def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): (Boolean, String) = {
         val status: MoveType.MoveType = categorizeMove(line, row, lineDest, rowDest)
 
         status match {
-            case MoveType.ATTACK => MoveType.message(status); false //TODO: Change this behaviour?
             case MoveType.LEGAL_MOVE =>
                 undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
                 getGladiatorOption(lineDest, rowDest) match {
@@ -173,8 +172,8 @@ class Controller(var playingField: PlayingField) extends Publisher {
                     case None =>
                 }
                 publish(new GladChanged)
-                true
-            case _ => MoveType.message(status); false
+                (true, "Move successful")
+            case _ => (false, MoveType.message(status))
         }
     }
 
@@ -204,7 +203,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
         undoManager.redoStep
     }
 
-    def attack(lineAttack: Int, rowAttack: Int, lineDest: Int, rowDest: Int): Boolean = {
+    def attack(lineAttack: Int, rowAttack: Int, lineDest: Int, rowDest: Int): (Boolean, String) = {
         val status: MoveType.MoveType = categorizeMove(lineAttack, rowAttack, lineDest, rowDest)
 
         status match {
@@ -213,23 +212,20 @@ class Controller(var playingField: PlayingField) extends Publisher {
                 getGladiatorOption(lineAttack, rowAttack) match {
                     case Some(g) =>
                         g.moved = true
-                        ret
-                        return true;
-                    case None => "Something went really wrong in attack"; return false;
+                        (true, ret)
+                    case None => (false, "Something went really wrong in attack")
                 }
             case MoveType.GOLD =>
-                mineGold(getGladiator(lineAttack, rowAttack), lineDest, rowDest)
-                return true;
-            case MoveType.BASE_ATTACK=>
+                (true, mineGold(getGladiator(lineAttack, rowAttack), lineDest, rowDest))
+            case MoveType.BASE_ATTACK =>
                 players(gameStatus.id).baseHP -= getGladiator(lineAttack, rowAttack).ap.toInt
                 if (players(gameStatus.id).baseHP <= 0) {
                     publish(new GameOver)
                 }
-                "Base of Player " + players(gameStatus.id).name + " has been attacked"
-                return true;
-            case MoveType.LEGAL_MOVE => "Please use the move command to move your units"; return false;
-            case MoveType.BLOCKED => "You can not attack your own units"; return false;
-            case _ => MoveType.message(status); return false;
+                (true, "Base of Player " + players(gameStatus.id).name + " has been attacked")
+            case MoveType.LEGAL_MOVE => (false, "Please use the move command to move your units")
+            case MoveType.BLOCKED => (false, "You can not attack your own units")
+            case _ => (false, MoveType.message(status))
         }
     }
 
@@ -260,9 +256,9 @@ class Controller(var playingField: PlayingField) extends Publisher {
 
     def cellSelected(line: Int, row: Int): Unit = {
 
-        if(!addGladiator(line, row)) {
-            if (!moveGladiator(selectedCell._1, selectedCell._2, line, row)) {
-                if (!attack(selectedCell._1, selectedCell._2, line, row)) {
+        if (!addGladiator(line, row)) {
+            if (!moveGladiator(selectedCell._1, selectedCell._2, line, row)._1) {
+                if (!attack(selectedCell._1, selectedCell._2, line, row)._1) {
                     selectedCell = (line, row)
                 } else {
                     publish(new GladChanged)
@@ -367,15 +363,15 @@ class Controller(var playingField: PlayingField) extends Publisher {
 
     def checkMovementPointsAttack(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
         if (g.row == rowStart &&
-          g.line == lineStart)
-          g.gladiatorType match {
-              case GladiatorType.SWORD | GladiatorType.TANK =>
-                  if (1 >= (Math.abs(lineDest - lineStart) + Math.abs(rowDest - rowStart)))
-                      return true
-              case GladiatorType.BOW =>
-                  if (2 >= (Math.abs(lineDest - lineStart) + Math.abs(rowDest - rowStart)))
-                      return true
-          }
+            g.line == lineStart)
+            g.gladiatorType match {
+                case GladiatorType.SWORD | GladiatorType.TANK =>
+                    if (1 >= (Math.abs(lineDest - lineStart) + Math.abs(rowDest - rowStart)))
+                        return true
+                case GladiatorType.BOW =>
+                    if (2 >= (Math.abs(lineDest - lineStart) + Math.abs(rowDest - rowStart)))
+                        return true
+            }
         false
     }
 
