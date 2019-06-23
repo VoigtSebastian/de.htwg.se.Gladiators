@@ -12,12 +12,13 @@ class TuiSpec extends WordSpec with Matchers {
     "do nothing on input 'q'" in {
         tui.processInputLine("q")
     }
-    "create a random playingfield" in {
+    "create a random playingField" in {
         tui.processInputLine("n")
         controller.playingField.getSize should be(PlayingField().size)
     }
 
-    "add a gladiator to the playingfield" in {
+    "add a gladiator to the playingField" in {
+        controller.createRandom(9,0)
         controller.gameStatus = GameStatus.P1
         controller.selectedGlad = controller.shop.stock.head
         val input = "g," + (controller.playingField.size - 2).toString + "," + (controller.playingField.size / 2).toString
