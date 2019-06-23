@@ -14,13 +14,15 @@ class TuiSpec extends WordSpec with Matchers {
     }
     "create a random playingfield" in {
         tui.processInputLine("n")
-        controller.playingField.getSize should be(9)
+        controller.playingField.getSize should be(PlayingField().size)
     }
 
     "add a gladiator to the playingfield" in {
         controller.gameStatus = GameStatus.P1
-        tui.processInputLine("g,7,4")
-        controller.playingField.gladiatorPlayer1.head.line should be(7)
+        controller.selectedGlad = controller.shop.stock.head
+        val input = "g," + (controller.playingField.size - 2).toString + "," + (controller.playingField.size / 2).toString
+        tui.processInputLine(input)
+        controller.playingField.gladiatorPlayer1.head.line should be((controller.playingField.size - 2))
     }
     "show a help message" in {
         tui.processInputLine("h")
