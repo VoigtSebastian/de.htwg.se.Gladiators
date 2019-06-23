@@ -53,33 +53,37 @@ class Controller(var playingField: PlayingField) extends Publisher {
             "\n"
     }
 
-    def addGladiator(line: Int, row: Int): Unit = {
+    def addGladiator(line: Int, row: Int): Boolean = {
         if (players(gameStatus.id).boughtGladiator)
-            return
+            return false
 
         if (playingField.cells(line)(row).cellType == CellType.PALM)
-            return
+            return false
 
         if (checkGladiator(line, row))
-            return
+            return false
 
         if (!baseArea(players(gameStatus.id)).contains((line, row)))
-            return
+            return false
 
         if (selectedGlad.line == -2) {
             for ((g, i) <- shop.stock.zipWithIndex) {
                 if (g == selectedGlad) {
-                    shop.buy(i, players(gameStatus.id))
+                    shop.buy(i, players(gameStatus.id)) match {
+                        case Some(g) =>
+                            selectedGlad.line = line
+                            selectedGlad.row = row
+                            selectedGlad.player = players(gameStatus.id)
+                            if (gameStatus == P1)
+                                playingField = playingField.addGladPlayerOne(selectedGlad)
+                            else if (gameStatus == P2)
+                                playingField = playingField.addGladPlayerTwo(selectedGlad)
+                            return true
+                        case None => return false
+                    }
                 }
             }
-            selectedGlad.line = line
-            selectedGlad.row = row
-            selectedGlad.player = players(gameStatus.id)
-            if (gameStatus == P1)
-                playingField = playingField.addGladPlayerOne(selectedGlad)
-            else if (gameStatus == P2)
-                playingField = playingField.addGladPlayerTwo(selectedGlad)
-
+            return false
         } else {
             selectedGlad = shop.genGlad()
             selectedGlad.line = line
@@ -89,6 +93,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
                 playingField = playingField.addGladPlayerOne(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
             else if (gameStatus == P2)
                 playingField = playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
+            return true
         }
         //endTurn() //TODO: Implement a button for endTurn() in GUI, then this line will unnecessary
     }
@@ -156,11 +161,11 @@ class Controller(var playingField: PlayingField) extends Publisher {
         false
     }
 
-    def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): String = {
+    def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): Boolean = {
         val status: MoveType.MoveType = categorizeMove(line, row, lineDest, rowDest)
 
         status match {
-            case MoveType.ATTACK => MoveType.message(status) //TODO: Change this behaviour?
+            case MoveType.ATTACK => MoveType.message(status); false //TODO: Change this behaviour?
             case MoveType.LEGAL_MOVE =>
                 undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
                 getGladiatorOption(lineDest, rowDest) match {
@@ -168,8 +173,8 @@ class Controller(var playingField: PlayingField) extends Publisher {
                     case None =>
                 }
                 publish(new GladChanged)
-                "Move successful!"
-            case _ => MoveType.message(status)
+                true
+            case _ => MoveType.message(status); false
         }
     }
 
@@ -199,7 +204,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
         undoManager.redoStep
     }
 
-    def attack(lineAttack: Int, rowAttack: Int, lineDest: Int, rowDest: Int): String = {
+    def attack(lineAttack: Int, rowAttack: Int, lineDest: Int, rowDest: Int): Boolean = {
         val status: MoveType.MoveType = categorizeMove(lineAttack, rowAttack, lineDest, rowDest)
 
         status match {
@@ -209,19 +214,22 @@ class Controller(var playingField: PlayingField) extends Publisher {
                     case Some(g) =>
                         g.moved = true
                         ret
-                    case None => "Something went really wrong in attack"
+                        return true;
+                    case None => "Something went really wrong in attack"; return false;
                 }
             case MoveType.GOLD =>
                 mineGold(getGladiator(lineAttack, rowAttack), lineDest, rowDest)
+                return true;
             case MoveType.BASE_ATTACK=>
                 players(gameStatus.id).baseHP -= getGladiator(lineAttack, rowAttack).ap.toInt
                 if (players(gameStatus.id).baseHP <= 0) {
                     publish(new GameOver)
                 }
                 "Base of Player " + players(gameStatus.id).name + " has been attacked"
-            case MoveType.LEGAL_MOVE => "Please use the move command to move your units"
-            case MoveType.BLOCKED => "You can not attack your own units"
-            case _ => MoveType.message(status)
+                return true;
+            case MoveType.LEGAL_MOVE => "Please use the move command to move your units"; return false;
+            case MoveType.BLOCKED => "You can not attack your own units"; return false;
+            case _ => MoveType.message(status); return false;
         }
     }
 
@@ -251,6 +259,24 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def cellSelected(line: Int, row: Int): Unit = {
+
+        if(!addGladiator(line, row)) {
+            if (!moveGladiator(selectedCell._1, selectedCell._2, line, row)) {
+                if (!attack(selectedCell._1, selectedCell._2, line, row)) {
+                    selectedCell = (line, row)
+                } else {
+                    publish(new GladChanged)
+                }
+            } else {
+                publish(new GladChanged)
+            }
+        } else {
+            publish(new GladChanged)
+        }
+        selectedCell = (line, row)
+        publish(new CellClicked)
+        //selectedCell = (line, row)
+        /*
         if (commandStatus == CommandStatus.IDLE) {
             selectedCell = (line, row)
             publish(new CellClicked)
@@ -270,6 +296,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
             selectedCell = (line, row)
             publish(new GladChanged)
         }
+        */
     }
 
     def changeCommand(commandStatus: CommandStatus): Controller = {
@@ -378,4 +405,5 @@ class Controller(var playingField: PlayingField) extends Publisher {
             false
         }
     }
+
 }
