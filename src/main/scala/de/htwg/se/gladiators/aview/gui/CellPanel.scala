@@ -110,9 +110,9 @@ import scala.swing.Swing.LineBorder
       case 1 => label.icon = resizedTexture("textures/palmsand_60_color.png", dimWidth, dimHeight)
       case 2 =>
         if (line == 0)
-          label.icon = resizedTexture("textures/sandcolloseum_small.png", dimWidth, dimHeight)
+          label.icon = resizedTexture("textures/sandcolloseum_small.png", dimWidth, dimHeight - 10)
         else
-          label.icon = resizedTexture("textures/sandtemple_small.png", dimWidth, dimHeight)
+          label.icon = resizedTexture("textures/sandtemple_small.png", dimWidth, dimHeight - 10)
       case 3 => label.icon = resizedTexture("textures/sandgold_small.png", dimWidth, dimHeight)
     }
   }
@@ -143,7 +143,7 @@ import scala.swing.Swing.LineBorder
   }
 
     def setHighlightedSand(): Unit = {
-        label.icon = resizedTexture("textures/sand_small_green.png", 90, 90)
+        label.icon = resizedTexture("textures/sand_small_green.png", dimHeight, dimWidth)
     }
 
     def getGladText(glad: Gladiator): String = {
