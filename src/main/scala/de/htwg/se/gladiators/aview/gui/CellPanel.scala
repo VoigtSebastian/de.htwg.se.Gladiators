@@ -56,20 +56,10 @@ import scala.swing.Swing.LineBorder
         listenTo(controller)
 
         reactions += {
-            /*controller.showCandidates(row, column)
-
-            case e: CellChanged => {
-              label.text = cellText(row, column)
-              repaint
-            }
-            */
-
             case MouseClicked(src, pt, mod, clicks, pops) =>
                 //controller.showCandidates(row, column)
                 controller.cellSelected(line, row)
                 border = LineBorder(java.awt.Color.GREEN.darker(), 4)
-
-            //background = java.awt.Color.ORANGE
         }
     }
 
