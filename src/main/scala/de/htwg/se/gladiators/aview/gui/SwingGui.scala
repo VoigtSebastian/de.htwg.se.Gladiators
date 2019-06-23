@@ -275,7 +275,7 @@ class SwingGui(var controller: Controller) extends MainFrame {
           line <- 0 until controller.playingField.size
           row <-  0 until controller.playingField.size
         } {
-            val cellPanel = new CellPanel(line, row, controller, (50,50))
+            val cellPanel = new CellPanel(line, row, controller, 55, 55)
             cells(line)(row) = cellPanel
             listenTo(cellPanel)
             contents += cellPanel
