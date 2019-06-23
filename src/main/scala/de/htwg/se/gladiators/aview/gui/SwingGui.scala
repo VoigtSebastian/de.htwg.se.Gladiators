@@ -19,7 +19,7 @@ class SwingGui(var controller: Controller) extends MainFrame {
     title = "Gladiators"
     var cells = Array.ofDim[CellPanel](controller.playingField.size, controller.playingField.size)
     listenTo(controller)
-    background = java.awt.Color.BLACK
+    background = java.awt.Color.WHITE
 
     val shopPanel = new GridBagPanel()  {
       preferredSize = new Dimension(80, 400)
@@ -253,7 +253,7 @@ class SwingGui(var controller: Controller) extends MainFrame {
 
    // def gridPanel : BoxPanel = new BoxPanel(Orientation.NoOrientation)  {
     def gridPanel: GridPanel = new GridPanel(controller.playingField.size, controller.playingField.size) {
-        border = LineBorder(java.awt.Color.BLACK, 3)
+        //border = LineBorder(java.awt.Color.GREEN.darker(), 3)
         background = java.awt.Color.BLACK
         for {
           line <- 0 until controller.playingField.size
@@ -265,7 +265,6 @@ class SwingGui(var controller: Controller) extends MainFrame {
             contents += cellPanel
         }
     }
-
     redraw()
     visible = true
 
@@ -335,7 +334,7 @@ class SwingGui(var controller: Controller) extends MainFrame {
                   if //(cells(i)(j).myCell.cellType != CellType.PALM &&
                   (!(i == selectedGlad.line && j == selectedGlad.row)) {
                     // && !((i, j) == controller.getBase(controller.players(controller.gameStatus.id)))) {
-                    cells(i)(j).cell.border = LineBorder(java.awt.Color.RED.darker().darker(), 6)
+                    cells(i)(j).cell.border = LineBorder(java.awt.Color.RED.darker(), 4)
                   }
                 }
               }
