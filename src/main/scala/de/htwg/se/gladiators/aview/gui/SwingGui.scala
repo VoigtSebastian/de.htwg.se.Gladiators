@@ -11,7 +11,7 @@ import javax.swing.text.Position
 
 import scala.swing.{Alignment, BorderPanel, Button, Dimension, Font, Frame, GridPanel, TextField, _}
 import scala.swing.Swing.LineBorder
-import scala.swing.event.ButtonClicked
+import scala.swing.event.{ButtonClicked, MouseClicked}
 
 class SwingGui(var controller: Controller) extends MainFrame {
 
@@ -19,10 +19,12 @@ class SwingGui(var controller: Controller) extends MainFrame {
     title = "Gladiators"
     var cells = Array.ofDim[CellPanel](controller.playingField.size, controller.playingField.size)
     listenTo(controller)
-    background = java.awt.Color.BLACK
+    background = java.awt.Color.WHITE
 
     val shopPanel = new GridBagPanel()  {
       preferredSize = new Dimension(80, 400)
+      background = java.awt.Color.WHITE
+
       val header = new Label("SHOP")
 
       val glad1 = new Button("")
@@ -73,11 +75,19 @@ class SwingGui(var controller: Controller) extends MainFrame {
       val glad_buttons: List[Button] = List(glad1, glad2, glad3, glad4, glad5)
       reactions += {
         case ButtonClicked(b) =>
-          for ((c, i) <- glad_buttons.zipWithIndex) {
-            if (c == b) {
-              controller.selectedGlad = controller.shop.stock(i)
+          if (!controller.players(controller.gameStatus.id).boughtGladiator) {
+            for ((c, i) <- glad_buttons.zipWithIndex) {
+              if (c == b) {
+                controller = controller.changeCommand(CommandStatus.CR)
+                controller.selectedGlad = controller.shop.stock(i)
+                for (i <- controller.baseArea(controller.players(controller.gameStatus.id))) {
+                  // cells(i._1)(i._2).cell.border = LineBorder(java.awt.Color.GREEN, 7)
+                  cells(i._1)(i._2).setHighlightedSand()
+                }
+                refreshStatus
+              }
             }
-          }
+        }
       }
       // Quelle : http://otfried.org/scala/index_42.html
       def constraints(x: Int, y: Int,
@@ -111,12 +121,13 @@ class SwingGui(var controller: Controller) extends MainFrame {
       //gladAP.background = java.awt.Color.CYAN.darker().darker().darker()
       gladAP.foreground = java.awt.Color.BLACK
       gladAP.horizontalAlignment = Alignment.Center
-
-      val gladHP= new Button("")
+      gladAP.background = java.awt.Color.WHITE
+      val gladHP= new Button(" ")
       gladHP.font = new Font("Verdana", 1, 20)
       //gladHP.background = java.awt.Color.CYAN.darker().darker().darker()
       gladHP.foreground = java.awt.Color.BLACK
       gladHP.horizontalAlignment = Alignment.Center
+      gladHP.background = java.awt.Color.WHITE
 
      // contents += gladType
       contents += gladHP
@@ -127,13 +138,14 @@ class SwingGui(var controller: Controller) extends MainFrame {
       statusline.font = new Font("Verdana", 1, 30)
       statusline.horizontalAlignment = Alignment.Center
       statusline.editable = false
-      background = java.awt.Color.BLACK
+      statusline.background = java.awt.Color.WHITE
 
       var credits = new TextField(controller.players(controller.gameStatus.id).credits.toString + " $", 1)
       credits.font = new Font("Dialog", 1, 25)
       credits.foreground = java.awt.Color.GREEN.darker().darker()
       credits.editable = false
       credits.horizontalAlignment = Alignment.Center
+      credits.background = java.awt.Color.WHITE
 
       var command = new TextField("", 1)
       command.font = new Font("Verdana", 1, 25)
@@ -141,8 +153,8 @@ class SwingGui(var controller: Controller) extends MainFrame {
       command.editable = false
       command.horizontalAlignment = Alignment.Center
 
-      var next = new Button("next")
-      next.font = new Font("Verdana", 2, 30)
+      var next = new Button("NEXT")
+      next.font = new Font("Verdana", 1, 30)
       next.background = java.awt.Color.WHITE
       listenTo(next)
       reactions += {
@@ -226,9 +238,9 @@ class SwingGui(var controller: Controller) extends MainFrame {
         }
 
 
-    val infoPanel: GridPanel = new GridPanel(2,1) {
+    val infoPanel: GridPanel = new GridPanel(1,1) {
       contents += gladPanel
-      contents += navPanel
+     //  contents += navPanel
       //contents += statusPanel
     }
 
@@ -241,7 +253,7 @@ class SwingGui(var controller: Controller) extends MainFrame {
 
    // def gridPanel : BoxPanel = new BoxPanel(Orientation.NoOrientation)  {
     def gridPanel: GridPanel = new GridPanel(controller.playingField.size, controller.playingField.size) {
-        border = LineBorder(java.awt.Color.BLACK, 3)
+        //border = LineBorder(java.awt.Color.GREEN.darker(), 3)
         background = java.awt.Color.BLACK
         for {
           line <- 0 until controller.playingField.size
@@ -249,11 +261,10 @@ class SwingGui(var controller: Controller) extends MainFrame {
         } {
             val cellPanel = new CellPanel(line, row, controller)
             cells(line)(row) = cellPanel
-            contents += cellPanel
             listenTo(cellPanel)
+            contents += cellPanel
         }
     }
-
     redraw()
     visible = true
 
@@ -295,7 +306,6 @@ class SwingGui(var controller: Controller) extends MainFrame {
     reactions += {
         case event: GladChanged => redraw()
         case event: PlayingFieldChanged => redraw()
-        case event: CellClicked => redraw()
         case event: GameStatusChanged => refreshStatus
         case event: GameOver =>
           val string = controller.players(controller.gameStatus.id)
@@ -306,6 +316,31 @@ class SwingGui(var controller: Controller) extends MainFrame {
             JOptionPane.INFORMATION_MESSAGE
           )
           redraw()
+        case event: CellClicked =>
+          redraw()
+          if (controller.checkGladiator(controller.selectedCell._1, controller.selectedCell._2)) {
+            val selectedGlad: Gladiator = controller.getGladiator(controller.selectedCell._1, controller.selectedCell._2)
+            if (!selectedGlad.moved && selectedGlad.player == controller.players(controller.gameStatus.id)) {
+              for {
+                i <- 0 until controller.playingField.size
+                j <- 0 until controller.playingField.size
+              } {
+                if (controller.checkMovementPoints(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)) {
+                  if (controller.checkCellEmpty(i, j)) {
+                    cells(i)(j).setHighlightedSand()
+                  }
+                }
+                if (controller.checkMovementPointsAttack(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)) {
+                  if //(cells(i)(j).myCell.cellType != CellType.PALM &&
+                  (!(i == selectedGlad.line && j == selectedGlad.row)) {
+                    // && !((i, j) == controller.getBase(controller.players(controller.gameStatus.id)))) {
+                    cells(i)(j).cell.border = LineBorder(java.awt.Color.RED.darker(), 4)
+                  }
+                }
+              }
+            }
+          }
+
 
     }
 
@@ -341,10 +376,10 @@ class SwingGui(var controller: Controller) extends MainFrame {
           gladPanel.gladAP.icon = resizedTexture("textures/ap_black.png", 40, 40)
         } else {
           gladPanel.gladType.text = ""
-          gladPanel.gladAP.text = ""
-          gladPanel.gladHP.text = ""
-          gladPanel.gladAP.icon = new ImageIcon("disable")
-          gladPanel.gladHP.icon = new ImageIcon("disable")
+          gladPanel.gladAP.text = " "
+          gladPanel.gladHP.text = " "
+          gladPanel.gladAP.icon = resizedTexture("textures/empty_small.png", 40, 40)
+          gladPanel.gladHP.icon = resizedTexture("textures/empty_small.png", 40, 40)
         }
     }
 
