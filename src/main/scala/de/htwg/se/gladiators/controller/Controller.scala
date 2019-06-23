@@ -33,6 +33,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
     def endTurn (): String = {
         playingField.resetGladiatorMoved()
         players(gameStatus.id).boughtGladiator = false
+        players(gameStatus.id).credits += 1
         nextPlayer()
         publish(new GladChanged)
         "Turn successfully ended"
@@ -84,7 +85,8 @@ class Controller(var playingField: PlayingField) extends Publisher {
                 }
             }
             return false
-        } else {
+        }
+        /* else {
             selectedGlad = shop.genGlad()
             selectedGlad.line = line
             selectedGlad.row = row
@@ -95,6 +97,8 @@ class Controller(var playingField: PlayingField) extends Publisher {
                 playingField = playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
             return true
         }
+        */
+        return false
         //endTurn() //TODO: Implement a button for endTurn() in GUI, then this line will unnecessary
     }
 
@@ -218,11 +222,15 @@ class Controller(var playingField: PlayingField) extends Publisher {
                     case None => "Something went really wrong in attack"; return false;
                 }
             case MoveType.GOLD =>
-                mineGold(getGladiator(lineAttack, rowAttack), lineDest, rowDest)
+                val glad = getGladiator(lineAttack, rowAttack)
+                glad.moved = true
+                mineGold(glad, lineDest, rowDest)
                 return true;
             case MoveType.BASE_ATTACK=>
-                players(gameStatus.id).baseHP -= getGladiator(lineAttack, rowAttack).ap.toInt
-                if (players(gameStatus.id).baseHP <= 0) {
+                val glad = getGladiator(lineAttack, rowAttack)
+                players(1 - gameStatus.id).baseHP -= glad.ap.toInt
+                glad.moved = true
+                if (players(1 - gameStatus.id).baseHP <= 0) {
                     publish(new GameOver)
                 }
                 "Base of Player " + players(gameStatus.id).name + " has been attacked"
@@ -328,8 +336,37 @@ class Controller(var playingField: PlayingField) extends Publisher {
                         else
                             MoveType.INSUFFICIENT_MOVEMENT_POINTS
                     case None =>
+
                         if (playingField.cells(lineDest)(rowDest).cellType != CellType.PALM)
+                            if (playingField.cells(lineDest)(rowDest).cellType == CellType.BASE)
+                                if (checkMovementPointsAttack(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
+                                    if (gameStatus == P1 && lineDest == 0)
+                                        MoveType.BASE_ATTACK
+                                    else if (gameStatus == P2 && lineDest == playingField.size - 1)
+                                        MoveType.BASE_ATTACK
+                                    else
+                                        MoveType.ILLEGAL_MOVE
+                                else
+                                    MoveType.ILLEGAL_MOVE
+                            else if (playingField.cells(lineDest)(rowDest).cellType == CellType.GOLD)
+                                if (checkMovementPointsAttack(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
+                                    MoveType.GOLD
+                                else
+                                    MoveType.ILLEGAL_MOVE
+                            else
+                                if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
+                                    MoveType.LEGAL_MOVE
+                                else
+                                    MoveType.INSUFFICIENT_MOVEMENT_POINTS
+                        else
+                            MoveType.MOVE_TO_PALM
+                        /*
+                        if (playingField.cells(lineDest)(rowDest).cellType != CellType.PALM)
+
+
                             if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
+
+
                                 if (playingField.cells(lineDest)(rowDest).cellType == CellType.BASE)
                                     if (gameStatus == P1 && lineDest == 0)
                                         MoveType.BASE_ATTACK
@@ -345,6 +382,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
                                 MoveType.INSUFFICIENT_MOVEMENT_POINTS
                         else
                             MoveType.MOVE_TO_PALM
+                            */
                 }
             case None => MoveType.UNIT_NOT_EXISTING
         }
