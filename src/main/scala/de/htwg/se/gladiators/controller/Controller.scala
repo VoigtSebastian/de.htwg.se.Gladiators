@@ -11,7 +11,7 @@ import scala.swing.Publisher
 
 class Controller(var playingField: PlayingField) extends Publisher {
 
-    private val undoManager = new UndoManager
+    val undoManager = new UndoManager
     var gameStatus: GameStatus = GameStatus.P1
     var commandStatus: CommandStatus = CommandStatus.IDLE
     var players = Array(Player("Player1"), Player("Player2"))
