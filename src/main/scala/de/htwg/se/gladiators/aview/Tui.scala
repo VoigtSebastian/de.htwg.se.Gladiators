@@ -20,13 +20,26 @@ class Tui(controller: Controller) extends Reactor {
     val RESET_ANSI_ESCAPE = "\033[0m"
 
     val CORRECT_FORMAT_MESSAGE = "Please use the correct format, press h to get help.\n"
-    val HELP_MESSAGE: String = "Gladiators instructions:\n-description-\n" +
+    val RED_BOLD = "\033[1;31m"
+    val LISTING: String = RED_BOLD + ">" + RESET_ANSI_ESCAPE
+    val HELP_MESSAGE: String = "Gladiators instructions:" +
+        "\nGladiators is a turn-based game which let's you buy, move and fight units on a chess-like playingField.\n" +
         TEXT_COLOR_BLACK + "" + SAND_BACKGROUND + " color of a sand tile" + RESET_ANSI_ESCAPE + "\n" +
         TEXT_COLOR_BLACK + "" + PALM_BACKGROUND + " color of a palm tile" + RESET_ANSI_ESCAPE + "\n" +
         TEXT_COLOR_BLACK + "" + BASE_BACKGROUND + " color of a base tile" + RESET_ANSI_ESCAPE + "\n" +
         TEXT_COLOR_BLACK + "" + UNIT_BACKGROUND +
         " color of a unit tile (S = Sword unit, B = Bow unit, T = Tank unit" +
-        RESET_ANSI_ESCAPE + "\n"
+        RESET_ANSI_ESCAPE + "\n" +
+        LISTING + " Enter 'e' to end you turn\n" +
+        LISTING + " Enter 's' to print the current shop with all the currently available gladiators you can buy\n" +
+        LISTING + " Enter 'b', a shop index (press s to find out which one) and a coordinate to buy a unit and place it next to your base\n" +
+        LISTING + " Enter 'm' with a pair of coordinates to move a unit from it's current coordinate to a new one\n" +
+        LISTING + " Enter 'a' with a pair of coordinates to attack a unit\n" +
+        LISTING + " Enter 't' to toggle the unit stats that are printed under the playingField as soon as you bought a unit\n" +
+        LISTING + " Enter 'n' to generate a new playingField if you are unhappy with the current one\n" +
+        LISTING + " Enter 'u' to undo a step\n" +
+        LISTING + " Enter 'r' to redo a step\n" +
+        LISTING + " Enter 'i' with a coordinate to show information about a unit (use t to toggle unit stats)\n"
 
 
     def processInputLine(input: String): Unit = {
