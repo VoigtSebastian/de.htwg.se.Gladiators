@@ -9,12 +9,13 @@ class UndoManagerSpec extends WordSpec with Matchers {
     var controller = new Controller(PlayingField(7))
     controller.createRandom(7, 0)
     controller.addGladiator(5, 3)
+
     val command = new MoveGladiatorCommand(5, 3, 5, 4, controller)
     "A MoveGladiatorcommand" when {
       "create a move command" in {
 
         controller.gameStatus = GameStatus.P1
-        command.doStep
+        controller.undoManager.doStep(new MoveGladiatorCommand(5, 3, 5, 4, controller))
         controller.playingField.gladiatorPlayer1.head.row should be (4)
       }
       "undo that step " in {
