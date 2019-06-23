@@ -275,7 +275,7 @@ class SwingGui(var controller: Controller) extends MainFrame {
           line <- 0 until controller.playingField.size
           row <-  0 until controller.playingField.size
         } {
-            val cellPanel = new CellPanel(line, row, controller)
+            val cellPanel = new CellPanel(line, row, controller, 55, 55)
             cells(line)(row) = cellPanel
             listenTo(cellPanel)
             contents += cellPanel
@@ -420,15 +420,20 @@ class SwingGui(var controller: Controller) extends MainFrame {
       for ((g, i) <- controller.shop.stock.zipWithIndex) {
         i match {
           case 0 => shopPanel.glad1.icon = getGladIcon(g)
-            shopPanel.glad1_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
+            shopPanel.glad1.text = controller.shop.calcCost(g) + "$"
+            shopPanel.glad1_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt +  "</body></html>\""
           case 1 => shopPanel.glad2.icon = getGladIcon(g)
-            shopPanel.glad2_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
+            shopPanel.glad2.text = controller.shop.calcCost(g) + "$"
+            shopPanel.glad2_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt +  "</body></html>\""
           case 2 => shopPanel.glad3.icon = getGladIcon(g)
-            shopPanel.glad3_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
+            shopPanel.glad3.text = controller.shop.calcCost(g) + "$"
+            shopPanel.glad3_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt +  "</body></html>\""
           case 3 => shopPanel.glad4.icon = getGladIcon(g)
-            shopPanel.glad4_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
+            shopPanel.glad4.text = controller.shop.calcCost(g) + "$"
+            shopPanel.glad4_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt +  "</body></html>\""
           case 4 => shopPanel.glad5.icon = getGladIcon(g)
-            shopPanel.glad5_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
+            shopPanel.glad5.text = controller.shop.calcCost(g) + "$"
+            shopPanel.glad5_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt +  "</body></html>\""
           case _ =>
         }
       }
@@ -437,11 +442,11 @@ class SwingGui(var controller: Controller) extends MainFrame {
     def getGladIcon(glad: Gladiator): ImageIcon = {
       glad.gladiatorType match {
         case GladiatorType.SWORD
-        => resizedTexture("textures/sword.png", 40, 40)
+        => resizedTexture("textures/sword.png", 50, 50)
         case GladiatorType.BOW
-        => resizedTexture("textures/bow.png", 40, 40)
+        => resizedTexture("textures/bow.png", 50 , 50)
         case GladiatorType.TANK
-        => resizedTexture("textures/shield_small.png", 40, 40)
+        => resizedTexture("textures/shield_small.png", 50, 50)
       }
     }
 
