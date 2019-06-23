@@ -1,7 +1,7 @@
 package de.htwg.se.gladiators.model.model.controller
 
-import de.htwg.se.gladiators.controller.{Controller, GameStatus, MoveType}
-import de.htwg.se.gladiators.model.{Cell, GladiatorType, PlayingField}
+import de.htwg.se.gladiators.controller.{CommandStatus, Controller, GameStatus, MoveType}
+import de.htwg.se.gladiators.model.{Cell, CellType, GladiatorType, PlayingField}
 import de.htwg.se.gladiators.util.Observer
 import org.scalatest.{Matchers, WordSpec}
 
@@ -58,37 +58,61 @@ class ControllerSpec extends WordSpec with Matchers {
         "get the basearea of player1" in {
             controller.baseArea(controller.players(0)).size should be (2)
         }
+
+        "get the base cell of player1 and player 2" in {
+            controller.getBase(controller.players(0)) should be (controller.playingField.size - 1, controller.playingField.size / 2)
+            controller.getBase(controller.players(1)) should be (0, controller.playingField.size / 2)
+        }
+
+        "can reset the game" in {
+            controller.resetGame()
+            controller.playingField.gladiatorPlayer1.size should be (0)
+            controller.playingField.gladiatorPlayer2.size should be (0)
+        }
+
+        "can print the shop" in {
+            controller.getShop.contains("Units available in the shop:") should be (true)
+        }
+
+        "can get the info of a Gladiator" in {
+            controller.gladiatorInfo(controller.playingField.size - 2, controller.playingField.size / 2).contains("is owned by") should be (true)
+        }
+
+        "can toggle the unitstats" in {
+            controller.toggleUnitStats()
+        }
+
+        "can get a cell" in {
+            controller.cell(controller.playingField.size - 1, controller.playingField.size / 2).cellType should be (CellType.BASE)
+        }
+
+        "can inform the GUI/TUI that a cell was selected" in {
+            controller.cellSelected(5,5)
+        }
+
+        "can also change the commandStatus" in {
+            controller.changeCommand(CommandStatus.MV)
+            controller.commandStatus should be (CommandStatus.MV)
+        }
+
+        "can check if gladiator is in a list" in {
+            controller.isGladiatorInList(controller.playingField.gladiatorPlayer1, controller.playingField.size - 2, controller.playingField.size / 2 )
+        }
+
     }
+    "A controller " when {
+        val pf = PlayingField(7)
+        val controller = new Controller(pf)
+        controller.createRandom(7, 0)
 
+        controller.selectedGlad = controller.shop.stock.head
+        controller.addGladiator(controller.playingField.size - 2, controller.playingField.size / 2)
+        controller.endTurn()
+        controller.selectedGlad = controller.shop.stock.head
+        controller.addGladiator(1, controller.playingField.size / 2)
 
-    //TODO: ControllerSpecUpdate
-    //"A Controller" when {
-    //    "observed by an Observer" should {
-    //        val controller = new Controller(PlayingField())
-    //
-    //        val observer = new Observer {
-    //            var updated: Boolean = false
-    //
-    //            def isUpdated: Boolean = updated
-    //
-    //            override def update: Unit = {
-    //                updated = true
-    //                print(controller.printPlayingField())
-    //                //updated
-    //            }
-    //        }
-    //        controller.add(observer)
-    //        "notify its Observer after random creation" in {
-    //            controller.createRandom() observer.updated should be(true)
-    //        }
-    //        "notify its Observer after adding a gladiator" in {
-    //            controller.addGladiator(0, 0, GladiatorType.SWORD)
-    //            controller.addGladiator(1, 1, GladiatorType.BOW)
-    //            controller.addGladiator(2, 2, GladiatorType.TANK)
-    //            observer.updated should be(true)
-    //            controller.playingField.gladiatorPlayer1.head.movementPoints should be(3)
-    //        }
-    //    }
-    //}
-
+        "can tell a gladiator to attack another gladiator" in {
+            controller.attack(controller.playingField.size - 2, controller.playingField.size / 2, 1, controller.playingField.size / 2)._1 should be (false)
+        }
+    }
 }
