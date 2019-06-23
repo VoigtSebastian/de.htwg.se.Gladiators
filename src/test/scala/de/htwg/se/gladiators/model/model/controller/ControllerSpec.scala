@@ -32,8 +32,9 @@ class ControllerSpec extends WordSpec with Matchers {
         }
 
         "move an existing gladiator" in {
-            controller.gameStatus = GameStatus.P1
-            controller.categorizeMove(controller.playingField.size - 2, controller.playingField.size / 2, controller.playingField.size -3, controller.playingField.size / 2) should be(MoveType.LEGAL_MOVE)
+            controller.gameStatus = GameStatus.P2
+            controller.endTurn() //Resets the Gladiator moved variable
+            controller.categorizeMove(controller.playingField.size - 2, controller.playingField.size / 2, controller.playingField.size -3, controller.playingField.size / 2) should be(MoveType.ALREADY_MOVED)
         }
 
         "trying to move a unit that is not owned by the current player " in {
@@ -47,7 +48,7 @@ class ControllerSpec extends WordSpec with Matchers {
 
         "add a default gladiator" in {
             controller.addGladiator(controller.playingField.size - 2, controller.playingField.size / 2)
-            controller.playingField.gladiatorPlayer1(0).line should be (controller.playingField.size - 2)
+            controller.playingField.gladiatorPlayer1.head.line should be (controller.playingField.size - 2)
         }
 
         "get the basearea of player1" in {
