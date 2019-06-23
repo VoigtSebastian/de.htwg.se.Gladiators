@@ -63,7 +63,7 @@ case class PlayingField(size: Integer = 15) {
         ret
     }
 
-    def resetGladiatorMoved (): Unit = {
+    def resetGladiatorMoved(): Unit = {
         for (glad <- gladiatorPlayer1 ::: gladiatorPlayer2)
             glad.moved = false
     }
@@ -97,7 +97,7 @@ case class PlayingField(size: Integer = 15) {
             }
         }
         val goldInd = scala.util.Random.nextInt(length)
-        cells(length / 2)( goldInd) = Cell(CellType.GOLD)
+        cells(length / 2)(goldInd) = Cell(CellType.GOLD)
         cells(0)(length / 2) = Cell(CellType.BASE)
         cells(length - 1)(length / 2) = Cell(CellType.BASE)
         this
@@ -163,7 +163,7 @@ case class PlayingField(size: Integer = 15) {
                 case '2' => returnValue = returnValue + (TEXT_COLOR_BLACK +
                     BASE_BACKGROUND + " B " + RESET_ANSI_ESCAPE) //-> BASE
                 case '3' => returnValue = returnValue + (TEXT_COLOR_BLACK +
-                  BASE_BACKGROUND + " G " + RESET_ANSI_ESCAPE) //-> BASE
+                    BASE_BACKGROUND + " G " + RESET_ANSI_ESCAPE) //-> BASE
             }
         }
         returnValue

@@ -15,7 +15,7 @@ import scala.swing.event.{ButtonClicked, MouseClicked}
 
 class SwingGui(var controller: Controller) extends MainFrame {
 
-    preferredSize = new Dimension(850,950)
+    preferredSize = new Dimension(850, 950)
     title = "Gladiators"
     var cells = Array.ofDim[CellPanel](controller.playingField.size, controller.playingField.size)
     listenTo(controller)
@@ -27,7 +27,7 @@ class SwingGui(var controller: Controller) extends MainFrame {
       preferredSize = new Dimension(80, 400)
       background = java.awt.Color.WHITE
 
-      val header = new Label("SHOP")
+        val header = new Label("SHOP")
 
       val glad1 = new Button("")
       val glad2 = new Button("")
@@ -65,9 +65,9 @@ class SwingGui(var controller: Controller) extends MainFrame {
       val glad4_l = new Label("")
       val glad5_l = new Label("")
 
-      header.font = new Font("Verdana", 1, 20)
+        header.font = new Font("Verdana", 1, 20)
 
-      glad1_l.verticalAlignment = Alignment.Top
+        glad1_l.verticalAlignment = Alignment.Top
 
       add(header, constraints(0,0,1,1,0, 0.1))
 
@@ -275,7 +275,7 @@ class SwingGui(var controller: Controller) extends MainFrame {
           line <- 0 until controller.playingField.size
           row <-  0 until controller.playingField.size
         } {
-            val cellPanel = new CellPanel(line, row, controller, 55, 55)
+            val cellPanel = new CellPanel(line, row, controller)
             cells(line)(row) = cellPanel
             listenTo(cellPanel)
             contents += cellPanel
@@ -286,37 +286,43 @@ class SwingGui(var controller: Controller) extends MainFrame {
 
     menuBar = new MenuBar {
         contents += new Menu("Menu") {
-          contents += new MenuItem(scala.swing.Action("New Game") {controller = controller.resetGame(); redraw()})
-          contents += new MenuItem(scala.swing.Action("New Map") {controller.createRandom(controller.playingField.size)} )
-          contents += new MenuItem(scala.swing.Action("Playernames") {
-            var nameInput = JOptionPane.showInputDialog(
-              null,
-              "Player One",
-              "Change Names",
-              JOptionPane.QUESTION_MESSAGE
-            )
-            controller.players(0).name = nameInput
-            nameInput = JOptionPane.showInputDialog(
-              null,
-              "Player Two",
-              "Change Names",
-              JOptionPane.QUESTION_MESSAGE
-            )
-            controller.players(1).name = nameInput
-            refreshStatus
-          })
-        contents += new MenuItem(scala.swing.Action("Exit") {System.exit(0)})
+            contents += new MenuItem(scala.swing.Action("New Game") {
+                controller = controller.resetGame(); redraw()
+            })
+            contents += new MenuItem(scala.swing.Action("New Map") {
+                controller.createRandom(controller.playingField.size)
+            })
+            contents += new MenuItem(scala.swing.Action("Playernames") {
+                var nameInput = JOptionPane.showInputDialog(
+                    null,
+                    "Player One",
+                    "Change Names",
+                    JOptionPane.QUESTION_MESSAGE
+                )
+                controller.players(0).name = nameInput
+                nameInput = JOptionPane.showInputDialog(
+                    null,
+                    "Player Two",
+                    "Change Names",
+                    JOptionPane.QUESTION_MESSAGE
+                )
+                controller.players(1).name = nameInput
+                refreshStatus
+            })
+            contents += new MenuItem(scala.swing.Action("Exit") {
+                System.exit(0)
+            })
 
-          def createTextareaWidgetInsideScrollPane(text: String): JScrollPane = {
-            val textArea = new JTextArea(1, 20)
-            textArea.setText(text)
-            textArea.setCaretPosition(0)
-            textArea.setEditable(true)
-            new JScrollPane(textArea)
-          }
-      }
-      pack
-      visible = true
+            def createTextareaWidgetInsideScrollPane(text: String): JScrollPane = {
+                val textArea = new JTextArea(1, 20)
+                textArea.setText(text)
+                textArea.setCaretPosition(0)
+                textArea.setEditable(true)
+                new JScrollPane(textArea)
+            }
+        }
+        pack
+        visible = true
     }
 
     reactions += {
@@ -333,37 +339,37 @@ class SwingGui(var controller: Controller) extends MainFrame {
           )
           redraw()
         case event: CellClicked =>
-          redraw()
-          if (controller.checkGladiator(controller.selectedCell._1, controller.selectedCell._2)) {
-            val selectedGlad: Gladiator = controller.getGladiator(controller.selectedCell._1, controller.selectedCell._2)
-            if (!selectedGlad.moved && selectedGlad.player == controller.players(controller.gameStatus.id)) {
-              for {
-                i <- 0 until controller.playingField.size
-                j <- 0 until controller.playingField.size
-              } {
-                if (controller.checkMovementPoints(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)) {
-                  if (controller.checkCellEmpty(i, j)) {
-                    cells(i)(j).setHighlightedSand()
-                  }
+            redraw()
+            if (controller.checkGladiator(controller.selectedCell._1, controller.selectedCell._2)) {
+                val selectedGlad: Gladiator = controller.getGladiator(controller.selectedCell._1, controller.selectedCell._2)
+                if (!selectedGlad.moved && selectedGlad.player == controller.players(controller.gameStatus.id)) {
+                    for {
+                        i <- 0 until controller.playingField.size
+                        j <- 0 until controller.playingField.size
+                    } {
+                        if (controller.checkMovementPoints(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)) {
+                            if (controller.checkCellEmpty(i, j)) {
+                                cells(i)(j).setHighlightedSand()
+                            }
+                        }
+                        if (controller.checkMovementPointsAttack(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)) {
+                            if //(cells(i)(j).myCell.cellType != CellType.PALM &&
+                            (!(i == selectedGlad.line && j == selectedGlad.row)) {
+                                // && !((i, j) == controller.getBase(controller.players(controller.gameStatus.id)))) {
+                                cells(i)(j).cell.border = LineBorder(java.awt.Color.RED.darker(), 4)
+                            }
+                        }
+                    }
                 }
-                if (controller.checkMovementPointsAttack(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)) {
-                  if //(cells(i)(j).myCell.cellType != CellType.PALM &&
-                  (!(i == selectedGlad.line && j == selectedGlad.row)) {
-                    // && !((i, j) == controller.getBase(controller.players(controller.gameStatus.id)))) {
-                    cells(i)(j).cell.border = LineBorder(java.awt.Color.RED.darker(), 4)
-                  }
-                }
-              }
             }
-          }
 
 
     }
 
     def redraw(): Unit = {
         for {
-          line <- 0 until controller.playingField.size
-          row <- 0 until controller.playingField.size
+            line <- 0 until controller.playingField.size
+            row <- 0 until controller.playingField.size
         } cells(line)(row).redraw
         showGladiators
         refreshStatus
@@ -414,20 +420,15 @@ class SwingGui(var controller: Controller) extends MainFrame {
       for ((g, i) <- controller.shop.stock.zipWithIndex) {
         i match {
           case 0 => shopPanel.glad1.icon = getGladIcon(g)
-            shopPanel.glad1.text = controller.shop.calcCost(g).toString + "$"
-            shopPanel.glad1_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt +  "</body></html>\""
+            shopPanel.glad1_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
           case 1 => shopPanel.glad2.icon = getGladIcon(g)
-            shopPanel.glad2.text = controller.shop.calcCost(g).toString + "$"
-            shopPanel.glad2_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt + "</body></html>\""
+            shopPanel.glad2_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
           case 2 => shopPanel.glad3.icon = getGladIcon(g)
-            shopPanel.glad3.text = controller.shop.calcCost(g).toString + "$"
-            shopPanel.glad3_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt + "</body></html>\""
+            shopPanel.glad3_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
           case 3 => shopPanel.glad4.icon = getGladIcon(g)
-            shopPanel.glad4.text = controller.shop.calcCost(g).toString + "$"
-            shopPanel.glad4_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt + "</body></html>\""
+            shopPanel.glad4_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
           case 4 => shopPanel.glad5.icon = getGladIcon(g)
-            shopPanel.glad5.text = controller.shop.calcCost(g).toString + "$"
-            shopPanel.glad5_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt + "</body></html>\""
+            shopPanel.glad5_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
           case _ =>
         }
       }
@@ -436,11 +437,11 @@ class SwingGui(var controller: Controller) extends MainFrame {
     def getGladIcon(glad: Gladiator): ImageIcon = {
       glad.gladiatorType match {
         case GladiatorType.SWORD
-        => resizedTexture("textures/sword.png", 50, 50)
+        => resizedTexture("textures/sword.png", 40, 40)
         case GladiatorType.BOW
-        => resizedTexture("textures/bow.png", 50, 50)
+        => resizedTexture("textures/bow.png", 40, 40)
         case GladiatorType.TANK
-        => resizedTexture("textures/shield_small.png", 50, 50)
+        => resizedTexture("textures/shield_small.png", 40, 40)
       }
     }
 

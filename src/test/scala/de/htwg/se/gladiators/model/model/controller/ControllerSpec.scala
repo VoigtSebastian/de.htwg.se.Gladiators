@@ -52,7 +52,7 @@ class ControllerSpec extends WordSpec with Matchers {
 
         "add a default gladiator" in {
             controller.addGladiator(controller.playingField.size - 2, controller.playingField.size / 2)
-            controller.playingField.gladiatorPlayer1(0).line should be (controller.playingField.size - 2)
+            controller.playingField.gladiatorPlayer1.head.line should be (controller.playingField.size - 2)
         }
 
         "get the basearea of player1" in {
