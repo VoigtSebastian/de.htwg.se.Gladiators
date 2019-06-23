@@ -21,6 +21,8 @@ class SwingGui(var controller: Controller) extends MainFrame {
     listenTo(controller)
     background = java.awt.Color.WHITE
 
+    iconImage = toolkit.getImage("textures/gladLogo_small.png")
+     // resizedTexture("textures/shield_small.png", 50, 50)
     val shopPanel = new GridBagPanel()  {
       preferredSize = new Dimension(80, 400)
       background = java.awt.Color.WHITE
@@ -33,16 +35,30 @@ class SwingGui(var controller: Controller) extends MainFrame {
       val glad4 = new Button("")
       val glad5 = new Button("")
       glad1.background = java.awt.Color.GRAY.brighter().brighter()
-      glad1.preferredSize = new Dimension(65, 65)
+      glad1.preferredSize = new Dimension(65, 80)
+      glad1.verticalTextPosition = Alignment.Bottom
+      glad1.verticalAlignment = Alignment.Top
+      glad1.horizontalTextPosition = Alignment.Center
       glad2.background = java.awt.Color.WHITE
-      glad2.preferredSize = new Dimension(65, 65)
+      glad2.preferredSize = new Dimension(65, 80)
+      glad2.verticalTextPosition = Alignment.Bottom
+      glad2.verticalAlignment = Alignment.Top
+      glad2.horizontalTextPosition = Alignment.Center
       glad3.background = java.awt.Color.WHITE
-      glad3.preferredSize = new Dimension(65, 65)
+      glad3.preferredSize = new Dimension(65, 80)
+      glad3.verticalTextPosition = Alignment.Bottom
+      glad3.verticalAlignment = Alignment.Top
+      glad3.horizontalTextPosition = Alignment.Center
       glad4.background = java.awt.Color.WHITE
-      glad4.preferredSize = new Dimension(65, 65)
+      glad4.preferredSize = new Dimension(65, 80)
+      glad4.verticalTextPosition = Alignment.Bottom
+      glad4.verticalAlignment = Alignment.Top
+      glad4.horizontalTextPosition = Alignment.Center
       glad5.background = java.awt.Color.WHITE
-      glad5.preferredSize = new Dimension(65, 65)
-
+      glad5.preferredSize = new Dimension(65, 80)
+      glad5.verticalTextPosition = Alignment.Bottom
+      glad5.verticalAlignment = Alignment.Top
+      glad5.horizontalTextPosition = Alignment.Center
       val glad1_l = new Label("")
       val glad2_l = new Label("")
       val glad3_l = new Label("")
@@ -259,7 +275,7 @@ class SwingGui(var controller: Controller) extends MainFrame {
           line <- 0 until controller.playingField.size
           row <-  0 until controller.playingField.size
         } {
-            val cellPanel = new CellPanel(line, row, controller)
+            val cellPanel = new CellPanel(line, row, controller, (50,50))
             cells(line)(row) = cellPanel
             listenTo(cellPanel)
             contents += cellPanel
@@ -311,7 +327,7 @@ class SwingGui(var controller: Controller) extends MainFrame {
           val string = controller.players(controller.gameStatus.id)
           JOptionPane.showMessageDialog(
             null,
-            controller.players(1 - controller.gameStatus.id) + " won",
+            controller.players(controller.gameStatus.id) + " won",
             "Game Over",
             JOptionPane.INFORMATION_MESSAGE
           )
@@ -398,15 +414,20 @@ class SwingGui(var controller: Controller) extends MainFrame {
       for ((g, i) <- controller.shop.stock.zipWithIndex) {
         i match {
           case 0 => shopPanel.glad1.icon = getGladIcon(g)
-            shopPanel.glad1_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
+            shopPanel.glad1.text = controller.shop.calcCost(g).toString + "$"
+            shopPanel.glad1_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt +  "</body></html>\""
           case 1 => shopPanel.glad2.icon = getGladIcon(g)
-            shopPanel.glad2_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
+            shopPanel.glad2.text = controller.shop.calcCost(g).toString + "$"
+            shopPanel.glad2_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt + "</body></html>\""
           case 2 => shopPanel.glad3.icon = getGladIcon(g)
-            shopPanel.glad3_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
+            shopPanel.glad3.text = controller.shop.calcCost(g).toString + "$"
+            shopPanel.glad3_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt + "</body></html>\""
           case 3 => shopPanel.glad4.icon = getGladIcon(g)
-            shopPanel.glad4_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
+            shopPanel.glad4.text = controller.shop.calcCost(g).toString + "$"
+            shopPanel.glad4_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt + "</body></html>\""
           case 4 => shopPanel.glad5.icon = getGladIcon(g)
-            shopPanel.glad5_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>" + controller.shop.calcCost(g) + "$</body></html>\""
+            shopPanel.glad5.text = controller.shop.calcCost(g).toString + "$"
+            shopPanel.glad5_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt + "</body></html>\""
           case _ =>
         }
       }
@@ -415,11 +436,11 @@ class SwingGui(var controller: Controller) extends MainFrame {
     def getGladIcon(glad: Gladiator): ImageIcon = {
       glad.gladiatorType match {
         case GladiatorType.SWORD
-        => resizedTexture("textures/sword.png", 40, 40)
+        => resizedTexture("textures/sword.png", 50, 50)
         case GladiatorType.BOW
-        => resizedTexture("textures/bow.png", 40, 40)
+        => resizedTexture("textures/bow.png", 50, 50)
         case GladiatorType.TANK
-        => resizedTexture("textures/shield_small.png", 40, 40)
+        => resizedTexture("textures/shield_small.png", 50, 50)
       }
     }
 

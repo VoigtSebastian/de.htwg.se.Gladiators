@@ -2,7 +2,7 @@ package de.htwg.se.gladiators.model
 
 import scala.util.matching.Regex
 
-case class PlayingField(size: Integer = 9) {
+case class PlayingField(size: Integer = 15) {
 
     var gladiatorPlayer1: List[Gladiator] = List()
     var gladiatorPlayer2: List[Gladiator] = List()

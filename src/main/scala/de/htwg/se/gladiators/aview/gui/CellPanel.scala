@@ -15,7 +15,7 @@ import javax.swing.ImageIcon
 import scala.swing.Swing.LineBorder
 
 //class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
-  class CellPanel(line: Int, row: Int, controller: Controller) extends GridPanel(1,1){
+  class CellPanel(line: Int, row: Int, controller: Controller, val dim: (Int, Int)) extends GridPanel(1,1){
 
   preferredSize = new Dimension(50,150)
   val givenCellColor = new Color(200, 200, 255)
@@ -115,14 +115,14 @@ import scala.swing.Swing.LineBorder
 
   def setCellTexture: Unit = {
     myCell.cellType.id match {
-      case 0 => label.icon = resizedTexture("textures/sand_small.png", 90, 90)
-      case 1 => label.icon = resizedTexture("textures/palmsand_small_color.png", 90, 90)
+      case 0 => label.icon = resizedTexture("textures/sand_60.png", 55, 55)
+      case 1 => label.icon = resizedTexture("textures/palmsand_60_color.png", 55, 55)
       case 2 =>
         if (line == 0)
-          label.icon = resizedTexture("textures/sandcolloseum_small.png", 90, 75)
+          label.icon = resizedTexture("textures/sandcolloseum_small.png", 55, 45)
         else
-          label.icon = resizedTexture("textures/sandtemple_small.png", 90, 75)
-      case 3 => label.icon = resizedTexture("textures/sandgold_small.png", 90, 90)
+          label.icon = resizedTexture("textures/sandtemple_small.png", 55, 45)
+      case 3 => label.icon = resizedTexture("textures/sandgold_small.png", 55, 55)
     }
   }
 
@@ -132,27 +132,27 @@ import scala.swing.Swing.LineBorder
       //cell.background = java.awt.Color.CYAN
       glad.gladiatorType match {
         case GladiatorType.SWORD =>
-          label.icon = resizedTexture("textures/sandsword_small_p1.png", 90, 90)
+          label.icon = resizedTexture("textures/sandsword_small_p1.png", 55, 55)
         case GladiatorType.BOW =>
-          label.icon = resizedTexture("textures/sandbow_small_p1.png", 90, 90)
+          label.icon = resizedTexture("textures/sandbow_small_p1.png", 55, 55)
         case GladiatorType.TANK =>
-          label.icon = resizedTexture("textures/sandshield_small_p1.png", 90, 90);
+          label.icon = resizedTexture("textures/sandshield_small_p1.png", 55, 55);
       }
     } else {
       //cell.background = java.awt.Color.PINK
       glad.gladiatorType match {
         case GladiatorType.SWORD =>
-          label.icon = resizedTexture("textures/sandsword_small_p2.png", 90, 90)
+          label.icon = resizedTexture("textures/sandsword_small_p2.png", 55, 55)
         case GladiatorType.BOW =>
-          label.icon = resizedTexture("textures/sandbow_small_p2.png", 90, 90)
+          label.icon = resizedTexture("textures/sandbow_small_p2.png", 55, 55)
         case GladiatorType.TANK =>
-          label.icon = resizedTexture("textures/sandshield_small_p2.png", 90, 90);
+          label.icon = resizedTexture("textures/sandshield_small_p2.png", 55, 55);
       }
     }
   }
 
   def setHighlightedSand(): Unit = {
-    label.icon = resizedTexture("textures/sand_small_green.png", 90, 90)
+    label.icon = resizedTexture("textures/sand_small_green.png", 55, 55)
   }
 
   def getGladText(glad: Gladiator) : String = {
