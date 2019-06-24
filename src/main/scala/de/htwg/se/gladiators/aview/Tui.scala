@@ -1,10 +1,7 @@
 package de.htwg.se.gladiators.aview
 
 import scala.util.matching.Regex
-import de.htwg.se.gladiators.controller.{Controller, GameStatus, GladChanged, PlayingFieldChanged}
-import de.htwg.se.gladiators.model.GladiatorType
-import de.htwg.se.gladiators.util.Observer
-
+import de.htwg.se.gladiators.controller.{Controller, GladChanged, PlayingFieldChanged}
 import scala.swing.Reactor
 
 class Tui (controller: Controller) extends Reactor {
