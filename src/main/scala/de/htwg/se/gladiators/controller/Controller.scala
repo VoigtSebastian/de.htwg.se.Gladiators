@@ -14,7 +14,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
     private val undoManager = new UndoManager
     var gameStatus: GameStatus = GameStatus.P1
     var commandStatus: CommandStatus = CommandStatus.IDLE
-    var players = Array(Player("Player1"), Player("Player2"))
+    var players = Array(Player("Player 1"), Player("Player 2"))
     var selectedCell: (Int, Int) = (0, 0)
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     var shop = Shop(10)
@@ -47,10 +47,9 @@ class Controller(var playingField: PlayingField) extends Publisher {
     def getShop: String = shop.toString
 
     def printPlayingField(): String = {
-        // notifyObservers
         playingField.toString +
-            GameStatus.message(gameStatus) +
-            "\n"
+            "\nSelected cell: " + selectedCell + "\n" +
+            "Current Player: " + players(gameStatus.id).name + "\n"
     }
 
     def addGladiator(line: Int, row: Int): Unit = {
