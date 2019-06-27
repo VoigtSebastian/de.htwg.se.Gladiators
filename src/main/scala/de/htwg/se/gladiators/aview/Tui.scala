@@ -1,7 +1,10 @@
 package de.htwg.se.gladiators.aview
 
+import de.htwg.se.gladiators.controller.controllerComponent.{GladChanged, PlayingFieldChanged}
+
 import scala.util.matching.Regex
-import de.htwg.se.gladiators.controller.{Controller, GameStatus, GladChanged, PlayingFieldChanged}
+import de.htwg.se.gladiators.controller.controllerComponent.PlayingFieldChanged
+import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.{Controller}
 import de.htwg.se.gladiators.model.GladiatorType
 import de.htwg.se.gladiators.util.Observer
 

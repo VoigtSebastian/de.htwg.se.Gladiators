@@ -3,6 +3,8 @@ package de.htwg.se.gladiators.aview.gui
 import java.awt.GridBagConstraints
 
 import de.htwg.se.gladiators.controller._
+import de.htwg.se.gladiators.controller.controllerComponent._
+import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl._
 import de.htwg.se.gladiators.model.{CellType, Gladiator, GladiatorType}
 import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
 import javax.swing.SpringLayout.Constraints
@@ -13,7 +15,7 @@ import scala.swing.{Alignment, BorderPanel, Button, Dimension, Font, Frame, Grid
 import scala.swing.Swing.LineBorder
 import scala.swing.event.{ButtonClicked, MouseClicked}
 
-class SwingGui(var controller: Controller) extends MainFrame {
+class SwingGui(var controller: ControllerInterface) extends MainFrame {
 
     preferredSize = new Dimension(850, 950)
     title = "Gladiators"

@@ -1,7 +1,8 @@
 package de.htwg.se.gladiators
 import de.htwg.se.gladiators.aview.Tui
 import de.htwg.se.gladiators.aview.gui.SwingGui
-import de.htwg.se.gladiators.controller.{Controller, PlayingFieldChanged}
+import de.htwg.se.gladiators.controller.controllerComponent.PlayingFieldChanged
+import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.gladiators.model.{Cell, CellType, PlayingField}
 
 object Gladiators {
