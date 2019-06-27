@@ -1,15 +1,15 @@
-package de.htwg.se.gladiators.controller
+package de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl
 
+import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.{GameStatus, P1, P2}
+import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
+import de.htwg.se.gladiators.controller.controllerComponent._
+import CommandStatus._
 import de.htwg.se.gladiators.model._
-import de.htwg.se.gladiators.controller.CommandStatus._
-import de.htwg.se.gladiators.controller.GameStatus._
-import de.htwg.se.gladiators.controller.MoveType.MoveType
-import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
 import de.htwg.se.gladiators.util.UndoManager
 
 import scala.swing.Publisher
 
-class Controller(var playingField: PlayingField) extends Publisher {
+class Controller(var playingField: PlayingField) extends ControllerInterface with Publisher {
 
     val undoManager = new UndoManager
     var gameStatus: GameStatus = GameStatus.P1
@@ -18,6 +18,8 @@ class Controller(var playingField: PlayingField) extends Publisher {
     var selectedCell: (Int, Int) = (0, 0)
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     var shop = Shop(10)
+    def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
+
 
     def resetGame(): Controller = {
         playingField = PlayingField()
@@ -199,7 +201,6 @@ class Controller(var playingField: PlayingField) extends Publisher {
         publish(new GameStatusChanged)
     }
 
-    def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
 
 
     def redoGladiator(): Unit = {

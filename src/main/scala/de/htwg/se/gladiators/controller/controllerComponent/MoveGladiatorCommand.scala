@@ -1,5 +1,6 @@
-package de.htwg.se.gladiators.controller
+package de.htwg.se.gladiators.controller.controllerComponent
 
+import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.gladiators.util.Command
 
 class MoveGladiatorCommand(x:Int, y: Int, xDest:Int, yDest: Int, controller: Controller) extends Command {

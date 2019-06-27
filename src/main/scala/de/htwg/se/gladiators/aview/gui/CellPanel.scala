@@ -6,8 +6,9 @@ import scala.swing._
 import javax.swing.table._
 
 import scala.swing.event._
-import de.htwg.se.gladiators.controller.{Controller, GameStatus}
-import de.htwg.se.gladiators.controller.GameStatus.GameStatus
+import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.GameStatus
+import de.htwg.se.gladiators.controller.controllerComponent.{ControllerInterface, GameStatus}
+import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.gladiators.model.{Cell, Gladiator, GladiatorType}
 import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
 import javax.swing.ImageIcon
@@ -15,7 +16,7 @@ import javax.swing.ImageIcon
 import scala.swing.Swing.LineBorder
 
 //class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
-  class CellPanel(line: Int, row: Int, controller: Controller, val dimWidth: Int, val dimHeight: Int) extends GridPanel(1,1){
+  class CellPanel(line: Int, row: Int, controller: ControllerInterface, val dimWidth: Int, val dimHeight: Int) extends GridPanel(1,1){
 
     preferredSize = new Dimension(50, 150)
     val givenCellColor = new Color(200, 200, 255)

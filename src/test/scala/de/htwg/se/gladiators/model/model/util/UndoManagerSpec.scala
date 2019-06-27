@@ -1,6 +1,7 @@
 package de.htwg.se.gladiators.model.model.controller
 
-import de.htwg.se.gladiators.controller.{Controller, GameStatus, MoveGladiatorCommand}
+import de.htwg.se.gladiators.controller.controllerComponent.{GameStatus, MoveGladiatorCommand}
+import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.gladiators.model.PlayingField
 import org.scalatest.{Matchers, WordSpec}
 

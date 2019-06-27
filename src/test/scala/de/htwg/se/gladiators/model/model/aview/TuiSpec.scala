@@ -1,7 +1,8 @@
 package de.htwg.se.gladiators.model.model.aview
 
 import de.htwg.se.gladiators.aview.Tui
-import de.htwg.se.gladiators.controller.{Controller, GameStatus}
+import de.htwg.se.gladiators.controller.controllerComponent.GameStatus
+import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.gladiators.model.{Cell, Gladiator, GladiatorType, PlayingField}
 import org.scalatest.{Matchers, WordSpec}
 
