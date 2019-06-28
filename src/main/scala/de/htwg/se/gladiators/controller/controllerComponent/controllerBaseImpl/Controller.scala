@@ -12,7 +12,7 @@ import de.htwg.se.gladiators.util.UndoManager
 
 import scala.swing.Publisher
 
-class Controller () extends ControllerInterface with Publisher {
+class Controller @Inject() (val playingField : PlayingField = PlayingField()) extends ControllerInterface with Publisher {
 
     val undoManager = new UndoManager
     var gameStatus: GameStatus = GameStatus.P1
@@ -22,14 +22,14 @@ class Controller () extends ControllerInterface with Publisher {
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     var shop = Shop(10)
     val injector = Guice.createInjector(new GladiatorsModule)
-    var playingField = PlayingField().createRandom(15)
+    //val playingField = PlayingField()
 
-    //playingField.createRandom(15)
+    playingField.createRandom(15)
 
     def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
 
     def resetGame(): Unit = {
-        playingField = PlayingField()
+        playingField.resetPlayingField()
         gameStatus = GameStatus.P1
         commandStatus = CommandStatus.IDLE
         players = Array(Player("Player1"), Player("Player2"))
@@ -48,7 +48,7 @@ class Controller () extends ControllerInterface with Publisher {
     }
 
     def createRandom(size: Int, palmRate: Int = 17): Unit = {
-        playingField = playingField.createRandom(size, palmRate)
+        playingField.createRandom(size, palmRate)
         //notifyObservers
         publish(new PlayingFieldChanged)
     }
@@ -84,9 +84,9 @@ class Controller () extends ControllerInterface with Publisher {
                             selectedGlad.row = row
                             selectedGlad.player = players(gameStatus.id)
                             if (gameStatus == P1)
-                                playingField = playingField.addGladPlayerOne(selectedGlad)
+                                playingField.addGladPlayerOne(selectedGlad)
                             else if (gameStatus == P2)
-                                playingField = playingField.addGladPlayerTwo(selectedGlad)
+                                playingField.addGladPlayerTwo(selectedGlad)
                             return true
                         case None => return false
                     }
@@ -99,9 +99,9 @@ class Controller () extends ControllerInterface with Publisher {
             selectedGlad.row = row
             selectedGlad.player = players(gameStatus.id)
             if (gameStatus == P1)
-                playingField = playingField.addGladPlayerOne(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
+                playingField.addGladPlayerOne(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
             else if (gameStatus == P2)
-                playingField = playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
+                playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
             return true
         }
 

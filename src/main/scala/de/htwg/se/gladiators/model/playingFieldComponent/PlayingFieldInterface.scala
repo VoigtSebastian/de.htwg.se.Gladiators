@@ -32,11 +32,11 @@ trait PlayingFieldInterface {
 
   def formatPlayingFieldAddStats(playingField: String): String
 
-  def createRandom(length: Int, palmRate: Int = 17): PlayingField
+  def createRandom(length: Int, palmRate: Int = 17): Unit
 
-  def addGladPlayerOne(gladiator: Gladiator): PlayingField
+  def addGladPlayerOne(gladiator: Gladiator): Unit
 
-  def addGladPlayerTwo(gladiator: Gladiator): PlayingField
+  def addGladPlayerTwo(gladiator: Gladiator): Unit
 
   def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): PlayingField
 
@@ -50,5 +50,6 @@ trait PlayingFieldInterface {
 
   def attack(gladiatorAttack: Gladiator, gladiatorDest: Gladiator): String
 
+  def resetPlayingField(): Unit
 }
 
