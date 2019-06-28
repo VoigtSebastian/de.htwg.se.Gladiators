@@ -12,7 +12,7 @@ import de.htwg.se.gladiators.util.UndoManager
 
 import scala.swing.Publisher
 
-class Controller () extends ControllerInterface with Publisher {
+class Controller @Inject() (val playingField: PlayingField) extends ControllerInterface with Publisher {
 
     val undoManager = new UndoManager
     var gameStatus: GameStatus = GameStatus.P1
@@ -22,7 +22,8 @@ class Controller () extends ControllerInterface with Publisher {
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     var shop = Shop(10)
     val injector = Guice.createInjector(new GladiatorsModule)
-    var playingField = PlayingField()
+
+   // val playingField = PlayingField()
 
     def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
 

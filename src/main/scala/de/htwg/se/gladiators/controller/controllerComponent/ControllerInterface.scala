@@ -13,7 +13,7 @@ import scala.swing.Publisher
 
 trait ControllerInterface extends Publisher {
 
-    var playingField: PlayingField
+    val playingField: PlayingField
     val undoManager: UndoManager
     var gameStatus: GameStatus
     var commandStatus: CommandStatus
