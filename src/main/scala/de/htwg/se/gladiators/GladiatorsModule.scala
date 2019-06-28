@@ -16,5 +16,6 @@ class GladiatorsModule extends AbstractModule with ScalaModule {
     bind[ControllerInterface].to[controllerBaseImpl.Controller]
     bind[PlayingFieldInterface].to[playingFieldBaseImpl.PlayingField]
     bind[PlayingField].toInstance(new PlayingField(defaultSize))
+
   }
 }
