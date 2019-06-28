@@ -1,8 +1,12 @@
-package de.htwg.se.gladiators.model
+package de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl
+
+import com.google.inject.Inject
+import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
+import de.htwg.se.gladiators.model.{Cell, CellType, Gladiator, GladiatorType}
 
 import scala.util.matching.Regex
 
-case class PlayingField(size: Integer = 15) {
+case class PlayingField @Inject() (size: Integer = 15) extends PlayingFieldInterface {
 
     var gladiatorPlayer1: List[Gladiator] = List()
     var gladiatorPlayer2: List[Gladiator] = List()
@@ -83,7 +87,7 @@ case class PlayingField(size: Integer = 15) {
         ret
     }
 
-    def createRandom(length: Int, palmRate: Int = 17): PlayingField = {
+    def createRandom(length: Int, palmRate: Int = 17): Unit = {
         cells = Array.ofDim[Cell](length, length)
         for (i <- cells.indices) {
             for (j <- cells(i).indices) {
@@ -100,17 +104,14 @@ case class PlayingField(size: Integer = 15) {
         cells(length / 2)(goldInd) = Cell(CellType.GOLD)
         cells(0)(length / 2) = Cell(CellType.BASE)
         cells(length - 1)(length / 2) = Cell(CellType.BASE)
-        this
     }
 
-    def addGladPlayerOne(gladiator: Gladiator): PlayingField = {
+    def addGladPlayerOne(gladiator: Gladiator): Unit= {
         gladiatorPlayer1 = gladiatorPlayer1 ::: gladiator :: Nil
-        this
     }
 
-    def addGladPlayerTwo(gladiator: Gladiator): PlayingField = {
+    def addGladPlayerTwo(gladiator: Gladiator): Unit = {
         gladiatorPlayer2 = gladiatorPlayer2 ::: gladiator :: Nil
-        this
     }
 
     def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): PlayingField = {
@@ -178,5 +179,10 @@ case class PlayingField(size: Integer = 15) {
         gladiatorAttack + " attackes " + gladiatorDest
     }
 
-}
+    def resetPlayingField(): Unit = {
+        gladiatorPlayer1 = List()
+        gladiatorPlayer2 = List()
+        createRandom(size, 17)
+    }
 
+}

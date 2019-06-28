@@ -1,15 +1,18 @@
-package de.htwg.se.gladiators.controller
+package de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl
 
+import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.{GameStatus, P1, P2}
+import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
+import de.htwg.se.gladiators.controller.controllerComponent._
+import CommandStatus._
+import com.google.inject.{Guice, Inject}
+import de.htwg.se.gladiators.GladiatorsModule
 import de.htwg.se.gladiators.model._
-import de.htwg.se.gladiators.controller.CommandStatus._
-import de.htwg.se.gladiators.controller.GameStatus._
-import de.htwg.se.gladiators.controller.MoveType.MoveType
-import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
+import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.UndoManager
 
 import scala.swing.Publisher
 
-class Controller(var playingField: PlayingField) extends Publisher {
+class Controller @Inject() (val playingField : PlayingField = PlayingField()) extends ControllerInterface with Publisher {
 
     val undoManager = new UndoManager
     var gameStatus: GameStatus = GameStatus.P1
@@ -18,16 +21,21 @@ class Controller(var playingField: PlayingField) extends Publisher {
     var selectedCell: (Int, Int) = (0, 0)
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     var shop = Shop(10)
+    val injector = Guice.createInjector(new GladiatorsModule)
+    //val playingField = PlayingField()
 
-    def resetGame(): Controller = {
-        playingField = PlayingField()
+    playingField.createRandom(15)
+
+    def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
+
+    def resetGame(): Unit = {
+        playingField.resetPlayingField()
         gameStatus = GameStatus.P1
         commandStatus = CommandStatus.IDLE
         players = Array(Player("Player1"), Player("Player2"))
         selectedCell = (0, 0)
         selectedGlad = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
         shop = Shop(10)
-        this
     }
 
     def endTurn(): String = {
@@ -40,7 +48,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
     }
 
     def createRandom(size: Int, palmRate: Int = 17): Unit = {
-        playingField = playingField.createRandom(size, palmRate)
+        playingField.createRandom(size, palmRate)
         //notifyObservers
         publish(new PlayingFieldChanged)
     }
@@ -75,9 +83,9 @@ class Controller(var playingField: PlayingField) extends Publisher {
                             selectedGlad.row = row
                             selectedGlad.player = players(gameStatus.id)
                             if (gameStatus == P1)
-                                playingField = playingField.addGladPlayerOne(selectedGlad)
+                                playingField.addGladPlayerOne(selectedGlad)
                             else if (gameStatus == P2)
-                                playingField = playingField.addGladPlayerTwo(selectedGlad)
+                                playingField.addGladPlayerTwo(selectedGlad)
                             return true
                         case None => return false
                     }
@@ -90,14 +98,13 @@ class Controller(var playingField: PlayingField) extends Publisher {
             selectedGlad.row = row
             selectedGlad.player = players(gameStatus.id)
             if (gameStatus == P1)
-                playingField = playingField.addGladPlayerOne(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
+                playingField.addGladPlayerOne(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
             else if (gameStatus == P2)
-                playingField = playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
-            true
+                playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
+            return true
         }
 
-        return false
-        //endTurn() //TODO: Implement a button for endTurn() in GUI, then this line will unnecessary
+        false
     }
 
     def buyGladiator(index: Int, line: Int, row: Int): String = {
@@ -198,8 +205,6 @@ class Controller(var playingField: PlayingField) extends Publisher {
         publish(new GameStatusChanged)
     }
 
-    def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
-
 
     def redoGladiator(): Unit = {
         undoManager.redoStep
@@ -222,7 +227,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
                 glad.moved = true
 
                 (true, mineGold(glad, lineDest, rowDest))
-            case MoveType.BASE_ATTACK=>
+            case MoveType.BASE_ATTACK =>
                 val glad = getGladiator(lineAttack, rowAttack)
                 players(1 - gameStatus.id).baseHP -= glad.ap.toInt
                 glad.moved = true
@@ -348,32 +353,31 @@ class Controller(var playingField: PlayingField) extends Publisher {
                                     MoveType.GOLD
                                 else
                                     MoveType.ILLEGAL_MOVE
-                            else
-                                if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
-                                    MoveType.LEGAL_MOVE
-                                else
-                                    MoveType.INSUFFICIENT_MOVEMENT_POINTS
-                        else
-                            MoveType.MOVE_TO_PALM
-                        /*
-                        if (playingField.cells(lineDest)(rowDest).cellType != CellType.PALM)
-                            if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
-                                if (playingField.cells(lineDest)(rowDest).cellType == CellType.BASE)
-                                    if (gameStatus == P1 && lineDest == 0)
-                                        MoveType.BASE_ATTACK
-                                    else if (gameStatus == P2 && lineDest == playingField.size - 1)
-                                        MoveType.BASE_ATTACK
-                                    else
-                                        MoveType.ILLEGAL_MOVE
-                                else if (playingField.cells(lineDest)(rowDest).cellType == CellType.GOLD)
-                                    MoveType.GOLD
-                                else
-                                    MoveType.LEGAL_MOVE
+                            else if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
+                                MoveType.LEGAL_MOVE
                             else
                                 MoveType.INSUFFICIENT_MOVEMENT_POINTS
                         else
                             MoveType.MOVE_TO_PALM
-                            */
+                    /*
+                    if (playingField.cells(lineDest)(rowDest).cellType != CellType.PALM)
+                        if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
+                            if (playingField.cells(lineDest)(rowDest).cellType == CellType.BASE)
+                                if (gameStatus == P1 && lineDest == 0)
+                                    MoveType.BASE_ATTACK
+                                else if (gameStatus == P2 && lineDest == playingField.size - 1)
+                                    MoveType.BASE_ATTACK
+                                else
+                                    MoveType.ILLEGAL_MOVE
+                            else if (playingField.cells(lineDest)(rowDest).cellType == CellType.GOLD)
+                                MoveType.GOLD
+                            else
+                                MoveType.LEGAL_MOVE
+                        else
+                            MoveType.INSUFFICIENT_MOVEMENT_POINTS
+                    else
+                        MoveType.MOVE_TO_PALM
+                        */
                 }
             case None => MoveType.UNIT_NOT_EXISTING
         }

@@ -1,4 +1,4 @@
-package de.htwg.se.gladiators.controller
+package de.htwg.se.gladiators.controller.controllerComponent
 
 import scala.swing.event.Event
 
