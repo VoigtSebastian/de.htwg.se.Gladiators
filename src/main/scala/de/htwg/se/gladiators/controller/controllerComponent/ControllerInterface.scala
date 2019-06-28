@@ -6,6 +6,7 @@ import CommandStatus.CommandStatus
 import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.GameStatus
 import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.gladiators.model._
+import de.htwg.se.gladiators.model.playingFieldComponent.PlayingField
 import de.htwg.se.gladiators.util.UndoManager
 
 import scala.swing.Publisher

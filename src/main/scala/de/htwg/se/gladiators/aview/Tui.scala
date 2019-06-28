@@ -1,14 +1,13 @@
 package de.htwg.se.gladiators.aview
 
-import de.htwg.se.gladiators.controller.controllerComponent.GladChanged
+import de.htwg.se.gladiators.controller.controllerComponent.{ControllerInterface, GladChanged, PlayingFieldChanged}
 
 import scala.util.matching.Regex
-import de.htwg.se.gladiators.controller.controllerComponent.PlayingFieldChanged
 import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 
 import scala.swing.Reactor
 
-class Tui(controller: Controller) extends Reactor {
+class Tui(controller: ControllerInterface) extends Reactor {
 
     //controller.add(this)
     listenTo(controller)

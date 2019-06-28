@@ -1,9 +1,10 @@
 package de.htwg.se.gladiators
+import com.google.inject.Guice
 import de.htwg.se.gladiators.aview.Tui
 import de.htwg.se.gladiators.aview.gui.SwingGui
-import de.htwg.se.gladiators.controller.controllerComponent.PlayingFieldChanged
+import de.htwg.se.gladiators.controller.controllerComponent.{ControllerInterface, PlayingFieldChanged}
 import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
-import de.htwg.se.gladiators.model.{Cell, CellType, PlayingField}
+import de.htwg.se.gladiators.model.{Cell, CellType}
 
 object Gladiators {
 
@@ -12,8 +13,10 @@ object Gladiators {
         val INPUT_BLUE = "\u001B[34m"
         val WAITING_FOR_INPUT:String = INPUT_BLUE + "▶ " + RESET_ANSI_ESCAPE
 
-        val controller = new Controller(PlayingField())
-       // controller.createRandom()
+        val injector = Guice.createInjector(new GladiatorsModule)
+        val controller = injector.getInstance(classOf[ControllerInterface])
+      //val controller = new Controller(PlayingField())
+
         val tui = new Tui(controller)
         val gui = new SwingGui(controller)
         //controller.notifyObservers
