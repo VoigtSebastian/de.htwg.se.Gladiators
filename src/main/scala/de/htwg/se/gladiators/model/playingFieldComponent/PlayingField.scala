@@ -1,4 +1,6 @@
-package de.htwg.se.gladiators.model
+package de.htwg.se.gladiators.model.playingFieldComponent
+
+import de.htwg.se.gladiators.model.{Cell, CellType, Gladiator, GladiatorType}
 
 import scala.util.matching.Regex
 
@@ -179,4 +181,3 @@ case class PlayingField(size: Integer = 15) {
     }
 
 }
-

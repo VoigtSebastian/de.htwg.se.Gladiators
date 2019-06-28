@@ -2,7 +2,8 @@ package de.htwg.se.gladiators.model.model.controller
 
 import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.gladiators.controller.controllerComponent.{CommandStatus, GameStatus, MoveType}
-import de.htwg.se.gladiators.model.{Cell, CellType, GladiatorType, PlayingField}
+import de.htwg.se.gladiators.model.playingFieldComponent.PlayingField
+import de.htwg.se.gladiators.model.{Cell, CellType, GladiatorType}
 import de.htwg.se.gladiators.util.Observer
 import org.scalatest.{Matchers, WordSpec}
 

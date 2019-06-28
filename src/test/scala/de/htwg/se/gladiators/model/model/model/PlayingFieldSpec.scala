@@ -1,6 +1,7 @@
 package de.htwg.se.gladiators.model.model.model
 
 import de.htwg.se.gladiators.model._
+import de.htwg.se.gladiators.model.playingFieldComponent.PlayingField
 import org.scalatest.{Matchers, WordSpec}
 
 class PlayingFieldSpec extends WordSpec with Matchers {
