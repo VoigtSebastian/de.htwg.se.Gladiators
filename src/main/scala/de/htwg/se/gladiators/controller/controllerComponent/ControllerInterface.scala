@@ -6,7 +6,7 @@ import CommandStatus.CommandStatus
 import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.GameStatus
 import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.gladiators.model._
-import de.htwg.se.gladiators.model.playingFieldComponent.PlayingField
+import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.UndoManager
 
 import scala.swing.Publisher
@@ -29,7 +29,7 @@ trait ControllerInterface extends Publisher {
       *
       * @return a reset ControllerInterface implementation
       */
-    def resetGame(): ControllerInterface
+    def resetGame(): Unit
 
     /**
       * Ends the turn for the current player.

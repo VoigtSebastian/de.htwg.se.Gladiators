@@ -1,5 +1,6 @@
 package de.htwg.se.gladiators.aview
 
+import com.google.inject.Inject
 import de.htwg.se.gladiators.controller.controllerComponent.{ControllerInterface, GladChanged, PlayingFieldChanged}
 
 import scala.util.matching.Regex
@@ -7,7 +8,7 @@ import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.C
 
 import scala.swing.Reactor
 
-class Tui(controller: ControllerInterface) extends Reactor {
+class Tui (controller: ControllerInterface) extends Reactor {
 
     //controller.add(this)
     listenTo(controller)
