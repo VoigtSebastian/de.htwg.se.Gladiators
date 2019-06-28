@@ -18,6 +18,7 @@ class Controller(var playingField: PlayingField) extends ControllerInterface wit
     var selectedCell: (Int, Int) = (0, 0)
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     var shop = Shop(10)
+
     def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
 
 
@@ -96,11 +97,10 @@ class Controller(var playingField: PlayingField) extends ControllerInterface wit
                 playingField = playingField.addGladPlayerOne(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
             else if (gameStatus == P2)
                 playingField = playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
-            true
+            return true
         }
 
-        return false
-        //endTurn() //TODO: Implement a button for endTurn() in GUI, then this line will unnecessary
+        false
     }
 
     def buyGladiator(index: Int, line: Int, row: Int): String = {
@@ -202,7 +202,6 @@ class Controller(var playingField: PlayingField) extends ControllerInterface wit
     }
 
 
-
     def redoGladiator(): Unit = {
         undoManager.redoStep
     }
@@ -224,7 +223,7 @@ class Controller(var playingField: PlayingField) extends ControllerInterface wit
                 glad.moved = true
 
                 (true, mineGold(glad, lineDest, rowDest))
-            case MoveType.BASE_ATTACK=>
+            case MoveType.BASE_ATTACK =>
                 val glad = getGladiator(lineAttack, rowAttack)
                 players(1 - gameStatus.id).baseHP -= glad.ap.toInt
                 glad.moved = true
@@ -350,32 +349,31 @@ class Controller(var playingField: PlayingField) extends ControllerInterface wit
                                     MoveType.GOLD
                                 else
                                     MoveType.ILLEGAL_MOVE
-                            else
-                                if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
-                                    MoveType.LEGAL_MOVE
-                                else
-                                    MoveType.INSUFFICIENT_MOVEMENT_POINTS
-                        else
-                            MoveType.MOVE_TO_PALM
-                        /*
-                        if (playingField.cells(lineDest)(rowDest).cellType != CellType.PALM)
-                            if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
-                                if (playingField.cells(lineDest)(rowDest).cellType == CellType.BASE)
-                                    if (gameStatus == P1 && lineDest == 0)
-                                        MoveType.BASE_ATTACK
-                                    else if (gameStatus == P2 && lineDest == playingField.size - 1)
-                                        MoveType.BASE_ATTACK
-                                    else
-                                        MoveType.ILLEGAL_MOVE
-                                else if (playingField.cells(lineDest)(rowDest).cellType == CellType.GOLD)
-                                    MoveType.GOLD
-                                else
-                                    MoveType.LEGAL_MOVE
+                            else if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
+                                MoveType.LEGAL_MOVE
                             else
                                 MoveType.INSUFFICIENT_MOVEMENT_POINTS
                         else
                             MoveType.MOVE_TO_PALM
-                            */
+                    /*
+                    if (playingField.cells(lineDest)(rowDest).cellType != CellType.PALM)
+                        if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
+                            if (playingField.cells(lineDest)(rowDest).cellType == CellType.BASE)
+                                if (gameStatus == P1 && lineDest == 0)
+                                    MoveType.BASE_ATTACK
+                                else if (gameStatus == P2 && lineDest == playingField.size - 1)
+                                    MoveType.BASE_ATTACK
+                                else
+                                    MoveType.ILLEGAL_MOVE
+                            else if (playingField.cells(lineDest)(rowDest).cellType == CellType.GOLD)
+                                MoveType.GOLD
+                            else
+                                MoveType.LEGAL_MOVE
+                        else
+                            MoveType.INSUFFICIENT_MOVEMENT_POINTS
+                    else
+                        MoveType.MOVE_TO_PALM
+                        */
                 }
             case None => MoveType.UNIT_NOT_EXISTING
         }

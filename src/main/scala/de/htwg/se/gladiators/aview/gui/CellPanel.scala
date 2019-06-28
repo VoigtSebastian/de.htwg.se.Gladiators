@@ -16,7 +16,7 @@ import javax.swing.ImageIcon
 import scala.swing.Swing.LineBorder
 
 //class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
-  class CellPanel(line: Int, row: Int, controller: ControllerInterface, val dimWidth: Int, val dimHeight: Int) extends GridPanel(1,1){
+class CellPanel(line: Int, row: Int, controller: ControllerInterface, val dimWidth: Int, val dimHeight: Int) extends GridPanel(1, 1) {
 
     preferredSize = new Dimension(50, 150)
     val givenCellColor = new Color(200, 200, 255)
@@ -105,43 +105,43 @@ import scala.swing.Swing.LineBorder
         str
     }
 
-  def setCellTexture: Unit = {
-    myCell.cellType.id match {
-      case 0 => label.icon = resizedTexture("textures/sand_60.png", dimWidth, dimHeight)
-      case 1 => label.icon = resizedTexture("textures/palmsand_60_color.png", dimWidth, dimHeight)
-      case 2 =>
-        if (line == 0)
-          label.icon = resizedTexture("textures/sandcolloseum_small.png", dimWidth, dimHeight - 10)
-        else
-          label.icon = resizedTexture("textures/sandtemple_small.png", dimWidth, dimHeight - 10)
-      case 3 => label.icon = resizedTexture("textures/sandgold_small.png", dimWidth, dimHeight)
+    def setCellTexture: Unit = {
+        myCell.cellType.id match {
+            case 0 => label.icon = resizedTexture("textures/sand_60.png", dimWidth, dimHeight)
+            case 1 => label.icon = resizedTexture("textures/palmsand_60_color.png", dimWidth, dimHeight)
+            case 2 =>
+                if (line == 0)
+                    label.icon = resizedTexture("textures/sandcolloseum_small.png", dimWidth, dimHeight - 10)
+                else
+                    label.icon = resizedTexture("textures/sandtemple_small.png", dimWidth, dimHeight - 10)
+            case 3 => label.icon = resizedTexture("textures/sandgold_small.png", dimWidth, dimHeight)
+        }
     }
-  }
 
-  def setGlad(gameStatus: GameStatus, glad: Gladiator): Unit = {
-    //label.text = getGladText(glad)
-    if(gameStatus == GameStatus.P1) {
-      //cell.background = java.awt.Color.CYAN
-      glad.gladiatorType match {
-        case GladiatorType.SWORD =>
-          label.icon = resizedTexture("textures/sandsword_small_p1.png", dimWidth, dimHeight)
-        case GladiatorType.BOW =>
-          label.icon = resizedTexture("textures/sandbow_small_p1.png", dimWidth, dimHeight)
-        case GladiatorType.TANK =>
-          label.icon = resizedTexture("textures/sandshield_small_p1.png", dimWidth, dimHeight);
-      }
-    } else {
-      //cell.background = java.awt.Color.PINK
-      glad.gladiatorType match {
-        case GladiatorType.SWORD =>
-          label.icon = resizedTexture("textures/sandsword_small_p2.png", dimHeight, dimHeight)
-        case GladiatorType.BOW =>
-          label.icon = resizedTexture("textures/sandbow_small_p2.png", dimHeight, dimHeight)
-        case GladiatorType.TANK =>
-          label.icon = resizedTexture("textures/sandshield_small_p2.png", dimHeight, dimHeight);
-      }
+    def setGlad(gameStatus: GameStatus, glad: Gladiator): Unit = {
+        //label.text = getGladText(glad)
+        if (gameStatus == GameStatus.P1) {
+            //cell.background = java.awt.Color.CYAN
+            glad.gladiatorType match {
+                case GladiatorType.SWORD =>
+                    label.icon = resizedTexture("textures/sandsword_small_p1.png", dimWidth, dimHeight)
+                case GladiatorType.BOW =>
+                    label.icon = resizedTexture("textures/sandbow_small_p1.png", dimWidth, dimHeight)
+                case GladiatorType.TANK =>
+                    label.icon = resizedTexture("textures/sandshield_small_p1.png", dimWidth, dimHeight);
+            }
+        } else {
+            //cell.background = java.awt.Color.PINK
+            glad.gladiatorType match {
+                case GladiatorType.SWORD =>
+                    label.icon = resizedTexture("textures/sandsword_small_p2.png", dimHeight, dimHeight)
+                case GladiatorType.BOW =>
+                    label.icon = resizedTexture("textures/sandbow_small_p2.png", dimHeight, dimHeight)
+                case GladiatorType.TANK =>
+                    label.icon = resizedTexture("textures/sandshield_small_p2.png", dimHeight, dimHeight);
+            }
+        }
     }
-  }
 
     def setHighlightedSand(): Unit = {
         label.icon = resizedTexture("textures/sand_small_green.png", dimHeight, dimWidth)

@@ -18,6 +18,7 @@ class Controller(var playingField: PlayingField) extends ControllerInterface wit
     var selectedCell: (Int, Int) = (0, 0)
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     var shop = Shop(10)
+
     def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
 
     def resetGame(): Controller = this
@@ -28,7 +29,7 @@ class Controller(var playingField: PlayingField) extends ControllerInterface wit
 
     def getShop: String = ""
 
-    def printPlayingField(): String =  ""
+    def printPlayingField(): String = ""
 
     def addGladiator(line: Int, row: Int): Boolean = false
 
@@ -37,7 +38,7 @@ class Controller(var playingField: PlayingField) extends ControllerInterface wit
     def baseArea(player: Player): List[(Int, Int)] = List()
 
 
-    def getBase(player: Player): (Int, Int) = (0,0)
+    def getBase(player: Player): (Int, Int) = (0, 0)
 
     def gladiatorInfo(line: Int, row: Int): String = {
         playingField.gladiatorInfo(line: Int, row: Int) + " and is owned by " + players(gameStatus.id)
@@ -59,7 +60,7 @@ class Controller(var playingField: PlayingField) extends ControllerInterface wit
 
     def checkGladiator(line: Int, row: Int): Boolean = false
 
-    def getGladiator(line: Int, row: Int): Gladiator = GladiatorFactory.createGladiator(0,0,GladiatorType.SWORD, Player(""))
+    def getGladiator(line: Int, row: Int): Gladiator = GladiatorFactory.createGladiator(0, 0, GladiatorType.SWORD, Player(""))
 
     def getGladiatorOption(line: Int, row: Int): Option[Gladiator] = None
 
