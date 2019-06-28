@@ -4,6 +4,7 @@ import de.htwg.se.gladiators.aview.Tui
 import de.htwg.se.gladiators.aview.gui.SwingGui
 import de.htwg.se.gladiators.controller.controllerComponent.{ControllerInterface, PlayingFieldChanged}
 import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
+import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.model.{Cell, CellType}
 
 object Gladiators {
@@ -15,7 +16,8 @@ object Gladiators {
 
         val injector = Guice.createInjector(new GladiatorsModule)
         val controller = injector.getInstance(classOf[ControllerInterface])
-      //val controller = new Controller(PlayingField())
+
+        //val controller = new Controller(PlayingField())
 
         val tui = new Tui(controller)
         val gui = new SwingGui(controller)
