@@ -1,12 +1,13 @@
 package de.htwg.se.gladiators.model.model.controller
 
-import de.htwg.se.gladiators.controller.{Controller, GameStatus, MoveGladiatorCommand}
-import de.htwg.se.gladiators.model.PlayingField
+import de.htwg.se.gladiators.controller.controllerComponent.{GameStatus, MoveGladiatorCommand}
+import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
+import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import org.scalatest.{Matchers, WordSpec}
 
 class MoveGladiatorCommandSpec extends WordSpec with Matchers {
 
-  var controller = new Controller(PlayingField(7))
+  var controller = new Controller()
   controller.createRandom(7, 0)
   controller.addGladiator(5, 3)
   val command = new MoveGladiatorCommand(5, 3, 5, 4, controller)

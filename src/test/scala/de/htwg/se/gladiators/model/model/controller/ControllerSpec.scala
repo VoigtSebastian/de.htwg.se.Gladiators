@@ -1,13 +1,16 @@
 package de.htwg.se.gladiators.model.model.controller
 
-import de.htwg.se.gladiators.controller.{CommandStatus, Controller, GameStatus, MoveType}
-import de.htwg.se.gladiators.model.{Cell, CellType, GladiatorType, PlayingField}
+import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
+import de.htwg.se.gladiators.controller.controllerComponent.{CommandStatus, GameStatus, MoveType}
+import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
+import de.htwg.se.gladiators.model.{Cell, CellType, GladiatorType}
 import de.htwg.se.gladiators.util.Observer
 import org.scalatest.{Matchers, WordSpec}
 
 class ControllerSpec extends WordSpec with Matchers {
     "A controller" when {
-        val controller = new Controller(PlayingField(7))
+        val controller = new Controller()
+        controller.createRandom(7)
         val xLegal = 5
         val yLegal = 5
 
@@ -21,8 +24,7 @@ class ControllerSpec extends WordSpec with Matchers {
 
 
     "A controller " when {
-        val pf = PlayingField(7)
-        val controller = new Controller(pf)
+        val controller = new Controller()
         controller.createRandom(7, 0)
 
         controller.selectedGlad = controller.shop.stock.head
@@ -46,7 +48,7 @@ class ControllerSpec extends WordSpec with Matchers {
         }
     }
     "A controller" when {
-        val controller = new Controller(PlayingField(7))
+        val controller = new Controller()
         controller.createRandom(7, 0)
         controller.selectedGlad = controller.shop.stock.head
 
@@ -102,7 +104,7 @@ class ControllerSpec extends WordSpec with Matchers {
     }
     "A controller " when {
         val pf = PlayingField(7)
-        val controller = new Controller(pf)
+        val controller = new Controller()
         controller.createRandom(7, 0)
 
         controller.selectedGlad = controller.shop.stock.head

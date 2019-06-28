@@ -1,20 +1,20 @@
-package de.htwg.se.gladiators.controller
+package de.htwg.se.gladiators.controller.controllerComponent
 
 object MoveType extends Enumeration {
     type MoveType = Value
     val LEGAL_MOVE,
-        ILLEGAL_MOVE,
-        ATTACK,
-        BLOCKED,
-        MOVE_TO_PALM,
-        UNIT_NOT_OWNED_BY_PLAYER,
-        INSUFFICIENT_MOVEMENT_POINTS,
-        UNIT_NOT_EXISTING,
-        GOLD,
-        BASE_ATTACK,
-        ALREADY_MOVED = Value
+    ILLEGAL_MOVE,
+    ATTACK,
+    BLOCKED,
+    MOVE_TO_PALM,
+    UNIT_NOT_OWNED_BY_PLAYER,
+    INSUFFICIENT_MOVEMENT_POINTS,
+    UNIT_NOT_EXISTING,
+    GOLD,
+    BASE_ATTACK,
+    ALREADY_MOVED = Value
 
-    val map = Map[MoveType, String](
+    val map: Map[MoveType, String] = Map[MoveType, String](
         LEGAL_MOVE -> "This move is legal",
         ILLEGAL_MOVE -> "This move is our of bounds",
         ATTACK -> "This move represents an attack",
