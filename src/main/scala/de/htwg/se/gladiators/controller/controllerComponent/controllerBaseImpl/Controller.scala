@@ -7,12 +7,12 @@ import CommandStatus._
 import com.google.inject.{Guice, Inject}
 import de.htwg.se.gladiators.GladiatorsModule
 import de.htwg.se.gladiators.model._
-import de.htwg.se.gladiators.model.playingFieldComponent.PlayingField
+import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.UndoManager
 
 import scala.swing.Publisher
 
-class Controller @Inject() (var playingField: PlayingField) extends ControllerInterface with Publisher {
+class Controller () extends ControllerInterface with Publisher {
 
     val undoManager = new UndoManager
     var gameStatus: GameStatus = GameStatus.P1
@@ -22,10 +22,13 @@ class Controller @Inject() (var playingField: PlayingField) extends ControllerIn
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     var shop = Shop(10)
     val injector = Guice.createInjector(new GladiatorsModule)
+    var playingField = PlayingField().createRandom(15)
+
+    //playingField.createRandom(15)
 
     def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
 
-    def resetGame(): Controller = {
+    def resetGame(): Unit = {
         playingField = PlayingField()
         gameStatus = GameStatus.P1
         commandStatus = CommandStatus.IDLE
@@ -33,7 +36,6 @@ class Controller @Inject() (var playingField: PlayingField) extends ControllerIn
         selectedCell = (0, 0)
         selectedGlad = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
         shop = Shop(10)
-        this
     }
 
     def endTurn(): String = {

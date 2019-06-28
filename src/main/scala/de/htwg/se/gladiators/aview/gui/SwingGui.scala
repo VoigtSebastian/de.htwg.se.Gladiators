@@ -2,6 +2,7 @@ package de.htwg.se.gladiators.aview.gui
 
 import java.awt.GridBagConstraints
 
+import com.google.inject.Inject
 import de.htwg.se.gladiators.controller._
 import de.htwg.se.gladiators.controller.controllerComponent._
 import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl._
@@ -15,7 +16,7 @@ import scala.swing.{Alignment, BorderPanel, Button, Dimension, Font, Frame, Grid
 import scala.swing.Swing.LineBorder
 import scala.swing.event.{ButtonClicked, MouseClicked}
 
-class SwingGui(var controller: ControllerInterface) extends MainFrame {
+class SwingGui (controller: ControllerInterface) extends MainFrame {
 
     preferredSize = new Dimension(850, 950)
     title = "Gladiators"
@@ -96,7 +97,8 @@ class SwingGui(var controller: ControllerInterface) extends MainFrame {
                 if (!controller.players(controller.gameStatus.id).boughtGladiator) {
                     for ((c, i) <- glad_buttons.zipWithIndex) {
                         if (c == b) {
-                            controller = controller.changeCommand(CommandStatus.CR)
+                            //controller = controller.changeCommand(CommandStatus.CR)
+
                             controller.selectedGlad = controller.shop.stock(i)
                             for (i <- controller.baseArea(controller.players(controller.gameStatus.id))) {
                                 // cells(i._1)(i._2).cell.border = LineBorder(java.awt.Color.GREEN, 7)
@@ -188,74 +190,6 @@ class SwingGui(var controller: ControllerInterface) extends MainFrame {
         contents += next
     }
 
-    val navPanel: GridPanel = new GridPanel(1, 3) {
-        preferredSize = new Dimension(700, 50)
-        val button_c = new Button("")
-        val button_m = new Button("")
-        val button_a = new Button("")
-
-        button_c.icon = resizedTexture("textures/create.png", 300, 70)
-        button_m.icon = resizedTexture("textures/move_blue.png", 300, 70)
-        button_a.icon = resizedTexture("textures/attack_red.png", 300, 70)
-
-        val button_glad_s = new Button("Sword")
-        val button_glad_b = new Button("Bow")
-        val button_glad_t = new Button("Tank")
-
-        contents += button_c
-        contents += button_m
-        contents += button_a
-        listenTo(button_c)
-        listenTo(button_m)
-        listenTo(button_a)
-        reactions += {
-            case ButtonClicked(b) =>
-                if (b == button_c) {
-                    controller = controller.changeCommand(CommandStatus.CR)
-                    for (i <- controller.baseArea(controller.players(controller.gameStatus.id))) {
-                        // cells(i._1)(i._2).cell.border = LineBorder(java.awt.Color.GREEN, 7)
-                        cells(i._1)(i._2).setHighlightedSand()
-                    }
-                    refreshStatus
-
-                } else if (b == button_m) {
-                    controller = controller.changeCommand(CommandStatus.MV)
-                    refreshStatus
-                    if (controller.checkGladiator(controller.selectedCell._1, controller.selectedCell._2)) {
-                        val selectedGlad: Gladiator = controller.getGladiator(controller.selectedCell._1, controller.selectedCell._2)
-                        for {
-                            i <- 0 until controller.playingField.size
-                            j <- 0 until controller.playingField.size
-                        } {
-                            if (controller.checkMovementPoints(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)) {
-                                if (controller.checkCellEmpty(i, j)) {
-                                    cells(i)(j).setHighlightedSand()
-                                }
-                            }
-                        }
-                    }
-                } else if (b == button_a) {
-                    controller = controller.changeCommand(CommandStatus.AT)
-                    refreshStatus
-                    if (controller.checkGladiator(controller.selectedCell._1, controller.selectedCell._2)) {
-                        val selectedGlad: Gladiator = controller.getGladiator(controller.selectedCell._1, controller.selectedCell._2)
-                        for {
-                            i <- 0 until controller.playingField.size
-                            j <- 0 until controller.playingField.size
-                        } {
-                            if (controller.checkMovementPointsAttack(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)) {
-                                if (cells(i)(j).myCell.cellType != CellType.PALM
-                                    && !(i == selectedGlad.line && j == selectedGlad.row)
-                                    && !((i, j) == controller.getBase(controller.players(controller.gameStatus.id)))) {
-                                    cells(i)(j).cell.border = LineBorder(java.awt.Color.RED.darker().darker(), 6)
-                                }
-                            }
-                        }
-                    }
-                }
-        }
-    }
-
 
     val infoPanel: GridPanel = new GridPanel(1, 1) {
         contents += gladPanel
@@ -291,7 +225,8 @@ class SwingGui(var controller: ControllerInterface) extends MainFrame {
     menuBar = new MenuBar {
         contents += new Menu("Menu") {
             contents += new MenuItem(scala.swing.Action("New Game") {
-                controller = controller.resetGame()
+                //controller = controller.resetGame()
+                controller.resetGame()
                 redraw()
             })
             contents += new MenuItem(scala.swing.Action("New Map") {

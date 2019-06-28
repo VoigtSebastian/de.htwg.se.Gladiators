@@ -1,10 +1,12 @@
-package de.htwg.se.gladiators.model.playingFieldComponent
+package de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl
 
+import com.google.inject.Inject
+import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.{Cell, CellType, Gladiator, GladiatorType}
 
 import scala.util.matching.Regex
 
-case class PlayingField(size: Integer = 15) {
+case class PlayingField @Inject() (size: Integer = 15) extends PlayingFieldInterface {
 
     var gladiatorPlayer1: List[Gladiator] = List()
     var gladiatorPlayer2: List[Gladiator] = List()
