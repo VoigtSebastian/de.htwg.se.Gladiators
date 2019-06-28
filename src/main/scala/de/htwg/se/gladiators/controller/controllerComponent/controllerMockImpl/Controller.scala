@@ -65,7 +65,7 @@ class Controller(var playingField: PlayingField) extends ControllerInterface wit
 
     def cellSelected(line: Int, row: Int): Unit = {}
 
-   // def changeCommand(commandStatus: CommandStatus): Controller = new Controller(PlayingField())
+    override def changeCommand(commandStatus: CommandStatus): ControllerInterface = this
 
     def categorizeMove(lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): MoveType = MoveType.ILLEGAL_MOVE
 
@@ -78,5 +78,4 @@ class Controller(var playingField: PlayingField) extends ControllerInterface wit
     def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int): String = ""
 
     def checkCellEmpty(line: Int, row: Int): Boolean = false
-
 }

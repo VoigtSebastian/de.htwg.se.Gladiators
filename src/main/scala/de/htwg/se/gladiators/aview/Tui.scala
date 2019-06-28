@@ -1,12 +1,10 @@
 package de.htwg.se.gladiators.aview
 
-import de.htwg.se.gladiators.controller.controllerComponent.{GladChanged, PlayingFieldChanged}
+import de.htwg.se.gladiators.controller.controllerComponent.GladChanged
 
 import scala.util.matching.Regex
 import de.htwg.se.gladiators.controller.controllerComponent.PlayingFieldChanged
-import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.{Controller}
-import de.htwg.se.gladiators.model.GladiatorType
-import de.htwg.se.gladiators.util.Observer
+import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 
 import scala.swing.Reactor
 
@@ -47,16 +45,16 @@ class Tui(controller: Controller) extends Reactor {
 
     def processInputLine(input: String): Unit = {
 
-        val splitinput = evalCommand(input)
-        if (splitinput.isEmpty)
+        val splitInput = evalCommand(input)
+        if (splitInput.isEmpty)
             return
-        splitinput(0) match {
+        splitInput(0) match {
             case "q" => println("Exiting")
             case "n" => controller.createRandom(controller.playingField.size)
             case "h" => println(HELP_MESSAGE)
             case "t" => controller.toggleUnitStats()
             case "m" =>
-                moveCommandBuilder(splitinput) match {
+                moveCommandBuilder(splitInput) match {
                     case Some(moveCommand) =>
                         println(controller.moveGladiator(moveCommand._1,
                             moveCommand._2,
@@ -69,7 +67,7 @@ class Tui(controller: Controller) extends Reactor {
             case "r" => controller.redoGladiator()
 
             case "a" =>
-                attackCommandBuilder(splitinput) match {
+                attackCommandBuilder(splitInput) match {
                     case Some(attackCommand) =>
                         println(controller.attack(attackCommand._1,
                             attackCommand._2,
@@ -78,14 +76,14 @@ class Tui(controller: Controller) extends Reactor {
                     case None => println(CORRECT_FORMAT_MESSAGE)
                 }
             case "i" =>
-                infoCommandBuilder(splitinput) match {
+                infoCommandBuilder(splitInput) match {
                     case Some(infoCommand) =>
                         println(controller.gladiatorInfo(infoCommand._1, infoCommand._2))
                     case None => println(CORRECT_FORMAT_MESSAGE)
                 }
             case "s" => println(controller.getShop)
             case "b" =>
-                buyCommandBuilder(splitinput) match {
+                buyCommandBuilder(splitInput) match {
                     case Some(buyCommand) =>
                         println(controller.buyGladiator(buyCommand._1,
                             buyCommand._2,
@@ -94,7 +92,7 @@ class Tui(controller: Controller) extends Reactor {
                 }
             case "e" => println(controller.endTurn())
 
-            case _ => println(splitinput.toString())
+            case _ => println(splitInput.toString())
         }
     }
 
