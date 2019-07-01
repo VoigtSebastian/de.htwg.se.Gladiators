@@ -287,7 +287,8 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
                         i <- 0 until controller.playingField.size
                         j <- 0 until controller.playingField.size
                     } {
-                        if (controller.checkMovementPoints(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)) {
+                        if (controller.checkMovementPoints(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)
+                            && controller.checkforPalm(selectedGlad.line, selectedGlad.row, i, j)) {
                             if (controller.checkCellEmpty(i, j)) {
                                 cells(i)(j).setHighlightedSand()
                             }
@@ -299,6 +300,7 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
                                 cells(i)(j).cell.border = LineBorder(java.awt.Color.RED.darker(), 4)
                             }
                         }
+
                     }
                 }
             }
