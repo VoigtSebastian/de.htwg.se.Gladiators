@@ -1,5 +1,7 @@
 package de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl
 
+import java.util
+
 import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.{GameStatus, P1, P2}
 import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
 import de.htwg.se.gladiators.controller.controllerComponent._
@@ -10,6 +12,7 @@ import de.htwg.se.gladiators.model._
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.UndoManager
 
+import scala.collection.mutable
 import scala.swing.Publisher
 
 class Controller @Inject() (val playingField : PlayingField = PlayingField()) extends ControllerInterface with Publisher {
@@ -396,6 +399,12 @@ class Controller @Inject() (val playingField : PlayingField = PlayingField()) ex
             g.movementPoints >= (Math.abs(lineDest - lineStart) + Math.abs(rowDest - rowStart)))
             return true
         false
+    }
+
+    def checkforPalm(lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
+      //https://www.geeksforgeeks.org/shortest-path-in-a-binary-maze/
+      //var q = util.Queue[(Int )]
+      true
     }
 
     def checkMovementPointsAttack(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
