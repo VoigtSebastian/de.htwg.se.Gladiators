@@ -85,4 +85,7 @@ class Controller @Inject() (val playingField: PlayingField) extends ControllerIn
     def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int): String = ""
 
     def checkCellEmpty(line: Int, row: Int): Boolean = false
-}
+
+    def checkforPalm(lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = false
+
+    }
