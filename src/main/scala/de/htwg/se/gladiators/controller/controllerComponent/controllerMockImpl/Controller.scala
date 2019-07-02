@@ -7,12 +7,14 @@ import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.{GameStat
 import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
 import de.htwg.se.gladiators.controller.controllerComponent._
 import de.htwg.se.gladiators.model._
+import de.htwg.se.gladiators.model.fileIoComponent.FileIOInterface
+import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.UndoManager
 
 import scala.swing.Publisher
 
-class Controller @Inject() (val playingField: PlayingField) extends ControllerInterface with Publisher {
+class Controller @Inject() (val playingField: PlayingFieldInterface) extends ControllerInterface with Publisher {
 
     val undoManager = new UndoManager
     var gameStatus: GameStatus = GameStatus.P1
@@ -22,8 +24,9 @@ class Controller @Inject() (val playingField: PlayingField) extends ControllerIn
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     var shop = Shop(10)
     val injector = Guice.createInjector(new GladiatorsModule)
+    var fileIo =  injector.getInstance((classOf[FileIOInterface]))
 
-   // val playingField = PlayingField()
+    // val playingField = PlayingField()
 
     def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
 
@@ -88,4 +91,8 @@ class Controller @Inject() (val playingField: PlayingField) extends ControllerIn
 
     def checkforPalm(lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = false
 
-    }
+    def save(): Unit = {}
+
+    def load(): Unit = {}
+
+}
