@@ -249,6 +249,12 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
                 controller.players(1).name = nameInput
                 refreshStatus
             })
+            contents += new MenuItem(scala.swing.Action("Map speichern") {
+                controller.save
+            })
+            contents += new MenuItem(scala.swing.Action("Map laden") {
+                controller.load
+            })
             contents += new MenuItem(scala.swing.Action("Exit") {
                 System.exit(0)
             })

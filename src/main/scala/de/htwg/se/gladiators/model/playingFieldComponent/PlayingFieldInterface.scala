@@ -1,5 +1,9 @@
 package de.htwg.se.gladiators.model.playingFieldComponent
 
+import com.google.inject.Guice
+import de.htwg.se.gladiators.GladiatorsModule
+import de.htwg.se.gladiators.model.CellType.CellType
+import de.htwg.se.gladiators.model.fileIoComponent.FileIOInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.model.{Cell, Gladiator}
 
@@ -7,6 +11,7 @@ import scala.util.matching.Regex
 
 trait PlayingFieldInterface {
 
+  val size: Integer
   var gladiatorPlayer1: List[Gladiator]
   var gladiatorPlayer2: List[Gladiator]
   var cells: Array[Array[Cell]]
@@ -51,5 +56,8 @@ trait PlayingFieldInterface {
   def attack(gladiatorAttack: Gladiator, gladiatorDest: Gladiator): String
 
   def resetPlayingField(): Unit
+
+  def setCell(line: Int, row: Int, cellType: CellType): Unit
+
 }
 
