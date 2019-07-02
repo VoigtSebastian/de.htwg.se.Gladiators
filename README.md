@@ -9,19 +9,3 @@ This game is created as an assignment for the course 'Software Engineering' at t
 The corresponding lecture is held by Prof. Marco Boger.
 
 The goal of this assignment is to build a game which works in a Terminal and a GUI.
-
-TODO:
-- add functions to access controller values from gui
-- programm functional !! (no parameterless unit functions)
-- show error messages in GUI (?)
-- random names for gladiators (?) 
-- prevent "jumping" over palms (extends checkmovingpoints)
-
-//
-GUI:
-wenn zelle gehighlighted wird, dann adden in controller liste 
-und nur diese dann redrawen
-
-GUI:
-dimension cellpanel dynamisch
-GUI menü, größe selber aussuchen und dann die dimension von den bildern anpassen
