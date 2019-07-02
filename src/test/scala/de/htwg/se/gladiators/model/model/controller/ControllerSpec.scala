@@ -10,11 +10,11 @@ import org.scalatest.{Matchers, WordSpec}
 class ControllerSpec extends WordSpec with Matchers {
     "A controller" when {
         val controller = new Controller()
-        controller.createRandom(7)
+        controller.createRandom(15)
         val xLegal = 5
         val yLegal = 5
 
-        val xIllegal = 10
+        val xIllegal = 20
         val yIllegal = 12
         "checking coordinates " + xLegal + " " + yLegal in {
             controller.isCoordinateLegal(xLegal, yLegal) should be(true)
@@ -25,7 +25,7 @@ class ControllerSpec extends WordSpec with Matchers {
 
     "A controller " when {
         val controller = new Controller()
-        controller.createRandom(7, 0)
+        controller.createRandom(15, 0)
 
         controller.selectedGlad = controller.shop.stock.head
         controller.addGladiator(controller.playingField.size - 2, controller.playingField.size / 2)
@@ -49,7 +49,7 @@ class ControllerSpec extends WordSpec with Matchers {
     }
     "A controller" when {
         val controller = new Controller()
-        controller.createRandom(7, 0)
+        controller.createRandom(15, 0)
         controller.selectedGlad = controller.shop.stock.head
 
         "add a default gladiator" in {
@@ -105,7 +105,7 @@ class ControllerSpec extends WordSpec with Matchers {
     "A controller " when {
         val pf = PlayingField(7)
         val controller = new Controller()
-        controller.createRandom(7, 0)
+        controller.createRandom(15, 0)
 
         controller.selectedGlad = controller.shop.stock.head
         controller.addGladiator(controller.playingField.size - 2, controller.playingField.size / 2)
