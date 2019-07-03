@@ -9,13 +9,15 @@ import CommandStatus._
 import com.google.inject.{Guice, Inject}
 import de.htwg.se.gladiators.GladiatorsModule
 import de.htwg.se.gladiators.model._
+import de.htwg.se.gladiators.model.fileIoComponent.FileIOInterface
+import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.UndoManager
 
 import scala.collection.mutable
 import scala.swing.Publisher
 
-class Controller @Inject() (val playingField : PlayingField = PlayingField()) extends ControllerInterface with Publisher {
+class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingField()) extends ControllerInterface with Publisher {
 
     val undoManager = new UndoManager
     var gameStatus: GameStatus = GameStatus.P1
@@ -25,7 +27,7 @@ class Controller @Inject() (val playingField : PlayingField = PlayingField()) ex
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     var shop = Shop(10)
     val injector = Guice.createInjector(new GladiatorsModule)
-    //val playingField = PlayingField()
+    var fileIo = injector.getInstance((classOf[FileIOInterface]))
 
     playingField.createRandom(15)
 
@@ -446,6 +448,16 @@ class Controller @Inject() (val playingField : PlayingField = PlayingField()) ex
         } else {
             false
         }
+    }
+
+    def save(): Unit = {
+        fileIo.save(playingField)
+    }
+
+    def load(): Unit = {
+        val temppf = fileIo.load
+        playingField.cells = temppf.cells
+        publish(new PlayingFieldChanged)
     }
 
 }

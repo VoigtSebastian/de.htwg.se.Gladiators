@@ -1,6 +1,9 @@
 package de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl
 
-import com.google.inject.Inject
+import com.google.inject.{Guice, Inject}
+import de.htwg.se.gladiators.GladiatorsModule
+import de.htwg.se.gladiators.model.CellType.CellType
+import de.htwg.se.gladiators.model.fileIoComponent.FileIOInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.{Cell, CellType, Gladiator, GladiatorType}
 
@@ -57,11 +60,11 @@ case class PlayingField @Inject() (size: Integer = 15) extends PlayingFieldInter
             if (!(currentCellType == CellType.BASE))
                 gladiator.gladiatorType match {
                     case GladiatorType.TANK => ret = ret.substring(0, gladiator.row) +
-                        'T' + ret.substring(gladiator.row + 1)
+                      'T' + ret.substring(gladiator.row + 1)
                     case GladiatorType.BOW => ret = ret.substring(0, gladiator.row) +
-                        'B' + ret.substring(gladiator.row + 1)
+                      'B' + ret.substring(gladiator.row + 1)
                     case GladiatorType.SWORD => ret = ret.substring(0, gladiator.row) +
-                        'S' + ret.substring(gladiator.row + 1)
+                      'S' + ret.substring(gladiator.row + 1)
                 }
         }
         ret
@@ -106,7 +109,7 @@ case class PlayingField @Inject() (size: Integer = 15) extends PlayingFieldInter
         cells(length - 1)(length / 2) = Cell(CellType.BASE)
     }
 
-    def addGladPlayerOne(gladiator: Gladiator): Unit= {
+    def addGladPlayerOne(gladiator: Gladiator): Unit = {
         gladiatorPlayer1 = gladiatorPlayer1 ::: gladiator :: Nil
     }
 
@@ -151,20 +154,20 @@ case class PlayingField @Inject() (size: Integer = 15) extends PlayingFieldInter
             c match {
                 //gladiators
                 case 'S' => returnValue = returnValue + (TEXT_COLOR_BLACK +
-                    UNIT_BACKGROUND + " S " + RESET_ANSI_ESCAPE) //-> SWORD
+                  UNIT_BACKGROUND + " S " + RESET_ANSI_ESCAPE) //-> SWORD
                 case 'B' => returnValue = returnValue + (TEXT_COLOR_BLACK +
-                    UNIT_BACKGROUND + " B " + RESET_ANSI_ESCAPE) //-> BOW
+                  UNIT_BACKGROUND + " B " + RESET_ANSI_ESCAPE) //-> BOW
                 case 'T' => returnValue = returnValue + (TEXT_COLOR_BLACK +
-                    UNIT_BACKGROUND + " T " + RESET_ANSI_ESCAPE) //-> TANK
+                  UNIT_BACKGROUND + " T " + RESET_ANSI_ESCAPE) //-> TANK
                 //cells
                 case '0' => returnValue = returnValue + (TEXT_COLOR_BLACK +
-                    SAND_BACKGROUND + " S " + RESET_ANSI_ESCAPE) //-> SAND
+                  SAND_BACKGROUND + " S " + RESET_ANSI_ESCAPE) //-> SAND
                 case '1' => returnValue = returnValue + (TEXT_COLOR_BLACK +
-                    PALM_BACKGROUND + " P " + RESET_ANSI_ESCAPE) //-> PALM
+                  PALM_BACKGROUND + " P " + RESET_ANSI_ESCAPE) //-> PALM
                 case '2' => returnValue = returnValue + (TEXT_COLOR_BLACK +
-                    BASE_BACKGROUND + " B " + RESET_ANSI_ESCAPE) //-> BASE
+                  BASE_BACKGROUND + " B " + RESET_ANSI_ESCAPE) //-> BASE
                 case '3' => returnValue = returnValue + (TEXT_COLOR_BLACK +
-                    BASE_BACKGROUND + " G " + RESET_ANSI_ESCAPE) //-> BASE
+                  BASE_BACKGROUND + " G " + RESET_ANSI_ESCAPE) //-> BASE
             }
         }
         returnValue
@@ -185,4 +188,7 @@ case class PlayingField @Inject() (size: Integer = 15) extends PlayingFieldInter
         createRandom(size, 17)
     }
 
+    def setCell(line: Int, row: Int, cellType: CellType): Unit = {
+        cells(line)(row) = Cell(cellType)
+    }
 }

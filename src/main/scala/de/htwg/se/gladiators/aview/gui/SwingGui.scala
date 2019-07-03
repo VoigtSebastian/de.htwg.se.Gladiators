@@ -229,9 +229,18 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
                 controller.resetGame()
                 redraw()
             })
+            contents += new Separator()
             contents += new MenuItem(scala.swing.Action("New Map") {
                 controller.createRandom(controller.playingField.size)
             })
+            contents += new Separator()
+            contents += new MenuItem(scala.swing.Action("Save Map") {
+                controller.save
+            })
+            contents += new MenuItem(scala.swing.Action("Load Map") {
+                controller.load
+            })
+            contents += new Separator()
             contents += new MenuItem(scala.swing.Action("Playernames") {
                 var nameInput = JOptionPane.showInputDialog(
                     null,
@@ -249,6 +258,7 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
                 controller.players(1).name = nameInput
                 refreshStatus
             })
+            contents += new Separator()
             contents += new MenuItem(scala.swing.Action("Exit") {
                 System.exit(0)
             })
