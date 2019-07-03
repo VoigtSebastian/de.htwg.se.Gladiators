@@ -14,15 +14,15 @@ class GladiatorsModule extends AbstractModule with ScalaModule {
 
   def configure(): Unit = {
 
-    bindConstant().annotatedWith(Names.named("defaultSize")).to(defaultSize)
-    //bind[PlayingFieldInterface].annotatedWithName("defaultSize").toInstance(new PlayingField(defaultSize))
-
     bind[ControllerInterface].to[controllerBaseImpl.Controller]
     bind[PlayingFieldInterface].to[playingFieldBaseImpl.PlayingField]
     bind[FileIOInterface].to[fileIoJsonImpl.FileIO]
 
     bind[PlayingField].toInstance(new PlayingField(defaultSize))
 
-
   }
 }
+
+
+
+
