@@ -1,16 +1,8 @@
 package de.htwg.se.gladiators.aview.gui
 
-import java.awt.GridBagConstraints
-
-import com.google.inject.Inject
-import de.htwg.se.gladiators.controller._
 import de.htwg.se.gladiators.controller.controllerComponent._
-import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl._
-import de.htwg.se.gladiators.model.{CellType, Gladiator, GladiatorType}
-import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
-import javax.swing.SpringLayout.Constraints
+import de.htwg.se.gladiators.model.{Gladiator, GladiatorType}
 import javax.swing._
-import javax.swing.text.Position
 
 import scala.swing.{Alignment, BorderPanel, Button, Dimension, Font, Frame, GridPanel, TextField, _}
 import scala.swing.Swing.LineBorder
@@ -99,7 +91,7 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
                         if (c == b) {
                             //controller = controller.changeCommand(CommandStatus.CR)
 
-                            controller.selectedGlad = controller.shop.stock(i)
+                            controller.selectedGlad = controller.shop.stock(i)._1
                             for (i <- controller.baseArea(controller.players(controller.gameStatus.id))) {
                                 // cells(i._1)(i._2).cell.border = LineBorder(java.awt.Color.GREEN, 7)
                                 cells(i._1)(i._2).setHighlightedSand()
@@ -371,21 +363,21 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
     def showShop: Unit = {
         for ((g, i) <- controller.shop.stock.zipWithIndex) {
             i match {
-                case 0 => shopPanel.glad1.icon = getGladIcon(g)
-                    shopPanel.glad1.text = controller.shop.calcCost(g) + "$"
-                    shopPanel.glad1_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt + "</body></html>\""
-                case 1 => shopPanel.glad2.icon = getGladIcon(g)
-                    shopPanel.glad2.text = controller.shop.calcCost(g) + "$"
-                    shopPanel.glad2_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt + "</body></html>\""
-                case 2 => shopPanel.glad3.icon = getGladIcon(g)
-                    shopPanel.glad3.text = controller.shop.calcCost(g) + "$"
-                    shopPanel.glad3_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt + "</body></html>\""
-                case 3 => shopPanel.glad4.icon = getGladIcon(g)
-                    shopPanel.glad4.text = controller.shop.calcCost(g) + "$"
-                    shopPanel.glad4_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt + "</body></html>\""
-                case 4 => shopPanel.glad5.icon = getGladIcon(g)
-                    shopPanel.glad5.text = controller.shop.calcCost(g) + "$"
-                    shopPanel.glad5_l.text = "<html><body>HP: " + g.hp.toInt + "<br>AP: " + g.ap.toInt + "<br>MV: " + g.movementPoints.toInt + "</body></html>\""
+                case 0 => shopPanel.glad1.icon = getGladIcon(g._1)
+                    shopPanel.glad1.text = controller.shop.calcCost(g._1) + "$"
+                    shopPanel.glad1_l.text = "<html><body>HP: " + g._1.hp.toInt + "<br>AP: " + g._1.ap.toInt + "<br>MV: " + g._1.movementPoints.toInt + "</body></html>\""
+                case 1 => shopPanel.glad2.icon = getGladIcon(g._1)
+                    shopPanel.glad2.text = controller.shop.calcCost(g._1) + "$"
+                    shopPanel.glad2_l.text = "<html><body>HP: " + g._1.hp.toInt + "<br>AP: " + g._1.ap.toInt + "<br>MV: " + g._1.movementPoints.toInt + "</body></html>\""
+                case 2 => shopPanel.glad3.icon = getGladIcon(g._1)
+                    shopPanel.glad3.text = controller.shop.calcCost(g._1) + "$"
+                    shopPanel.glad3_l.text = "<html><body>HP: " + g._1.hp.toInt + "<br>AP: " + g._1.ap.toInt + "<br>MV: " + g._1.movementPoints.toInt + "</body></html>\""
+                case 3 => shopPanel.glad4.icon = getGladIcon(g._1)
+                    shopPanel.glad4.text = controller.shop.calcCost(g._1) + "$"
+                    shopPanel.glad4_l.text = "<html><body>HP: " + g._1.hp.toInt + "<br>AP: " + g._1.ap.toInt + "<br>MV: " + g._1.movementPoints.toInt + "</body></html>\""
+                case 4 => shopPanel.glad5.icon = getGladIcon(g._1)
+                    shopPanel.glad5.text = controller.shop.calcCost(g._1) + "$"
+                    shopPanel.glad5_l.text = "<html><body>HP: " + g._1.hp.toInt + "<br>AP: " + g._1.ap.toInt + "<br>MV: " + g._1.movementPoints.toInt + "</body></html>\""
                 case _ =>
             }
         }
