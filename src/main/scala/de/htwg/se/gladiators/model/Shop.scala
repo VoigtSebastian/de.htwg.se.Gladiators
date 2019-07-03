@@ -4,9 +4,9 @@ import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
 
 case class Shop(amountGladiatorsInStock: Int) {
 
-    var stock: List[Gladiator] = List()
+    var stock: List[(Gladiator, Int)] = List()
     for (i <- 0 until amountGladiatorsInStock) {
-        stock = stock ::: genGlad() :: Nil
+        stock = stock ::: (genGlad(), 0) :: Nil
     }
 
     def genGlad(): Gladiator = {
@@ -56,27 +56,38 @@ case class Shop(amountGladiatorsInStock: Int) {
         if (index >= stock.size || index < 0)
             return None
         val glad = stock(index)
-        val cost = calcCost(glad)
+        val cost = calcCost(glad._1)
         if (cost > player.credits)
             return None
 
         player.buyItem(cost)
         stock = stock.filter(f => f != glad)
-        stock = stock ::: genGlad() :: Nil
-        glad.player = player
+        stock = stock ::: (genGlad(), 0) :: Nil
+        glad._1.player = player
         player.boughtGladiator = true
-        Option(glad)
+        Option(glad._1)
+    }
+
+    def endTurn(): Unit = {
+        for (i <- stock.indices)
+            stock = stock.updated(i, (stock(i)._1, stock(i)._2 + 1))
+    }
+
+    def kickOut(turns: Int): Unit = {
+        stock = stock.filter(g => g._2 < turns)
+        for (i <- stock.size to amountGladiatorsInStock - 1)
+            stock = stock ::: (genGlad(), 0) :: Nil
     }
 
     override def toString: String = {
         var ret = "Units available in the shop: \n"
         var i = 0
         for (g <- stock) {
-            ret = ret + "Unit " + i + " " + GladiatorType.message(g.gladiatorType) +
-                ":\n\tAttackPoints\t-> " + g.ap.toInt +
-                "\n\tMovementPoints\t-> " + g.movementPoints.toInt +
-                "\n\tHealth Points\t-> " + g.hp.toInt +
-                "\n\tCost\t\t\t-> " + calcCost(g) +
+            ret = ret + "Unit " + i + " " + GladiatorType.message(g._1.gladiatorType) +
+                ":\n\tAttackPoints\t-> " + g._1.ap.toInt +
+                "\n\tMovementPoints\t-> " + g._1.movementPoints.toInt +
+                "\n\tHealth Points\t-> " + g._1.hp.toInt +
+                "\n\tCost\t\t\t-> " + calcCost(g._1) +
                 "\n"
             i = i + 1
         }

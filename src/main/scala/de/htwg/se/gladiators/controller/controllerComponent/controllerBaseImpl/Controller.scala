@@ -1,7 +1,5 @@
 package de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl
 
-import java.util
-
 import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.{GameStatus, P1, P2}
 import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
 import de.htwg.se.gladiators.controller.controllerComponent._
@@ -11,8 +9,6 @@ import de.htwg.se.gladiators.GladiatorsModule
 import de.htwg.se.gladiators.model._
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.UndoManager
-
-import scala.collection.mutable
 import scala.swing.Publisher
 
 class Controller @Inject() (val playingField : PlayingField = PlayingField()) extends ControllerInterface with Publisher {
@@ -25,6 +21,7 @@ class Controller @Inject() (val playingField : PlayingField = PlayingField()) ex
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     var shop = Shop(10)
     val injector = Guice.createInjector(new GladiatorsModule)
+    val kickOutTurns = 7
     //val playingField = PlayingField()
 
     playingField.createRandom(15)
@@ -42,6 +39,8 @@ class Controller @Inject() (val playingField : PlayingField = PlayingField()) ex
     }
 
     def endTurn(): String = {
+        shop.endTurn()
+        shop.kickOut(kickOutTurns)
         playingField.resetGladiatorMoved()
         players(gameStatus.id).boughtGladiator = false
         players(gameStatus.id).credits += 1
@@ -79,7 +78,7 @@ class Controller @Inject() (val playingField : PlayingField = PlayingField()) ex
 
         if (selectedGlad.line == -2) {
             for ((g, i) <- shop.stock.zipWithIndex) {
-                if (g == selectedGlad) {
+                if (g._1 == selectedGlad) {
                     shop.buy(i, players(gameStatus.id)) match {
                         case Some(g) =>
                             selectedGlad.line = line
