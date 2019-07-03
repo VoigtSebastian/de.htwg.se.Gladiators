@@ -6,6 +6,8 @@ import CommandStatus.CommandStatus
 import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.GameStatus
 import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.gladiators.model._
+import de.htwg.se.gladiators.model.fileIoComponent.FileIOInterface
+import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.UndoManager
 
@@ -13,7 +15,7 @@ import scala.swing.Publisher
 
 trait ControllerInterface extends Publisher {
 
-    val playingField: PlayingField
+    val playingField: PlayingFieldInterface
     val undoManager: UndoManager
     var gameStatus: GameStatus
     var commandStatus: CommandStatus
@@ -21,6 +23,7 @@ trait ControllerInterface extends Publisher {
     var selectedCell: (Int, Int)
     var selectedGlad: Gladiator
     var shop: Shop
+    var fileIo: FileIOInterface
 
     def cell(line: Int, row: Int): Cell
 
@@ -103,4 +106,7 @@ trait ControllerInterface extends Publisher {
 
     def checkforPalm(lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean
 
-    }
+    def save: Unit
+
+    def load: Unit
+}
