@@ -25,10 +25,10 @@ class TuiSpec extends WordSpec with Matchers {
     "add a gladiator to the playingField" in {
         controller.createRandom(15,0)
         controller.gameStatus = GameStatus.P1
-        controller.selectedGlad = controller.shop.stock.head
+        controller.selectedGlad = controller.shop.stock.head._1
         val input = "b,1," + (controller.playingField.size - 2).toString + "," + (controller.playingField.size / 2).toString
         tui.processInputLine(input)
-        controller.playingField.gladiatorPlayer1.head.line should be((controller.playingField.size - 2))
+        controller.playingField.gladiatorPlayer1.head.line should be(controller.playingField.size - 2)
     }
     "show a help message" in {
         tui.processInputLine("h")
