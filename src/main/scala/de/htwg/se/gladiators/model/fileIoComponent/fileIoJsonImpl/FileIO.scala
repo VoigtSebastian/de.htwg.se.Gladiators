@@ -63,7 +63,6 @@ class FileIO extends FileIOInterface {
               "row" -> row,
               "cell" -> Json.toJson(playingField.cell(line,row).cellType.id)
             )
-
           }
         )
       )
