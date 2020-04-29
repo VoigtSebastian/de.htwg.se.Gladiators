@@ -68,8 +68,6 @@ trait ControllerInterface extends Publisher {
 
     def gladiatorInfo(line: Int, row: Int): String
 
-    def isCoordinateLegal(line: Int, row: Int): Boolean
-
     def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): (Boolean, String)
 
     def toggleUnitStats(): Unit

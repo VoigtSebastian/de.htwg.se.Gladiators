@@ -7,21 +7,6 @@ import de.htwg.se.gladiators.model.{Cell, CellType, GladiatorType}
 import org.scalatest.{Matchers, WordSpec}
 
 class ControllerSpec extends WordSpec with Matchers {
-    "A controller" when {
-        val controller = new Controller()
-        controller.createRandom(15)
-        val xLegal = 5
-        val yLegal = 5
-
-        val xIllegal = 20
-        val yIllegal = 12
-        "checking coordinates " + xLegal + " " + yLegal in {
-            controller.isCoordinateLegal(xLegal, yLegal) should be(true)
-            controller.isCoordinateLegal(xIllegal, yIllegal) should be(false)
-        }
-    }
-
-
     "A controller " when {
         val controller = new Controller()
         controller.createRandom(15, 0)

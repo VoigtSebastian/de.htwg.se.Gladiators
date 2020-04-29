@@ -172,12 +172,6 @@ class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingFi
         playingField.gladiatorInfo(line: Int, row: Int) + " and is owned by " + players(gameStatus.id)
     }
 
-    def isCoordinateLegal(line: Int, row: Int): Boolean = {
-        if (line < playingField.size && line >= 0 && row < playingField.size && row >= 0)
-            return true
-        false
-    }
-
     def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): (Boolean, String) = {
         val status: MoveType.MoveType = categorizeMove(line, row, lineDest, rowDest)
 
