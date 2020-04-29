@@ -12,7 +12,9 @@ object MoveType extends Enumeration {
     UNIT_NOT_EXISTING,
     GOLD,
     BASE_ATTACK,
-    ALREADY_MOVED = Value
+    ALREADY_MOVED,
+    MOVE_OUT_OF_BOUNDS,
+    OWN_BASE = Value
 
     val map: Map[MoveType, String] = Map[MoveType, String](
         LEGAL_MOVE -> "This move is legal",
@@ -25,7 +27,9 @@ object MoveType extends Enumeration {
         UNIT_NOT_EXISTING -> "There is no unit at this coordinate",
         GOLD -> "Mining Gold",
         BASE_ATTACK -> "This move represents a base attack",
-        ALREADY_MOVED -> "This Gladiator already moved"
+        ALREADY_MOVED -> "This Gladiator already moved",
+        MOVE_OUT_OF_BOUNDS -> "This move is out of bounds",
+        OWN_BASE -> "You can not attack your own base"
     )
 
 
