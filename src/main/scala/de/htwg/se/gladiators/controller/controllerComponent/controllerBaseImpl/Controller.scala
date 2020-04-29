@@ -10,7 +10,8 @@ import de.htwg.se.gladiators.model._
 import de.htwg.se.gladiators.model.fileIoComponent.FileIOInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
-import de.htwg.se.gladiators.util.UndoManager
+import de.htwg.se.gladiators.util.{Coordinate, UndoManager}
+
 import scala.swing.Publisher
 
 class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingField()) extends ControllerInterface with Publisher {
@@ -18,7 +19,7 @@ class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingFi
     val undoManager = new UndoManager
     var gameStatus: GameStatus = GameStatus.P1
     var commandStatus: CommandStatus = CommandStatus.IDLE
-    var players = Array(Player("Player 1"), Player("Player 2"))
+    var players = Array(Player("Player 1"), Player("Player 2", enemyBaseLine=playingField.size - 1))
     var selectedCell: (Int, Int) = (0, 0)
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     var shop = Shop(10)
@@ -59,6 +60,8 @@ class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingFi
     }
 
     def getShop: String = shop.toString
+
+    def getCurrentPlayer: Player = players(gameStatus.id)
 
     def printPlayingField(): String = {
         playingField.toString +
@@ -285,28 +288,6 @@ class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingFi
         }
         selectedCell = (line, row)
         publish(new CellClicked)
-        //selectedCell = (line, row)
-        /*
-        if (commandStatus == CommandStatus.IDLE) {
-            selectedCell = (line, row)
-            publish(new CellClicked)
-        } else if (commandStatus == CommandStatus.CR) {
-            addGladiator(line, row)
-            commandStatus = CommandStatus.IDLE
-            selectedCell = (line, row)
-            publish(new GladChanged)
-        } else if (commandStatus == CommandStatus.MV) {
-            moveGladiator(selectedCell._1, selectedCell._2, line, row)
-            commandStatus = CommandStatus.IDLE
-            selectedCell = (line, row)
-            publish(new GladChanged)
-        } else if (commandStatus == CommandStatus.AT) {
-            attack(selectedCell._1, selectedCell._2, line, row)
-            commandStatus = CommandStatus.IDLE
-            selectedCell = (line, row)
-            publish(new GladChanged)
-        }
-        */
     }
 
     def changeCommand(commandStatus: CommandStatus): Controller = {
@@ -315,74 +296,7 @@ class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingFi
     }
 
     def categorizeMove(lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): MoveType = {
-        if (!isCoordinateLegal(lineStart, rowStart) ||
-            !isCoordinateLegal(lineDest, rowDest))
-            return MoveType.ILLEGAL_MOVE
-
-        val gladStartOption = getGladiatorOption(lineStart, rowStart)
-        val gladDestOption = getGladiatorOption(lineDest, rowDest)
-
-        gladStartOption match {
-            case Some(gladiatorStart) =>
-                if (gladiatorStart.player != players(gameStatus.id))
-                    return MoveType.UNIT_NOT_OWNED_BY_PLAYER
-                if (gladiatorStart.moved)
-                    return MoveType.ALREADY_MOVED
-
-                gladDestOption match {
-                    case Some(gladiatorDest) =>
-                        if (gladiatorStart.player == gladiatorDest.player)
-                            return MoveType.BLOCKED
-                        if (checkMovementPointsAttack(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
-                            MoveType.ATTACK
-                        else
-                            MoveType.INSUFFICIENT_MOVEMENT_POINTS
-                    case None =>
-
-                        if (playingField.cells(lineDest)(rowDest).cellType != CellType.PALM)
-                            if (playingField.cells(lineDest)(rowDest).cellType == CellType.BASE)
-                                if (checkMovementPointsAttack(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
-                                    if (gameStatus == P1 && lineDest == 0)
-                                        MoveType.BASE_ATTACK
-                                    else if (gameStatus == P2 && lineDest == playingField.size - 1)
-                                        MoveType.BASE_ATTACK
-                                    else
-                                        MoveType.ILLEGAL_MOVE
-                                else
-                                    MoveType.ILLEGAL_MOVE
-                            else if (playingField.cells(lineDest)(rowDest).cellType == CellType.GOLD)
-                                if (checkMovementPointsAttack(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
-                                    MoveType.GOLD
-                                else
-                                    MoveType.ILLEGAL_MOVE
-                            else if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
-                                MoveType.LEGAL_MOVE
-                            else
-                                MoveType.INSUFFICIENT_MOVEMENT_POINTS
-                        else
-                            MoveType.MOVE_TO_PALM
-                    /*
-                    if (playingField.cells(lineDest)(rowDest).cellType != CellType.PALM)
-                        if (checkMovementPoints(gladiatorStart, lineStart, rowStart, lineDest, rowDest))
-                            if (playingField.cells(lineDest)(rowDest).cellType == CellType.BASE)
-                                if (gameStatus == P1 && lineDest == 0)
-                                    MoveType.BASE_ATTACK
-                                else if (gameStatus == P2 && lineDest == playingField.size - 1)
-                                    MoveType.BASE_ATTACK
-                                else
-                                    MoveType.ILLEGAL_MOVE
-                            else if (playingField.cells(lineDest)(rowDest).cellType == CellType.GOLD)
-                                MoveType.GOLD
-                            else
-                                MoveType.LEGAL_MOVE
-                        else
-                            MoveType.INSUFFICIENT_MOVEMENT_POINTS
-                    else
-                        MoveType.MOVE_TO_PALM
-                        */
-                }
-            case None => MoveType.UNIT_NOT_EXISTING
-        }
+        playingField.checkMoveType(Coordinate(lineStart, rowStart), Coordinate(lineDest, rowDest), getCurrentPlayer)
     }
 
     def isGladiatorInList(list: List[Gladiator], line: Int, row: Int): Boolean = {
@@ -393,31 +307,17 @@ class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingFi
     }
 
     def checkMovementPoints(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
-        if (g.row == rowStart &&
-            g.line == lineStart &&
-            g.movementPoints >= (Math.abs(lineDest - lineStart) + Math.abs(rowDest - rowStart)))
-            return true
-        false
+        playingField.checkMovementPoints(g, Coordinate(lineStart, rowStart), Coordinate(lineDest, rowDest))
     }
 
     def checkforPalm(lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
-      //https://www.geeksforgeeks.org/shortest-path-in-a-binary-maze/
-      //var q = util.Queue[(Int )]
-      true
+        //https://www.geeksforgeeks.org/shortest-path-in-a-binary-maze/
+        //var q = util.Queue[(Int )]
+        true
     }
 
     def checkMovementPointsAttack(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
-        if (g.row == rowStart &&
-            g.line == lineStart)
-            g.gladiatorType match {
-                case GladiatorType.SWORD | GladiatorType.TANK =>
-                    if (1 >= (Math.abs(lineDest - lineStart) + Math.abs(rowDest - rowStart)))
-                        return true
-                case GladiatorType.BOW =>
-                    if (2 >= (Math.abs(lineDest - lineStart) + Math.abs(rowDest - rowStart)))
-                        return true
-            }
-        false
+        playingField.checkMovementPoints(g, Coordinate(lineStart, rowStart), Coordinate(lineDest, rowDest))
     }
 
     def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int): String = {
