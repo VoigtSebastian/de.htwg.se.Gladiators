@@ -53,8 +53,6 @@ class Controller @Inject() (val playingField: PlayingFieldInterface) extends Con
         playingField.gladiatorInfo(line: Int, row: Int) + " and is owned by " + players(gameStatus.id)
     }
 
-    def isCoordinateLegal(line: Int, row: Int): Boolean = false
-
     def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): (Boolean, String) = (false, "")
 
     def toggleUnitStats(): Unit = {}
