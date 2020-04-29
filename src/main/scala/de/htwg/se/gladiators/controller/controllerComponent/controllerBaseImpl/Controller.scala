@@ -97,7 +97,9 @@ class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingFi
                 }
             }
             false
-        } else {
+        }
+        /*
+        else {
             selectedGlad = shop.genGlad()
             selectedGlad.line = line
             selectedGlad.row = row
@@ -108,6 +110,7 @@ class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingFi
                 playingField.addGladPlayerTwo(GladiatorFactory.createGladiator(line, row, selectedGlad.gladiatorType, players(gameStatus.id)))
             return true
         }
+        */
 
         false
     }
