@@ -1,11 +1,10 @@
 package de.htwg.se.gladiators.model.playingFieldComponent
 
-import com.google.inject.Guice
-import de.htwg.se.gladiators.GladiatorsModule
+import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
 import de.htwg.se.gladiators.model.CellType.CellType
-import de.htwg.se.gladiators.model.fileIoComponent.FileIOInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
-import de.htwg.se.gladiators.model.{Cell, Gladiator}
+import de.htwg.se.gladiators.model.{Cell, Gladiator, Player}
+import de.htwg.se.gladiators.util.Coordinate
 
 import scala.util.matching.Regex
 
@@ -59,5 +58,10 @@ trait PlayingFieldInterface {
 
   def setCell(line: Int, row: Int, cellType: CellType): Unit
 
+  def checkMoveType(startPosition: Coordinate, destinationPosition: Coordinate, currentPlayer: Player): MoveType
+
+  def checkMovementPointsAttack(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean
+
+  def checkMovementPoints(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean
 }
 

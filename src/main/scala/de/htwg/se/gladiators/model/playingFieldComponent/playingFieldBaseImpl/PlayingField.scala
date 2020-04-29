@@ -1,15 +1,18 @@
 package de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl
 
-import com.google.inject.{Guice, Inject}
-import de.htwg.se.gladiators.GladiatorsModule
+import java.security.KeyStore.TrustedCertificateEntry
+
+import com.google.inject.Inject
+import de.htwg.se.gladiators.controller.controllerComponent.MoveType
+import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
 import de.htwg.se.gladiators.model.CellType.CellType
-import de.htwg.se.gladiators.model.fileIoComponent.FileIOInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
-import de.htwg.se.gladiators.model.{Cell, CellType, Gladiator, GladiatorType}
+import de.htwg.se.gladiators.model.{Cell, CellType, Gladiator, GladiatorType, Player}
+import de.htwg.se.gladiators.util.Coordinate
 
 import scala.util.matching.Regex
 
-case class PlayingField @Inject() (size: Integer = 15) extends PlayingFieldInterface {
+case class PlayingField @Inject()(size: Integer = 15) extends PlayingFieldInterface {
 
     var gladiatorPlayer1: List[Gladiator] = List()
     var gladiatorPlayer2: List[Gladiator] = List()
@@ -60,11 +63,11 @@ case class PlayingField @Inject() (size: Integer = 15) extends PlayingFieldInter
             if (!(currentCellType == CellType.BASE))
                 gladiator.gladiatorType match {
                     case GladiatorType.TANK => ret = ret.substring(0, gladiator.row) +
-                      'T' + ret.substring(gladiator.row + 1)
+                        'T' + ret.substring(gladiator.row + 1)
                     case GladiatorType.BOW => ret = ret.substring(0, gladiator.row) +
-                      'B' + ret.substring(gladiator.row + 1)
+                        'B' + ret.substring(gladiator.row + 1)
                     case GladiatorType.SWORD => ret = ret.substring(0, gladiator.row) +
-                      'S' + ret.substring(gladiator.row + 1)
+                        'S' + ret.substring(gladiator.row + 1)
                 }
         }
         ret
@@ -133,6 +136,8 @@ case class PlayingField @Inject() (size: Integer = 15) extends PlayingFieldInter
 
     def cell(line: Int, row: Int): Cell = cells(line)(row)
 
+    def cellAtCoordinate(coordinate: Coordinate): Cell = cell(coordinate.line, coordinate.row)
+
     def gladiatorInfo(line: Int, row: Int): String = {
         var ret = ""
         for (glad <- gladiatorPlayer1)
@@ -154,20 +159,20 @@ case class PlayingField @Inject() (size: Integer = 15) extends PlayingFieldInter
             c match {
                 //gladiators
                 case 'S' => returnValue = returnValue + (TEXT_COLOR_BLACK +
-                  UNIT_BACKGROUND + " S " + RESET_ANSI_ESCAPE) //-> SWORD
+                    UNIT_BACKGROUND + " S " + RESET_ANSI_ESCAPE) //-> SWORD
                 case 'B' => returnValue = returnValue + (TEXT_COLOR_BLACK +
-                  UNIT_BACKGROUND + " B " + RESET_ANSI_ESCAPE) //-> BOW
+                    UNIT_BACKGROUND + " B " + RESET_ANSI_ESCAPE) //-> BOW
                 case 'T' => returnValue = returnValue + (TEXT_COLOR_BLACK +
-                  UNIT_BACKGROUND + " T " + RESET_ANSI_ESCAPE) //-> TANK
+                    UNIT_BACKGROUND + " T " + RESET_ANSI_ESCAPE) //-> TANK
                 //cells
                 case '0' => returnValue = returnValue + (TEXT_COLOR_BLACK +
-                  SAND_BACKGROUND + " S " + RESET_ANSI_ESCAPE) //-> SAND
+                    SAND_BACKGROUND + " S " + RESET_ANSI_ESCAPE) //-> SAND
                 case '1' => returnValue = returnValue + (TEXT_COLOR_BLACK +
-                  PALM_BACKGROUND + " P " + RESET_ANSI_ESCAPE) //-> PALM
+                    PALM_BACKGROUND + " P " + RESET_ANSI_ESCAPE) //-> PALM
                 case '2' => returnValue = returnValue + (TEXT_COLOR_BLACK +
-                  BASE_BACKGROUND + " B " + RESET_ANSI_ESCAPE) //-> BASE
+                    BASE_BACKGROUND + " B " + RESET_ANSI_ESCAPE) //-> BASE
                 case '3' => returnValue = returnValue + (TEXT_COLOR_BLACK +
-                  BASE_BACKGROUND + " G " + RESET_ANSI_ESCAPE) //-> BASE
+                    BASE_BACKGROUND + " G " + RESET_ANSI_ESCAPE) //-> BASE
             }
         }
         returnValue
@@ -190,5 +195,80 @@ case class PlayingField @Inject() (size: Integer = 15) extends PlayingFieldInter
 
     def setCell(line: Int, row: Int, cellType: CellType): Unit = {
         cells(line)(row) = Cell(cellType)
+    }
+
+    def checkMoveType(startPosition: Coordinate, destinationPosition: Coordinate, currentPlayer: Player): MoveType = {
+        if (!isCoordinateLegal(startPosition) && !isCoordinateLegal(destinationPosition))
+            return MoveType.MOVE_OUT_OF_BOUNDS
+        val startGlad = getGladiatorOption(startPosition)
+        val destGlad = getGladiatorOption(destinationPosition)
+
+        (startGlad, destGlad) match {
+            case (None, None) | (None, Some(_)) => MoveType.UNIT_NOT_EXISTING
+            case (Some(attackingGladiator), None) => checkMoveOrBaseAttack(attackingGladiator, startPosition, destinationPosition, currentPlayer)
+            case (Some(attackingGladiator), Some(attackedGladiator)) => checkAttackValid(attackingGladiator, attackedGladiator, startPosition, destinationPosition, currentPlayer)
+        }
+    }
+
+    def isCoordinateLegal(coordinate: Coordinate): Boolean = {
+        if (coordinate.line < size && coordinate.line >= 0 && coordinate.row < size && coordinate.row >= 0)
+            return true
+        false
+    }
+
+    def checkAttackValid(attackingGladiator: Gladiator, target: Gladiator, attackingPosition: Coordinate, targetPosition: Coordinate, currentPlayer: Player): MoveType = {
+        if (attackingGladiator.player != currentPlayer)
+            return MoveType.UNIT_NOT_OWNED_BY_PLAYER
+        if (target.player == currentPlayer)
+            return MoveType.BLOCKED
+        if (checkMovementPointsAttack(attackingGladiator, attackingPosition, targetPosition))
+            MoveType.ATTACK
+        else
+            MoveType.INSUFFICIENT_MOVEMENT_POINTS
+    }
+
+    def checkMoveOrBaseAttack(gladiator: Gladiator, startCoordinate: Coordinate, targetCoordinate: Coordinate, currentPlayer: Player): MoveType = {
+        cellAtCoordinate(targetCoordinate).cellType match {
+            case CellType.PALM => MoveType.MOVE_TO_PALM
+            case CellType.SAND => MoveType.LEGAL_MOVE
+            case CellType.GOLD => MoveType.GOLD
+            case CellType.BASE => checkBaseAttack(startCoordinate, targetCoordinate, gladiator, currentPlayer)
+        }
+    }
+
+    def checkBaseAttack(start: Coordinate, destination: Coordinate, gladiator: Gladiator, currentPlayer: Player): MoveType = {
+         ((destination.line == currentPlayer.enemyBaseLine) && checkMovementPointsAttack(gladiator, start, destination)) match {
+             case true => MoveType.BASE_ATTACK
+             case false => MoveType.OWN_BASE
+         }
+
+    }
+
+    def getGladiatorOption(position: Coordinate): Option[Gladiator] = {
+        for (g <- gladiatorPlayer1 ::: gladiatorPlayer2) {
+            if (g.line == position.line && g.row == position.row)
+                return Some(g)
+        }
+        None
+    }
+
+    def checkMovementPointsAttack(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean = {
+        if (g.row == startPosition.row && g.line == startPosition.line)
+            g.gladiatorType match {
+                case GladiatorType.SWORD | GladiatorType.TANK =>
+                    if (1 >= (Math.abs(destination.line - startPosition.line) + Math.abs(destination.row - startPosition.row)))
+                        return true
+                case GladiatorType.BOW =>
+                    if (2 >= (Math.abs(destination.line - startPosition.line) + Math.abs(destination.row - startPosition.row)))
+                        return true
+            }
+        false
+    }
+
+    def checkMovementPoints(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean = {
+        if (g.row == startPosition.row && g.line == startPosition.line &&
+            g.movementPoints >= (Math.abs(destination.line - startPosition.line) + Math.abs(destination.row - startPosition.row)))
+            return true
+        false
     }
 }
