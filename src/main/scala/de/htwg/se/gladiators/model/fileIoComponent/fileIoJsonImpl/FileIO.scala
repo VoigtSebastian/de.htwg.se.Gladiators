@@ -16,13 +16,12 @@ import scala.io.Source
 class FileIO extends FileIOInterface {
 
   override def load: PlayingFieldInterface = {
-    var playingField: PlayingFieldInterface = null
+  // var playingField: PlayingFieldInterface = null
     val source: String = Source.fromFile("playingfield.json").getLines.mkString
     val json: JsValue = Json.parse(source)
     val size = (json \ "playingfield" \ "size").get.toString.toInt
     val injector = Guice.createInjector(new GladiatorsModule)
-
-    playingField = injector.getInstance((classOf[PlayingFieldInterface]))
+    val playingField = injector.getInstance((classOf[PlayingFieldInterface]))
 
     for (index <- 0 until size * size) {
       val line = (json \\ "line")(index).as[Int]
