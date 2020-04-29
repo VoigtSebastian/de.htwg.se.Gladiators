@@ -129,7 +129,7 @@ class Tui (controller: ControllerInterface) extends Reactor {
 
     def moveCommandBuilder(v: Vector[String]): Option[(Int, Int, Int, Int)] = {
         if (v.size != 5)
-            None
+            return None
         val ret = (toInt(v(1)), toInt(v(2)), toInt(v(3)), toInt(v(4)))
         ret match {
             case (Some(i), Some(j), Some(k), Some(l)) => Some(i, j, k, l)
