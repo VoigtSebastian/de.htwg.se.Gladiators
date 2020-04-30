@@ -49,3 +49,6 @@ sudoku.log
 
 # Application backup
 grid.json
+
+*.bloop
+metals*
