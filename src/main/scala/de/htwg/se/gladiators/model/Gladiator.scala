@@ -9,6 +9,14 @@ case class Gladiator(line: Int, row: Int, movementPoints: Double, ap: Double, hp
         this.copy(line = line, row = row)
     }
 
+    def updateMoved(moved: Boolean): Gladiator = {
+        this.copy(moved = moved)
+    }
+
+    def getAttacked(ap: Double): Gladiator = {
+        this.copy(hp = hp - ap)
+    }
+
     override def toString: String = {
         "The gladiator in line " + line + " and row " + row +
             " has " + movementPoints + " movement points, " +

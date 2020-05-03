@@ -74,8 +74,10 @@ case class PlayingField @Inject()(size: Integer = 15) extends PlayingFieldInterf
     }
 
     def resetGladiatorMoved(): Unit = {
-        for (glad <- gladiatorPlayer1 ::: gladiatorPlayer2)
-            glad.moved = false
+        for (i <- gladiatorPlayer1.indices)
+            gladiatorPlayer1(i) = gladiatorPlayer1(i).updateMoved(false)
+        for (i <- gladiatorPlayer2.indices)
+            gladiatorPlayer2(i) = gladiatorPlayer2(i).updateMoved(false)
     }
 
     def formatPlayingFieldAddStats(playingField: String): String = {
