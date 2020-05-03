@@ -17,6 +17,10 @@ case class Gladiator(line: Int, row: Int, movementPoints: Double, ap: Double, hp
         this.copy(hp = hp - ap)
     }
 
+    def assignPlayer(player: Player): Gladiator = {
+        this.copy(player = player)
+    }
+
     override def toString: String = {
         "The gladiator in line " + line + " and row " + row +
             " has " + movementPoints + " movement points, " +

@@ -11,9 +11,9 @@ import scala.util.matching.Regex
 trait PlayingFieldInterface {
 
   val size: Integer
-  var gladiatorPlayer1: List[Gladiator]
-  var gladiatorPlayer2: List[Gladiator]
-  var cells: Array[Array[Cell]]
+  val gladiatorPlayer1: List[Gladiator]
+  val gladiatorPlayer2: List[Gladiator]
+  val cells: Array[Array[Cell]]
   var toggleUnitStats: Boolean
 
   val SAND_BACKGROUND: String
@@ -24,7 +24,7 @@ trait PlayingFieldInterface {
   val RESET_ANSI_ESCAPE: String
   val REGEX_COMMANDS: Regex
 
-  def setField(cells: Array[Array[Cell]]): PlayingField
+  //def setField(cells: Array[Array[Cell]]): PlayingField
 
   override def toString: String
 
@@ -32,17 +32,19 @@ trait PlayingFieldInterface {
 
   def formatLineAddGladiators(gladiator: Gladiator, retString: String, line: Int): String
 
-  def resetGladiatorMoved(): Unit
+  def resetGladiatorMoved(): PlayingField
 
   def formatPlayingFieldAddStats(playingField: String): String
 
-  def createRandom(length: Int, palmRate: Int = 17): Unit
+  def createRandomCells(length: Int, palmRate: Int = 17): PlayingField
 
-  def addGladPlayerOne(gladiator: Gladiator): Unit
+  def addGladPlayerOne(gladiator: Gladiator): PlayingField
 
-  def addGladPlayerTwo(gladiator: Gladiator): Unit
+  def addGladPlayerTwo(gladiator: Gladiator): PlayingField
 
   def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): PlayingField
+
+  def setGladiator(line: Int, row: Int, glad: Gladiator): PlayingField
 
   def getSize: Integer
 
@@ -52,9 +54,9 @@ trait PlayingFieldInterface {
 
   def evalPrintLine(line: String): String
 
-  def attack(gladiatorAttack: Gladiator, gladiatorDest: Gladiator): String
+  def attack(gladiatorAttack: Gladiator, gladiatorDest: Gladiator): PlayingField
 
-  def resetPlayingField(): Unit
+  def resetPlayingField(): PlayingField
 
   def setCell(line: Int, row: Int, cellType: CellType): Unit
 
