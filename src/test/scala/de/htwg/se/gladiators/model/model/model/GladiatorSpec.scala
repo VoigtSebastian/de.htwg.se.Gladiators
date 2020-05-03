@@ -29,14 +29,6 @@ class GladiatorSpec extends WordSpec with Matchers {
         gladiator.gladiatorType should be (SWORD)
       }
     }
-    "after levelUp" should {
-      var gladiator2 = Gladiator(5, 5, 10.0, 50.0, 100.0, BOW, new Player)
-
-      gladiator2.levelUp(50)
-      "have more ap" in {
-        gladiator2.ap should be (100.0)
-      }
-    }
     "after move" should {
       var gladiator3 = Gladiator(5,5,10.0,50.0,100.0, TANK, new Player)
       gladiator3.move(4,4)

@@ -14,26 +14,24 @@ import de.htwg.se.gladiators.util.{Coordinate, UndoManager}
 
 import scala.swing.Publisher
 
-class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingField()) extends ControllerInterface with Publisher {
-
+class Controller @Inject() () extends ControllerInterface with Publisher {
+    
+    var playingField : PlayingFieldInterface = PlayingField().createRandomCells(15)
     val undoManager = new UndoManager
     var gameStatus: GameStatus = GameStatus.P1
     var commandStatus: CommandStatus = CommandStatus.IDLE
-    var players = Array(Player("Player 1"), Player("Player 2", enemyBaseLine=playingField.size - 1))
+    var players = Array(Player("Player 1"), Player("Player 2", enemyBaseLine = playingField.size - 1))
     var selectedCell: (Int, Int) = (0, 0)
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     var shop = Shop(10)
     val injector = Guice.createInjector(new GladiatorsModule)
     val kickOutTurns = 7
-    //val playingField = PlayingField()
     var fileIo = injector.getInstance((classOf[FileIOInterface]))
-
-    playingField.createRandom(15)
 
     def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
 
     def resetGame(): Unit = {
-        playingField.resetPlayingField()
+        playingField = playingField.resetPlayingField()
         gameStatus = GameStatus.P1
         commandStatus = CommandStatus.IDLE
         players = Array(Player("Player1"), Player("Player2"))
@@ -45,7 +43,7 @@ class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingFi
     def endTurn(): String = {
         shop.endTurn()
         shop.kickOut(kickOutTurns)
-        playingField.resetGladiatorMoved()
+        playingField = playingField.resetGladiatorMoved()
         players(gameStatus.id).boughtGladiator = false
         players(gameStatus.id).credits += 1
         nextPlayer()
@@ -54,7 +52,7 @@ class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingFi
     }
 
     def createRandom(size: Int, palmRate: Int = 17): Unit = {
-        playingField.createRandom(size, palmRate)
+        playingField = playingField.createRandomCells(size, palmRate)
         //notifyObservers
         publish(new PlayingFieldChanged)
     }
@@ -87,13 +85,13 @@ class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingFi
                 if (g._1 == selectedGlad) {
                     shop.buy(i, players(gameStatus.id)) match {
                         case Some(g) =>
-                            selectedGlad.line = line
-                            selectedGlad.row = row
-                            selectedGlad.player = players(gameStatus.id)
+                            var gladiator = g
+                            selectedGlad = gladiator.assignPlayer(players(gameStatus.id))
+                            selectedGlad = gladiator.move(line, row)
                             if (gameStatus == P1)
-                                playingField.addGladPlayerOne(selectedGlad)
+                                playingField = playingField.addGladPlayerOne(selectedGlad)
                             else if (gameStatus == P2)
-                                playingField.addGladPlayerTwo(selectedGlad)
+                                playingField = playingField.addGladPlayerTwo(selectedGlad)
                             return true
                         case None => return false
                     }
@@ -128,15 +126,15 @@ class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingFi
         if (!baseArea(players(gameStatus.id)).contains((line, row)))
             return "You can not create a unit outside you base area"
 
-        val glad = shop.buy(index, players(gameStatus.id))
+        var glad = shop.buy(index, players(gameStatus.id))
         glad match {
             case Some(g) =>
-                g.line = line
-                g.row = row
+                var gladiator = g
+                gladiator = gladiator.move(line, row)
                 if (gameStatus == P1)
-                    playingField.addGladPlayerOne(g)
+                    playingField = playingField.addGladPlayerOne(gladiator)
                 if (gameStatus == P2)
-                    playingField.addGladPlayerTwo(g)
+                    playingField = playingField.addGladPlayerTwo(gladiator)
                 publish(new GladChanged)
                 "Gladiator " + g.toString + " added successfully"
             case None => "Please enter a legal index and make sure that you have enough credits!"
@@ -182,7 +180,9 @@ class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingFi
             case MoveType.LEGAL_MOVE =>
                 undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
                 getGladiatorOption(lineDest, rowDest) match {
-                    case Some(g) => g.moved = true
+                    case Some(g) =>
+                        var gladiator = g
+                        gladiator = gladiator.updateMoved(true)
                     case None =>
                 }
                 publish(new GladChanged)
@@ -223,19 +223,20 @@ class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingFi
                 val ret = playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
                 getGladiatorOption(lineAttack, rowAttack) match {
                     case Some(g) =>
-                        g.moved = true
-                        (true, ret)
+                        var gladiator = g
+                        gladiator = gladiator.updateMoved(true)
+                        (true, "GladiatorAttack")
                     case None => (false, "Something went really wrong in attack")
                 }
             case MoveType.GOLD =>
-                val glad = getGladiator(lineAttack, rowAttack)
-                glad.moved = true
+                var glad = getGladiator(lineAttack, rowAttack)
+                glad = glad.updateMoved(true)
 
                 (true, mineGold(glad, lineDest, rowDest))
             case MoveType.BASE_ATTACK =>
-                val glad = getGladiator(lineAttack, rowAttack)
+                var glad = getGladiator(lineAttack, rowAttack)
                 players(1 - gameStatus.id).baseHP -= glad.ap.toInt
-                glad.moved = true
+                glad = glad.updateMoved(true)
                 if (players(1 - gameStatus.id).baseHP <= 0) {
                     publish(new GameOver)
                 }
@@ -353,7 +354,8 @@ class Controller @Inject() (val playingField : PlayingFieldInterface = PlayingFi
 
     def load(): Unit = {
         val temppf = fileIo.load
-        playingField.cells = temppf.cells
+       // todo write setter ? 
+        // playingField.cells = temppf.cells
         publish(new PlayingFieldChanged)
     }
 

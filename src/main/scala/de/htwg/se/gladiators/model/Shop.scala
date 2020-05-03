@@ -55,17 +55,17 @@ case class Shop(amountGladiatorsInStock: Int) {
     def buy(index: Int, player: Player): Option[Gladiator] = {
         if (index >= stock.size || index < 0)
             return None
-        val glad = stock(index)
-        val cost = calcCost(glad._1)
+        var glad = stock(index)._1
+        val cost = calcCost(glad)
         if (cost > player.credits)
             return None
 
         player.buyItem(cost)
-        stock = stock.filter(f => f != glad)
+        stock = stock.filter(f => f != stock(index))
         stock = stock ::: (genGlad(), 0) :: Nil
-        glad._1.player = player
+        glad = glad.assignPlayer(player)
         player.boughtGladiator = true
-        Option(glad._1)
+        Option(glad)
     }
 
     def endTurn(): Unit = {
