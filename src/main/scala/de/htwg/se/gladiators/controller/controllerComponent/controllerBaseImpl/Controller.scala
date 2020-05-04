@@ -44,8 +44,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         shop.endTurn()
         shop.kickOut(kickOutTurns)
         playingField = playingField.resetGladiatorMoved()
-        players(gameStatus.id).boughtGladiator = false
-        players(gameStatus.id).credits += 1
+        players(gameStatus.id) = players(gameStatus.id).updateBoughtGladiator(false).addCredits(1)
         nextPlayer()
         publish(new GladChanged)
         "Turn successfully ended"
@@ -235,7 +234,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
                 (true, mineGold(glad, lineDest, rowDest))
             case MoveType.BASE_ATTACK =>
                 var glad = getGladiator(lineAttack, rowAttack)
-                players(1 - gameStatus.id).baseHP -= glad.ap.toInt
+                players(1 - gameStatus.id) = players(1 - gameStatus.id).baseAttacked(glad.ap.toInt)
                 glad = glad.updateMoved(true)
                 if (players(1 - gameStatus.id).baseHP <= 0) {
                     publish(new GameOver)
@@ -322,12 +321,13 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
     }
 
     def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int): String = {
-        var player: Int = 0
-        if (gladiatorAttack.player == players(0))
-            player = 0
-        else
-            player = 1
-        players(player).credits += (gladiatorAttack.ap / 10).toInt
+        var playerId: Int = 0
+        if (gladiatorAttack.player.name == players(0).name) {
+            playerId = 0
+        } else {
+            playerId = 1
+        }
+        players(playerId) = players(playerId).addCredits((gladiatorAttack.ap / 10).toInt)
         var randLine = scala.util.Random.nextInt(playingField.size - 4) + 2
         var randRow = scala.util.Random.nextInt(playingField.size)
         while (!checkCellEmpty(randLine, randRow)) {
@@ -354,8 +354,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
     def load(): Unit = {
         val temppf = fileIo.load
-       // todo write setter ? 
-        // playingField.cells = temppf.cells
+        playingField = playingField.updateCells(temppf.cells)
         publish(new PlayingFieldChanged)
     }
 

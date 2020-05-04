@@ -48,7 +48,7 @@ project/.sbtserver
 sudoku.log
 
 # Application backup
-grid.json
+playingfield.json
 
 *.bloop
 metals*
