@@ -14,7 +14,6 @@ import scala.util.matching.Regex
 
 case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gladiator] = List(), gladiatorPlayer2: List[Gladiator] = List(), cells: Array[Array[Cell]] = Array.ofDim[Cell](15, 15)) extends PlayingFieldInterface {
 
-    
     var toggleUnitStats = true
 
     val SAND_BACKGROUND = "\033[103m"
@@ -25,14 +24,10 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     val RESET_ANSI_ESCAPE = "\033[0m"
     val REGEX_COMMANDS = new Regex("([a-zA-Z]+)|([0-9]+)")
 
-  //  createRandomCells(size)
 
-    /*
-    def setField(cells: Array[Array[Cell]]): PlayingField = {
-        this.cells = cells
-        this
+    def updateCells(cells: Array[Array[Cell]]): PlayingField = {
+        this.copy(cells = cells)
     }
-    */
 
     override def toString: String = {
         var output = ""
@@ -130,13 +125,22 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): PlayingField = {
-        for (g <- gladiatorPlayer1 ::: gladiatorPlayer2) {
-            // find gladiator
-            if (g.row == row && g.line == line) {
-                g.move(lineDest, rowDest)
+        var i = gladiatorPlayer1.indexWhere(x => x.line == line && x.row == row)
+        if (i != -1) {
+            val glad = gladiatorPlayer1(i).move(lineDest, rowDest)
+            var gladiatorPlayerNew = gladiatorPlayer1.updated(i, glad)
+            this.copy(gladiatorPlayer1 = gladiatorPlayerNew)
+
+        } else {
+            var i = gladiatorPlayer2.indexWhere(x => x.line == line && x.row == row)
+            if (i != -1) {
+                val glad = gladiatorPlayer2(i).move(lineDest, rowDest)
+                var gladiatorPlayerNew = gladiatorPlayer2.updated(i, glad)
+                this.copy(gladiatorPlayer2 = gladiatorPlayerNew)
+            } else {
+                this
             }
         }
-        this
     }
 
     def getSize: Integer = {
@@ -188,24 +192,23 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def attack(gladiatorAttack: Gladiator, gladiatorDest: Gladiator): PlayingField = {
+        var gladiatorPlayer1New = gladiatorPlayer1
+        var gladiatorPlayer2New = gladiatorPlayer2
         var i = gladiatorPlayer1.indexOf((gladiatorDest))
         if (i != -1) {
-            var gladiatorPlayerNew = gladiatorPlayer1.updated(i, gladiatorPlayer1(i).getAttacked(gladiatorAttack.ap))
-            this.copy(gladiatorPlayer1 = gladiatorPlayerNew)
-
+            var gladiatorPlayer1New = gladiatorPlayer1.updated(i, gladiatorPlayer1(i).getAttacked(gladiatorAttack.ap))
         } else {
             i = gladiatorPlayer2.indexOf((gladiatorDest))
-            var gladiatorPlayerNew = gladiatorPlayer2.updated(i, gladiatorPlayer2(i).getAttacked(gladiatorAttack.ap))
-            this.copy(gladiatorPlayer2 = gladiatorPlayerNew)
-
+            if (i!= -1) {
+                var gladiatorPlayer2New = gladiatorPlayer2.updated(i, gladiatorPlayer2(i).getAttacked(gladiatorAttack.ap))
+            } 
         }
-        /*
-        if (gladiatorDest.hp <= 0) {
-            gladiatorPlayer1 = gladiatorPlayer1.filter(g => g != gladiatorDest)
-            gladiatorPlayer2 = gladiatorPlayer2.filter(g => g != gladiatorDest)
+        if (gladiatorPlayer1(i).hp <= 0) {
+            gladiatorPlayer1New = gladiatorPlayer1New.filter(g => g != gladiatorPlayer1(i))
+        } else if (gladiatorPlayer2(i).hp <= 0) {
+            gladiatorPlayer2New = gladiatorPlayer1New.filter(g => g != gladiatorPlayer2(i))
         }
-        gladiatorAttack + " attackes " + gladiatorDest
-        */
+        this.copy(gladiatorPlayer1 = gladiatorPlayer1New, gladiatorPlayer2 = gladiatorPlayer2New)
     }
 
     def setGladiator(line: Int, row: Int, glad: Gladiator): PlayingField = {
@@ -223,8 +226,6 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def resetPlayingField(): PlayingField = {
-        // TODO what here
-        var playingFieldNew = createRandomCells(size)
         this.copy(gladiatorPlayer1 = List(), gladiatorPlayer2 = List())
     }
 

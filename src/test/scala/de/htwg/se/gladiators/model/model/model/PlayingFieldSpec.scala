@@ -25,7 +25,7 @@ class PlayingFieldSpec extends WordSpec with Matchers {
         val RESET_ANSI_ESCAPE = "\033[0m"
 
         var field = PlayingField()
-        field = field.setField(cells)
+        field = field.updateCells(cells)
 
         var glad1 = GladiatorFactory.createGladiator(0, 0, GladiatorType.SWORD, Player())
         var glad2 = GladiatorFactory.createGladiator(1, 1, GladiatorType.SWORD, Player())

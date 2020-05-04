@@ -24,7 +24,7 @@ trait PlayingFieldInterface {
   val RESET_ANSI_ESCAPE: String
   val REGEX_COMMANDS: Regex
 
-  //def setField(cells: Array[Array[Cell]]): PlayingField
+  def updateCells(cells: Array[Array[Cell]]): PlayingField
 
   override def toString: String
 
