@@ -3,6 +3,12 @@ package de.htwg.se.gladiators.model
 case class Player(name: String = "NO_NAME", var credits: Int = 50, baseHP: Int = 200, var boughtGladiator: Boolean = false, enemyBaseLine: Int = 0) {
     override def toString: String = name
 
+    override def equals(that: Any): Boolean =
+        that match {
+        case that: Player => that.canEqual(this) && this.name == that.name && this.enemyBaseLine == that.enemyBaseLine
+        case _ => false
+    }
+
     def updateName(name: String): Player = {
         this.copy(name = name)
     }

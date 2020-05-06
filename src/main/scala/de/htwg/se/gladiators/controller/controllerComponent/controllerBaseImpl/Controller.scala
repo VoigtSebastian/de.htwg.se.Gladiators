@@ -308,16 +308,12 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
     def checkMovementPoints(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
         playingField.checkMovementPoints(g, Coordinate(lineStart, rowStart), Coordinate(lineDest, rowDest))
+        //https://www.geeksforgeeks.org/shortest-path-in-a-binary-maze/
     }
 
-    def checkforPalm(lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
-        //https://www.geeksforgeeks.org/shortest-path-in-a-binary-maze/
-        //var q = util.Queue[(Int )]
-        true
-    }
 
     def checkMovementPointsAttack(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
-        playingField.checkMovementPoints(g, Coordinate(lineStart, rowStart), Coordinate(lineDest, rowDest))
+        playingField.checkMovementPointsAttack(g, Coordinate(lineStart, rowStart), Coordinate(lineDest, rowDest))
     }
 
     def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int): String = {

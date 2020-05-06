@@ -102,8 +102,6 @@ trait ControllerInterface extends Publisher {
 
     def checkCellEmpty(line: Int, row: Int): Boolean
 
-    def checkforPalm(lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean
-
     def save: Unit
 
     def load: Unit
