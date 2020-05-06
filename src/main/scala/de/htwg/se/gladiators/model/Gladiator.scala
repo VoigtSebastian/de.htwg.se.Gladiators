@@ -21,6 +21,10 @@ case class Gladiator(line: Int, row: Int, movementPoints: Double, ap: Double, hp
         this.copy(player = player)
     }
 
+    def !=(g: Gladiator): Boolean = {
+        line != g.line || row != g.row || hp != g.hp || movementPoints != g.movementPoints || ap != g.ap
+    }
+
     override def toString: String = {
         "The gladiator in line " + line + " and row " + row +
             " has " + movementPoints + " movement points, " +
