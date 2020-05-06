@@ -16,8 +16,8 @@ jobs:
     - name: Run tests
       run: sbt test
     
-    - name: Format Code
-      uses: openlawteam/scalafmt-ci@v2.0.2
+    # - name: Format Code
+      # uses: openlawteam/scalafmt-ci@v2.0.2
       # with:
       #   # Args to pass to scalafmt
       #   args: # optional, default is --list
