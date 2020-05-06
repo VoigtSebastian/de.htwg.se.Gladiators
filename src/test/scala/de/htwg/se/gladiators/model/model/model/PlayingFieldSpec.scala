@@ -2,7 +2,10 @@ package de.htwg.se.gladiators.model.model.model
 
 import de.htwg.se.gladiators.model._
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
+import de.htwg.se.gladiators.controller.controllerComponent.MoveType
+import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
 import org.scalatest.{Matchers, WordSpec}
+import de.htwg.se.gladiators.util.Coordinate
 
 class PlayingFieldSpec extends WordSpec with Matchers {
     "The Playing Field" when {
@@ -16,15 +19,41 @@ class PlayingFieldSpec extends WordSpec with Matchers {
             }
         }
 
-        "told to perform an attack" in {
-            var playingField = createPlayingField()
-            val gladP1 = playingField.gladiatorPlayer1.head
-            val gladP2 = playingField.gladiatorPlayer2.head
+        "told to perform an attack" should {
+            "using player two" in {
+                var playingField = createPlayingField()
+                val gladP1 = playingField.gladiatorPlayer1.head
+                val gladP2 = playingField.gladiatorPlayer2.head
 
-            val hpAfterAttack = (gladP2.hp - gladP1.ap).toInt
+                val hpAfterAttack = (gladP2.hp - gladP1.ap).toInt
 
-            playingField = playingField.attack(gladP1, gladP2)
-            playingField.gladiatorPlayer2.head.hp.toInt should be (hpAfterAttack)
+                playingField = playingField.attack(gladP1, gladP2)
+                playingField.gladiatorPlayer2.head.hp.toInt should be (hpAfterAttack)
+            }
+            "using player one" in {
+                var playingField = createPlayingField()
+                val gladP1 = playingField.gladiatorPlayer1.head
+                val gladP2 = playingField.gladiatorPlayer2.head
+
+                val hpAfterAttack = (gladP1.hp - gladP2.ap).toInt
+
+                playingField = playingField.attack(gladP2, gladP1)
+                playingField.gladiatorPlayer1.head.hp.toInt should be (hpAfterAttack)
+            }
+        }
+
+        "categorizing moves" should {
+            "return already moved" in {
+                val playingField = createPlayingField()
+                playingField.checkMoveType(Coordinate(1, 1), Coordinate(0, 1), playingField.gladiatorPlayer2.head.player) should be (MoveType.ALREADY_MOVED)
+            }
+            "return move out of bounds" in {
+                val playingField = createPlayingField()
+                playingField.checkMoveType(Coordinate(1, 1), Coordinate(-1, -1), playingField.gladiatorPlayer2.head.player) should be (MoveType.MOVE_OUT_OF_BOUNDS)
+                playingField.checkMoveType(Coordinate(1, 1), Coordinate(1, playingField.size), playingField.gladiatorPlayer2.head.player) should be (MoveType.MOVE_OUT_OF_BOUNDS)
+                playingField.checkMoveType(Coordinate(1, 1), Coordinate(playingField.size, 1), playingField.gladiatorPlayer2.head.player) should be (MoveType.MOVE_OUT_OF_BOUNDS)
+
+            }
         }
     }
 
