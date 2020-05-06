@@ -75,7 +75,7 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
             gladiatorPlayer1New = gladiatorPlayer1.updated(i, gladiatorPlayer1(i).updateMoved(false))
         for (i <- gladiatorPlayer2New.indices)
             gladiatorPlayer2New = gladiatorPlayer2.updated(i, gladiatorPlayer2(i).updateMoved(false))
-    
+
         this.copy(gladiatorPlayer1 = gladiatorPlayer1New, gladiatorPlayer2 = gladiatorPlayer2New)
     }
 
@@ -201,7 +201,7 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
             i = gladiatorPlayer2.indexOf((gladiatorDest))
             if (i!= -1) {
                 var gladiatorPlayer2New = gladiatorPlayer2.updated(i, gladiatorPlayer2(i).getAttacked(gladiatorAttack.ap))
-            } 
+            }
         }
         if (gladiatorPlayer1(i).hp <= 0) {
             gladiatorPlayer1New = gladiatorPlayer1New.filter(g => g != gladiatorPlayer1(i))
@@ -253,6 +253,8 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def checkAttackValid(attackingGladiator: Gladiator, target: Gladiator, attackingPosition: Coordinate, targetPosition: Coordinate, currentPlayer: Player): MoveType = {
+        if (attackingGladiator.moved)
+            return MoveType.ALREADY_MOVED
         if (attackingGladiator.player != currentPlayer)
             return MoveType.UNIT_NOT_OWNED_BY_PLAYER
         if (target.player == currentPlayer)
@@ -264,6 +266,8 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def checkMoveOrBaseAttack(gladiator: Gladiator, startCoordinate: Coordinate, targetCoordinate: Coordinate, currentPlayer: Player): MoveType = {
+        if (gladiator.moved)
+            return MoveType.ALREADY_MOVED
         cellAtCoordinate(targetCoordinate).cellType match {
             case CellType.PALM => MoveType.MOVE_TO_PALM
             case CellType.SAND => MoveType.LEGAL_MOVE
