@@ -20,7 +20,7 @@ class PlayingFieldSpec extends WordSpec with Matchers {
         }
 
         "told to perform an attack" should {
-            "using player two" in {
+            "use player two" in {
                 var playingField = createPlayingField()
                 val gladP1 = playingField.gladiatorPlayer1.head
                 val gladP2 = playingField.gladiatorPlayer2.head
@@ -30,7 +30,7 @@ class PlayingFieldSpec extends WordSpec with Matchers {
                 playingField = playingField.attack(gladP1, gladP2)
                 playingField.gladiatorPlayer2.head.hp.toInt should be (hpAfterAttack)
             }
-            "using player one" in {
+            "use player one" in {
                 var playingField = createPlayingField()
                 val gladP1 = playingField.gladiatorPlayer1.head
                 val gladP2 = playingField.gladiatorPlayer2.head
