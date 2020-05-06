@@ -6,6 +6,28 @@ import org.scalatest.{Matchers, WordSpec}
 
 class PlayingFieldSpec extends WordSpec with Matchers {
     "The Playing Field" when {
+        "new" should {
+            val playingField = createPlayingField()
+            print(playingField.formatLine(0))
+            "have a nice String representation" in {
+                playingField.formatLine(0) should be("201")
+                playingField.formatLine(1) should be("0S1")
+                playingField.formatLine(2) should be("002")
+            }
+        }
+
+        "can tell a gladiator to attack another" in {
+            var playingField = createPlayingField()
+            val gladP1 = playingField.gladiatorPlayer1.head
+            val gladP2 = playingField.gladiatorPlayer2.head
+
+            val hpAfterAttack = (gladP2.hp - gladP1.ap).toInt
+
+            playingField.attack(gladP1, gladP2).gladiatorPlayer2.head.hp.toInt should be (hpAfterAttack)
+        }
+    }
+
+    def createPlayingField(): PlayingField = {
         val cells = Array.ofDim[Cell](3, 3)
         cells(0)(0) = Cell(CellType.BASE)
         cells(0)(1) = Cell(CellType.SAND)
@@ -30,23 +52,9 @@ class PlayingFieldSpec extends WordSpec with Matchers {
         var glad1 = GladiatorFactory.createGladiator(0, 0, GladiatorType.SWORD, Player())
         var glad2 = GladiatorFactory.createGladiator(1, 1, GladiatorType.SWORD, Player())
 
-        "new" should {
-            print(playingField.formatLine(0))
-            "have a nice String representation" in {
-                playingField.formatLine(0) should be("201")
-                playingField.formatLine(1) should be("001")
-                playingField.formatLine(2) should be("002")
-            }
-        }
+        playingField = playingField.addGladPlayerOne(glad1)
+        playingField = playingField.addGladPlayerTwo(glad2)
 
-        "can add gladiators" in {
-            playingField.addGladPlayerOne(glad1)
-            playingField.addGladPlayerTwo(glad2)
-
-        }
-
-        "can tell a gladiator to attack another" in {
-            playingField.attack(glad1, glad2).contains("attackes") should be (true)
-        }
+        playingField
     }
 }
