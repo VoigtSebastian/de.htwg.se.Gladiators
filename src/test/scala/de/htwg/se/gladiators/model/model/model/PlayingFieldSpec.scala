@@ -24,29 +24,29 @@ class PlayingFieldSpec extends WordSpec with Matchers {
         val TEXT_COLOR_BLACK = "\33[97m"
         val RESET_ANSI_ESCAPE = "\033[0m"
 
-        var field = PlayingField()
-        field = field.updateCells(cells)
+        var playingField = PlayingField()
+        playingField = playingField.updateCells(cells)
 
         var glad1 = GladiatorFactory.createGladiator(0, 0, GladiatorType.SWORD, Player())
         var glad2 = GladiatorFactory.createGladiator(1, 1, GladiatorType.SWORD, Player())
 
         "new" should {
-            print(field.formatLine(0))
+            print(playingField.formatLine(0))
             "have a nice String representation" in {
-                field.formatLine(0) should be("201")
-                field.formatLine(1) should be("001")
-                field.formatLine(2) should be("002")
+                playingField.formatLine(0) should be("201")
+                playingField.formatLine(1) should be("001")
+                playingField.formatLine(2) should be("002")
             }
         }
 
         "can add gladiators" in {
-            field.addGladPlayerOne(glad1)
-            field.addGladPlayerTwo(glad2)
+            playingField.addGladPlayerOne(glad1)
+            playingField.addGladPlayerTwo(glad2)
 
         }
 
         "can tell a gladiator to attack another" in {
-            field.attack(glad1, glad2).contains("attackes") should be (true)
+            playingField.attack(glad1, glad2).contains("attackes") should be (true)
         }
     }
 }
