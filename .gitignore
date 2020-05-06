@@ -51,4 +51,5 @@ sudoku.log
 playingfield.json
 
 *.bloop
-metals*
+.metals/*
+metals.sbt
