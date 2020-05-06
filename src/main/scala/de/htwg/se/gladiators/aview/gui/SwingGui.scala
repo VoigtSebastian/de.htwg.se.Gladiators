@@ -124,7 +124,7 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
         val gladType = new TextField("TY:\nTest")	
         gladType.font = new Font("Verdana", 1, 20)	
         gladType.horizontalAlignment = Alignment.Center
-        
+
         val gladAP = new Button("")
         gladAP.font = new Font("Algeria", 1, 20)
         gladAP.foreground = java.awt.Color.BLACK
@@ -276,8 +276,7 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
                         i <- 0 until controller.playingField.size
                         j <- 0 until controller.playingField.size
                     } {
-                        if (controller.checkMovementPoints(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)
-                            && controller.checkforPalm(selectedGlad.line, selectedGlad.row, i, j)) {
+                        if (controller.checkMovementPoints(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)) {
                             if (controller.checkCellEmpty(i, j)) {
                                 cells(i)(j).setHighlightedSand()
                             }
