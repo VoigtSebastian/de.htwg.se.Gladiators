@@ -33,6 +33,7 @@ src_managed/
 project/boot/
 project/plugins/project/
 project/project/
+project/metals.sbt
 logs/
 project/.sbtserver
 .sbtserver/
@@ -48,7 +49,8 @@ project/.sbtserver
 sudoku.log
 
 # Application backup
-grid.json
+playingfield.json
 
 *.bloop
-metals*
+.metals/*
+metals.sbt

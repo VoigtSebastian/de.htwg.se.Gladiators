@@ -14,7 +14,7 @@ import de.htwg.se.gladiators.util.UndoManager
 
 import scala.swing.Publisher
 
-class Controller @Inject() (val playingField: PlayingFieldInterface) extends ControllerInterface with Publisher {
+class Controller @Inject() () extends ControllerInterface with Publisher {
 
     val undoManager = new UndoManager
     var gameStatus: GameStatus = GameStatus.P1
@@ -25,7 +25,7 @@ class Controller @Inject() (val playingField: PlayingFieldInterface) extends Con
     var shop = Shop(10)
     val injector = Guice.createInjector(new GladiatorsModule)
     var fileIo =  injector.getInstance((classOf[FileIOInterface]))
-
+    var playingField: PlayingFieldInterface = PlayingField()
     // val playingField = PlayingField()
 
     def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
@@ -86,8 +86,6 @@ class Controller @Inject() (val playingField: PlayingFieldInterface) extends Con
     def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int): String = ""
 
     def checkCellEmpty(line: Int, row: Int): Boolean = false
-
-    def checkforPalm(lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = false
 
     def save(): Unit = {}
 

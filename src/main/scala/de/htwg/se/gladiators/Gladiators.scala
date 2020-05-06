@@ -17,11 +17,8 @@ object Gladiators {
         val injector = Guice.createInjector(new GladiatorsModule)
         val controller = injector.getInstance(classOf[ControllerInterface])
 
-        //val controller = new Controller(PlayingField())
-
         val tui = new Tui(controller)
         val gui = new SwingGui(controller)
-        //controller.notifyObservers
         controller.publish(new PlayingFieldChanged)
         var input: String  = ""
         if(args.length > 0) input = args(0)

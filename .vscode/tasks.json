@@ -7,20 +7,25 @@
             "label": "sbt: run",
             "type": "shell",
             "command": "sbt",
-            "args": ["run"],
+            "args": [
+                "run"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
             "presentation": {
                 "focus": true
-            }
+            },
+            "problemMatcher": []
         },
         {
             "label": "sbt: test",
             "type": "shell",
             "command": "sbt",
-            "args": ["test"],
+            "args": [
+                "test"
+            ],
             "group": {
                 "kind": "test",
                 "isDefault": true
@@ -33,8 +38,10 @@
             "label": "sbt: test current file",
             "type": "shell",
             "command": "sbt",
-            "args": ["\"test:testOnly *${fileBasenameNoExtension}\""],
-            "group":  "test",
+            "args": [
+                "\"test:testOnly *${fileBasenameNoExtension}\""
+            ],
+            "group": "test",
             "presentation": {
                 "focus": true
             }
