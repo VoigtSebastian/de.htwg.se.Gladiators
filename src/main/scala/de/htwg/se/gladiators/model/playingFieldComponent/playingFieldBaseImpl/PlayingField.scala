@@ -192,23 +192,12 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def attack(gladiatorAttack: Gladiator, gladiatorDest: Gladiator): PlayingField = {
-        var gladiatorPlayer1New = gladiatorPlayer1
-        var gladiatorPlayer2New = gladiatorPlayer2
-        var i = gladiatorPlayer1.indexOf((gladiatorDest))
-        if (i != -1) {
-            var gladiatorPlayer1New = gladiatorPlayer1.updated(i, gladiatorPlayer1(i).getAttacked(gladiatorAttack.ap))
-        } else {
-            i = gladiatorPlayer2.indexOf((gladiatorDest))
-            if (i!= -1) {
-                var gladiatorPlayer2New = gladiatorPlayer2.updated(i, gladiatorPlayer2(i).getAttacked(gladiatorAttack.ap))
-            }
+        val newGladiator = gladiatorDest.getAttacked(gladiatorAttack.ap)
+
+        gladiatorPlayer1.contains(gladiatorDest) match {
+            case true => this.copy(gladiatorPlayer1 = (newGladiator :: gladiatorPlayer1).filter(g => g != gladiatorDest && g.hp > 0))
+            case false => this.copy(gladiatorPlayer2 = (newGladiator :: gladiatorPlayer2).filter(g => g != gladiatorDest && g.hp > 0))
         }
-        if (gladiatorPlayer1(i).hp <= 0) {
-            gladiatorPlayer1New = gladiatorPlayer1New.filter(g => g != gladiatorPlayer1(i))
-        } else if (gladiatorPlayer2(i).hp <= 0) {
-            gladiatorPlayer2New = gladiatorPlayer1New.filter(g => g != gladiatorPlayer2(i))
-        }
-        this.copy(gladiatorPlayer1 = gladiatorPlayer1New, gladiatorPlayer2 = gladiatorPlayer2New)
     }
 
     def setGladiator(line: Int, row: Int, glad: Gladiator): PlayingField = {
