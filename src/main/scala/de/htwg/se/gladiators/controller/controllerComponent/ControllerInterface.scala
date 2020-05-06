@@ -15,7 +15,7 @@ import scala.swing.Publisher
 
 trait ControllerInterface extends Publisher {
 
-    val playingField: PlayingFieldInterface
+    var playingField: PlayingFieldInterface
     val undoManager: UndoManager
     var gameStatus: GameStatus
     var commandStatus: CommandStatus
@@ -101,8 +101,6 @@ trait ControllerInterface extends Publisher {
     def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int): String
 
     def checkCellEmpty(line: Int, row: Int): Boolean
-
-    def checkforPalm(lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean
 
     def save: Unit
 
