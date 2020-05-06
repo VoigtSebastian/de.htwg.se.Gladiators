@@ -54,7 +54,6 @@ class CellPanel(line: Int, row: Int, controller: ControllerInterface, val dimWid
 
         reactions += {
             case MouseClicked(src, pt, mod, clicks, pops) =>
-                //controller.showCandidates(row, column)
                 controller.cellSelected(line, row)
                 border = LineBorder(java.awt.Color.GREEN.darker(), 4)
         }
@@ -67,7 +66,6 @@ class CellPanel(line: Int, row: Int, controller: ControllerInterface, val dimWid
         cell.border = LineBorder(java.awt.Color.BLACK, 1)
         setCellTexture
         hp.text = getCellText
-        //label.text = getCellText
         repaint
     }
 
@@ -125,7 +123,6 @@ class CellPanel(line: Int, row: Int, controller: ControllerInterface, val dimWid
                     label.icon = TEXTURE_SHIELD_P1
             }
         } else {
-            //cell.background = java.awt.Color.PINK
             glad.gladiatorType match {
                 case GladiatorType.SWORD =>
                     label.icon = TEXTURE_SWORD_P2

@@ -87,8 +87,6 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
     def checkCellEmpty(line: Int, row: Int): Boolean = false
 
-    def checkforPalm(lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = false
-
     def save(): Unit = {}
 
     def load(): Unit = {}
