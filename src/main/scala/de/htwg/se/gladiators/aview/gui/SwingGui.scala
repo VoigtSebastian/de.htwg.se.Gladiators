@@ -121,7 +121,10 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
     }
 
     val gladPanel = new GridPanel(1, 3) {
-
+        val gladType = new TextField("TY:\nTest")	
+        gladType.font = new Font("Verdana", 1, 20)	
+        gladType.horizontalAlignment = Alignment.Center
+        
         val gladAP = new Button("")
         gladAP.font = new Font("Algeria", 1, 20)
         gladAP.foreground = java.awt.Color.BLACK
