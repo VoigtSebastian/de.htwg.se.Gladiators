@@ -217,7 +217,6 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
     menuBar = new MenuBar {
         contents += new Menu("Menu") {
             contents += new MenuItem(scala.swing.Action("New Game") {
-                //controller = controller.resetGame()
                 controller.resetGame()
                 redraw()
             })
@@ -240,14 +239,14 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
                     "Change Names",
                     JOptionPane.QUESTION_MESSAGE
                 )
-                controller.players(0).name = nameInput
+                controller.players(0) = controller.players(0).updateName(nameInput)
                 nameInput = JOptionPane.showInputDialog(
                     null,
                     "Player Two",
                     "Change Names",
                     JOptionPane.QUESTION_MESSAGE
                 )
-                controller.players(1).name = nameInput
+                controller.players(1) = controller.players(0).updateName(nameInput)
                 refreshStatus
             })
             contents += new Separator()
