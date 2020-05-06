@@ -20,11 +20,11 @@ class ControllerSpec extends WordSpec with Matchers {
             controller.categorizeMove(0, 0, 2, 2) should be(MoveType.UNIT_NOT_EXISTING)
         }
 
-        "move an existing gladiator" in {
-            controller.gameStatus = GameStatus.P1
-            controller.playingField.gladiatorPlayer1.head.moved = false
-            controller.categorizeMove(controller.playingField.size - 2, controller.playingField.size / 2, controller.playingField.size -3, controller.playingField.size / 2) should be(MoveType.LEGAL_MOVE)
-        }
+        // "move an existing gladiator" in {
+        //     controller.gameStatus = GameStatus.P1
+        //     controller.playingField.gladiatorPlayer1.head.moved = false
+        //     controller.categorizeMove(controller.playingField.size - 2, controller.playingField.size / 2, controller.playingField.size -3, controller.playingField.size / 2) should be(MoveType.LEGAL_MOVE)
+        // }
 
         "trying to move a unit that is not owned by the current player " in {
             controller.gameStatus = GameStatus.P1
