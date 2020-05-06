@@ -223,7 +223,7 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def checkMoveType(startPosition: Coordinate, destinationPosition: Coordinate, currentPlayer: Player): MoveType = {
-        if (!isCoordinateLegal(startPosition) && !isCoordinateLegal(destinationPosition))
+        if (!isCoordinateLegal(startPosition) || !isCoordinateLegal(destinationPosition))
             return MoveType.MOVE_OUT_OF_BOUNDS
         val startGlad = getGladiatorOption(startPosition)
         val destGlad = getGladiatorOption(destinationPosition)
@@ -236,9 +236,7 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def isCoordinateLegal(coordinate: Coordinate): Boolean = {
-        if (coordinate.line < size && coordinate.line >= 0 && coordinate.row < size && coordinate.row >= 0)
-            return true
-        false
+        coordinate.line < size && coordinate.line >= 0 && coordinate.row < size && coordinate.row >= 0
     }
 
     def checkAttackValid(attackingGladiator: Gladiator, target: Gladiator, attackingPosition: Coordinate, targetPosition: Coordinate, currentPlayer: Player): MoveType = {
