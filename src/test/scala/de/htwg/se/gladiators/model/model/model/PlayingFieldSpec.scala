@@ -101,6 +101,18 @@ class PlayingFieldSpec extends WordSpec with Matchers {
                 playingField.gladiatorInfo(1, 1) should fullyMatch regex playingField.gladiatorPlayer2.head.toString()
             }
         }
+        "moving gladiators" should {
+            "return an updated playingField for Player One" in {
+                val playingField = createPlayingField()
+                playingField.moveGladiator(0, 1, 1, 1).gladiatorPlayer1.head.line should be (1)
+                playingField.moveGladiator(0, 1, 2, 0).gladiatorPlayer1.head.row should be (0)
+            }
+            "return an updated playingField for Player Two" in {
+                val playingField = createPlayingField()
+                playingField.moveGladiator(1, 1, 1, 2).gladiatorPlayer2.head.row should be (2)
+                playingField.moveGladiator(1, 1, 2, 0).gladiatorPlayer2.head.line should be (2)
+            }
+        }
     }
 
     def createPlayingField(): PlayingField = {
