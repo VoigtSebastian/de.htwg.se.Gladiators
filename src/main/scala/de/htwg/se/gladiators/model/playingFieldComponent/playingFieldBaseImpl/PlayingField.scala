@@ -201,17 +201,10 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def setGladiator(line: Int, row: Int, glad: Gladiator): PlayingField = {
-        var i = gladiatorPlayer1.indexWhere(x => x.line == line && x.row == row)
-        if (i != -1) {
-            var gladiatorPlayerNew = gladiatorPlayer1.updated(i, glad)
-            this.copy(gladiatorPlayer1 = gladiatorPlayerNew)
-
-        } else {
-            var i = gladiatorPlayer2.indexWhere(x => x.line == line && x.row == row)
-            var gladiatorPlayerNew = gladiatorPlayer2.updated(i, glad)
-            this.copy(gladiatorPlayer2 = gladiatorPlayerNew)
+        gladiatorPlayer1.exists(g => g.line == line && g.row == row) match {
+            case true => this.copy(gladiatorPlayer1 = glad :: gladiatorPlayer1.filter(g => g != glad))
+            case false => this.copy(gladiatorPlayer2 = glad :: gladiatorPlayer2.filter(g => g != glad))
         }
-
     }
 
     def resetPlayingField(): PlayingField = {
