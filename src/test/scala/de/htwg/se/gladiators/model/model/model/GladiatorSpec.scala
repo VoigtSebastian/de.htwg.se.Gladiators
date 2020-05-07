@@ -31,7 +31,7 @@ class GladiatorSpec extends WordSpec with Matchers {
     }
     "after move" should {
       var gladiator3 = Gladiator(5,5,10.0,50.0,100.0, TANK, new Player)
-      gladiator3.move(4,4)
+      gladiator3 = gladiator3.move(4,4)
       "have a new location" in {
         gladiator3.line should be (4)
         gladiator3.row should be (4)
@@ -41,4 +41,3 @@ class GladiatorSpec extends WordSpec with Matchers {
 
   }
 }
-
