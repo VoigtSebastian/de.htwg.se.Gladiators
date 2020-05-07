@@ -152,17 +152,11 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     def cellAtCoordinate(coordinate: Coordinate): Cell = cell(coordinate.line, coordinate.row)
 
     def gladiatorInfo(line: Int, row: Int): String = {
-        var ret = ""
-        for (glad <- gladiatorPlayer1)
-            if (glad.line == line && glad.row == row) {
-                ret = glad.toString()
-                return ret
-            }
-        for (glad <- gladiatorPlayer2)
-            if (glad.line == line && glad.row == row)
-                ret = glad.toString()
-
-        ret
+        val glad = (gladiatorPlayer1 ::: gladiatorPlayer2).filter(g => g.line == line && g.row == row)
+        glad.length match {
+            case 0 => ""
+            case _ => glad.head.toString()
+        }
     }
 
 
