@@ -255,6 +255,8 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     def checkMoveOrBaseAttack(gladiator: Gladiator, startCoordinate: Coordinate, targetCoordinate: Coordinate, currentPlayer: Player): MoveType = {
         if (gladiator.moved)
             return MoveType.ALREADY_MOVED
+        if (gladiator.player != currentPlayer)
+            return MoveType.UNIT_NOT_OWNED_BY_PLAYER
         cellAtCoordinate(targetCoordinate).cellType match {
             case CellType.PALM => MoveType.MOVE_TO_PALM
             case CellType.SAND => MoveType.LEGAL_MOVE
