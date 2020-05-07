@@ -11,16 +11,18 @@ class MoveGladiatorCommand(x: Int, y: Int, xDest: Int, yDest: Int, controller: C
         yOld = y
         xNew = xDest
         yNew = yDest
-        controller.playingField.moveGladiator(x, y, xDest, yDest)
+        controller.playingField = controller.playingField.moveGladiator(x, y, xDest, yDest)
     }
 
     override def undoStep: Unit = {
-        controller.getGladiator(xNew, yNew).moved = false
+        val gladiator = controller.getGladiator(xNew, yNew).updateMoved(false)
+        controller.playingField = controller.playingField.setGladiator(xNew, yNew, gladiator)
         controller.moveGladiator(xNew, yNew, xOld, yOld)
     }
 
     override def redoStep: Unit = {
-        controller.getGladiator(xOld, yOld).moved = false
+        val gladiator = controller.getGladiator(xNew, yNew).updateMoved(true)
+        controller.playingField = controller.playingField.setGladiator(xNew, yNew, gladiator)
         controller.moveGladiator(xOld, yOld, xNew, yNew)
     }
 

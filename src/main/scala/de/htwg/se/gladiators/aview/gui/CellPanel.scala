@@ -7,8 +7,6 @@ import de.htwg.se.gladiators.controller.controllerComponent.{ControllerInterface
 import de.htwg.se.gladiators.model.{Cell, Gladiator, GladiatorType}
 import javax.swing.ImageIcon
 import scala.swing.Swing.LineBorder
-
-//class CellPanel(line: Int, row: Int, controller: Controller) extends FlowPanel {
 class CellPanel(line: Int, row: Int, controller: ControllerInterface, val dimWidth: Int, val dimHeight: Int) extends GridPanel(1, 1) {
 
     preferredSize = new Dimension(50, 150)
@@ -32,10 +30,8 @@ class CellPanel(line: Int, row: Int, controller: ControllerInterface, val dimWid
 
     val label: Label =
         new Label {
-            // text = getCellText
             foreground = java.awt.Color.YELLOW
             font = new Font("Verdana", 1, 10)
-            //horizontalAlignment = Alignment.Center
         }
 
     val hp: Label =
@@ -43,26 +39,21 @@ class CellPanel(line: Int, row: Int, controller: ControllerInterface, val dimWid
             text = getCellText
             foreground = java.awt.Color.WHITE
             font = new Font("Verdana", 1, 12)
-            // verticalAlignment = Alignment.Bottom
         }
 
-    //val cell: GridPanel = new GridPanel(1,1) {
     val cell: BorderPanel = new BorderPanel() {
         add(label, BorderPanel.Position.Center)
         add(hp, BorderPanel.Position.South)
-        //contents += label
-        //contents += hp
+
 
         background = getCellColor
         preferredSize = new Dimension(80, 80)
-        //background = if (controller.isGiven(row, column)) givenCellColor else cellColor
-        //border = Swing.BeveledBorder(Swing.Raised)
+
         listenTo(mouse.clicks)
         listenTo(controller)
 
         reactions += {
             case MouseClicked(src, pt, mod, clicks, pops) =>
-                //controller.showCandidates(row, column)
                 controller.cellSelected(line, row)
                 border = LineBorder(java.awt.Color.GREEN.darker(), 4)
         }
@@ -75,7 +66,6 @@ class CellPanel(line: Int, row: Int, controller: ControllerInterface, val dimWid
         cell.border = LineBorder(java.awt.Color.BLACK, 1)
         setCellTexture
         hp.text = getCellText
-        //label.text = getCellText
         repaint
     }
 
@@ -123,9 +113,7 @@ class CellPanel(line: Int, row: Int, controller: ControllerInterface, val dimWid
     }
 
     def setGlad(gameStatus: GameStatus, glad: Gladiator): Unit = {
-        //label.text = getGladText(glad)
         if (gameStatus == GameStatus.P1) {
-            //cell.background = java.awt.Color.CYAN
             glad.gladiatorType match {
                 case GladiatorType.SWORD =>
                     label.icon = TEXTURE_SWORD_P1
@@ -135,7 +123,6 @@ class CellPanel(line: Int, row: Int, controller: ControllerInterface, val dimWid
                     label.icon = TEXTURE_SHIELD_P1
             }
         } else {
-            //cell.background = java.awt.Color.PINK
             glad.gladiatorType match {
                 case GladiatorType.SWORD =>
                     label.icon = TEXTURE_SWORD_P2

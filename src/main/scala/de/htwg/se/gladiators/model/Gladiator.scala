@@ -3,11 +3,26 @@ package de.htwg.se.gladiators.model
 import de.htwg.se.gladiators.model.GladiatorType._
 
 
-case class Gladiator(var line: Int, var row: Int, movementPoints: Double, var ap: Double, var hp: Double, gladiatorType: GladiatorType, var player: Player, var moved: Boolean = true) {
+case class Gladiator(line: Int, row: Int, movementPoints: Double, ap: Double, hp: Double, gladiatorType: GladiatorType, player: Player, moved: Boolean = true) {
 
-    def move(line: Int, row: Int): Unit = {
-        this.line = line
-        this.row = row
+    def move(line: Int, row: Int): Gladiator = {
+        this.copy(line = line, row = row)
+    }
+
+    def updateMoved(moved: Boolean): Gladiator = {
+        this.copy(moved = moved)
+    }
+
+    def getAttacked(ap: Double): Gladiator = {
+        this.copy(hp = hp - ap)
+    }
+
+    def assignPlayer(player: Player): Gladiator = {
+        this.copy(player = player)
+    }
+
+    def !=(g: Gladiator): Boolean = {
+        line != g.line || row != g.row || hp != g.hp || movementPoints != g.movementPoints || ap != g.ap
     }
 
     override def toString: String = {

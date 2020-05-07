@@ -12,11 +12,8 @@ import de.htwg.se.gladiators.util.Coordinate
 
 import scala.util.matching.Regex
 
-case class PlayingField @Inject()(size: Integer = 15) extends PlayingFieldInterface {
+case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gladiator] = List(), gladiatorPlayer2: List[Gladiator] = List(), cells: Array[Array[Cell]] = Array.ofDim[Cell](15, 15)) extends PlayingFieldInterface {
 
-    var gladiatorPlayer1: List[Gladiator] = List()
-    var gladiatorPlayer2: List[Gladiator] = List()
-    var cells: Array[Array[Cell]] = Array.ofDim[Cell](3, 3)
     var toggleUnitStats = true
 
     val SAND_BACKGROUND = "\033[103m"
@@ -27,11 +24,9 @@ case class PlayingField @Inject()(size: Integer = 15) extends PlayingFieldInterf
     val RESET_ANSI_ESCAPE = "\033[0m"
     val REGEX_COMMANDS = new Regex("([a-zA-Z]+)|([0-9]+)")
 
-    createRandom(size)
 
-    def setField(cells: Array[Array[Cell]]): PlayingField = {
-        this.cells = cells
-        this
+    def updateCells(cells: Array[Array[Cell]]): PlayingField = {
+        this.copy(cells = cells)
     }
 
     override def toString: String = {
@@ -73,9 +68,15 @@ case class PlayingField @Inject()(size: Integer = 15) extends PlayingFieldInterf
         ret
     }
 
-    def resetGladiatorMoved(): Unit = {
-        for (glad <- gladiatorPlayer1 ::: gladiatorPlayer2)
-            glad.moved = false
+    def resetGladiatorMoved(): PlayingField = {
+        var gladiatorPlayer1New = gladiatorPlayer1
+        var gladiatorPlayer2New = gladiatorPlayer2
+        for (i <- gladiatorPlayer1New.indices)
+            gladiatorPlayer1New = gladiatorPlayer1.updated(i, gladiatorPlayer1(i).updateMoved(false))
+        for (i <- gladiatorPlayer2New.indices)
+            gladiatorPlayer2New = gladiatorPlayer2.updated(i, gladiatorPlayer2(i).updateMoved(false))
+
+        this.copy(gladiatorPlayer1 = gladiatorPlayer1New, gladiatorPlayer2 = gladiatorPlayer2New)
     }
 
     def formatPlayingFieldAddStats(playingField: String): String = {
@@ -93,41 +94,53 @@ case class PlayingField @Inject()(size: Integer = 15) extends PlayingFieldInterf
         ret
     }
 
-    def createRandom(length: Int, palmRate: Int = 17): Unit = {
-        cells = Array.ofDim[Cell](length, length)
-        for (i <- cells.indices) {
-            for (j <- cells(i).indices) {
+    def createRandomCells(length: Int, palmRate: Int = 17): PlayingField = {
+        var cellsNew = Array.ofDim[Cell](length, length)
+        for (i <- cellsNew.indices) {
+            for (j <- cellsNew(i).indices) {
                 //cells(i)(j) = Cell(scala.util.Random.nextInt(CellType.maxId - 1));
                 val randInt = scala.util.Random.nextInt(100)
                 if (randInt >= palmRate) {
-                    cells(i)(j) = Cell(CellType.SAND)
+                    cellsNew(i)(j) = Cell(CellType.SAND)
                 } else {
-                    cells(i)(j) = Cell(CellType.PALM)
+                    cellsNew(i)(j) = Cell(CellType.PALM)
                 }
             }
         }
         val goldInd = scala.util.Random.nextInt(length)
-        cells(length / 2)(goldInd) = Cell(CellType.GOLD)
-        cells(0)(length / 2) = Cell(CellType.BASE)
-        cells(length - 1)(length / 2) = Cell(CellType.BASE)
+        cellsNew(length / 2)(goldInd) = Cell(CellType.GOLD)
+        cellsNew(0)(length / 2) = Cell(CellType.BASE)
+        cellsNew(length - 1)(length / 2) = Cell(CellType.BASE)
+        this.copy(cells = cellsNew)
     }
 
-    def addGladPlayerOne(gladiator: Gladiator): Unit = {
-        gladiatorPlayer1 = gladiatorPlayer1 ::: gladiator :: Nil
+    def addGladPlayerOne(gladiator: Gladiator): PlayingField = {
+        val gladiatorPlayer1New = gladiator :: gladiatorPlayer1
+        this.copy(gladiatorPlayer1 = gladiatorPlayer1New)
     }
 
-    def addGladPlayerTwo(gladiator: Gladiator): Unit = {
-        gladiatorPlayer2 = gladiatorPlayer2 ::: gladiator :: Nil
+    def addGladPlayerTwo(gladiator: Gladiator): PlayingField = {
+        val gladiatorPlayer2New = gladiator :: gladiatorPlayer2
+        this.copy(gladiatorPlayer2 = gladiatorPlayer2New)
     }
 
     def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): PlayingField = {
-        for (g <- gladiatorPlayer1 ::: gladiatorPlayer2) {
-            // find gladiator
-            if (g.row == row && g.line == line) {
-                g.move(lineDest, rowDest)
+        var i = gladiatorPlayer1.indexWhere(x => x.line == line && x.row == row)
+        if (i != -1) {
+            val glad = gladiatorPlayer1(i).move(lineDest, rowDest)
+            var gladiatorPlayerNew = gladiatorPlayer1.updated(i, glad)
+            this.copy(gladiatorPlayer1 = gladiatorPlayerNew)
+
+        } else {
+            var i = gladiatorPlayer2.indexWhere(x => x.line == line && x.row == row)
+            if (i != -1) {
+                val glad = gladiatorPlayer2(i).move(lineDest, rowDest)
+                var gladiatorPlayerNew = gladiatorPlayer2.updated(i, glad)
+                this.copy(gladiatorPlayer2 = gladiatorPlayerNew)
+            } else {
+                this
             }
         }
-        this
     }
 
     def getSize: Integer = {
@@ -178,19 +191,31 @@ case class PlayingField @Inject()(size: Integer = 15) extends PlayingFieldInterf
         returnValue
     }
 
-    def attack(gladiatorAttack: Gladiator, gladiatorDest: Gladiator): String = {
-        gladiatorDest.hp -= gladiatorAttack.ap
-        if (gladiatorDest.hp <= 0) {
-            gladiatorPlayer1 = gladiatorPlayer1.filter(g => g != gladiatorDest)
-            gladiatorPlayer2 = gladiatorPlayer2.filter(g => g != gladiatorDest)
+    def attack(gladiatorAttack: Gladiator, gladiatorDest: Gladiator): PlayingField = {
+        val newGladiator = gladiatorDest.getAttacked(gladiatorAttack.ap)
+
+        gladiatorPlayer1.contains(gladiatorDest) match {
+            case true => this.copy(gladiatorPlayer1 = (newGladiator :: gladiatorPlayer1).filter(g => g != gladiatorDest && g.hp > 0))
+            case false => this.copy(gladiatorPlayer2 = (newGladiator :: gladiatorPlayer2).filter(g => g != gladiatorDest && g.hp > 0))
         }
-        gladiatorAttack + " attackes " + gladiatorDest
     }
 
-    def resetPlayingField(): Unit = {
-        gladiatorPlayer1 = List()
-        gladiatorPlayer2 = List()
-        createRandom(size, 17)
+    def setGladiator(line: Int, row: Int, glad: Gladiator): PlayingField = {
+        var i = gladiatorPlayer1.indexWhere(x => x.line == line && x.row == row)
+        if (i != -1) {
+            var gladiatorPlayerNew = gladiatorPlayer1.updated(i, glad)
+            this.copy(gladiatorPlayer1 = gladiatorPlayerNew)
+
+        } else {
+            var i = gladiatorPlayer2.indexWhere(x => x.line == line && x.row == row)
+            var gladiatorPlayerNew = gladiatorPlayer2.updated(i, glad)
+            this.copy(gladiatorPlayer2 = gladiatorPlayerNew)
+        }
+
+    }
+
+    def resetPlayingField(): PlayingField = {
+        this.copy(gladiatorPlayer1 = List(), gladiatorPlayer2 = List())
     }
 
     def setCell(line: Int, row: Int, cellType: CellType): Unit = {
@@ -198,7 +223,7 @@ case class PlayingField @Inject()(size: Integer = 15) extends PlayingFieldInterf
     }
 
     def checkMoveType(startPosition: Coordinate, destinationPosition: Coordinate, currentPlayer: Player): MoveType = {
-        if (!isCoordinateLegal(startPosition) && !isCoordinateLegal(destinationPosition))
+        if (!isCoordinateLegal(startPosition) || !isCoordinateLegal(destinationPosition))
             return MoveType.MOVE_OUT_OF_BOUNDS
         val startGlad = getGladiatorOption(startPosition)
         val destGlad = getGladiatorOption(destinationPosition)
@@ -211,12 +236,12 @@ case class PlayingField @Inject()(size: Integer = 15) extends PlayingFieldInterf
     }
 
     def isCoordinateLegal(coordinate: Coordinate): Boolean = {
-        if (coordinate.line < size && coordinate.line >= 0 && coordinate.row < size && coordinate.row >= 0)
-            return true
-        false
+        coordinate.line < size && coordinate.line >= 0 && coordinate.row < size && coordinate.row >= 0
     }
 
     def checkAttackValid(attackingGladiator: Gladiator, target: Gladiator, attackingPosition: Coordinate, targetPosition: Coordinate, currentPlayer: Player): MoveType = {
+        if (attackingGladiator.moved)
+            return MoveType.ALREADY_MOVED
         if (attackingGladiator.player != currentPlayer)
             return MoveType.UNIT_NOT_OWNED_BY_PLAYER
         if (target.player == currentPlayer)
@@ -228,6 +253,10 @@ case class PlayingField @Inject()(size: Integer = 15) extends PlayingFieldInterf
     }
 
     def checkMoveOrBaseAttack(gladiator: Gladiator, startCoordinate: Coordinate, targetCoordinate: Coordinate, currentPlayer: Player): MoveType = {
+        if (gladiator.moved)
+            return MoveType.ALREADY_MOVED
+        if (gladiator.player != currentPlayer)
+            return MoveType.UNIT_NOT_OWNED_BY_PLAYER
         cellAtCoordinate(targetCoordinate).cellType match {
             case CellType.PALM => MoveType.MOVE_TO_PALM
             case CellType.SAND => MoveType.LEGAL_MOVE
