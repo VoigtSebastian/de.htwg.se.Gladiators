@@ -75,6 +75,18 @@ class PlayingFieldSpec extends WordSpec with Matchers {
                 playingField.checkMoveType(Coordinate(1, 1), Coordinate(0, 2), playerTwo) should be (MoveType.MOVE_TO_PALM)
             }
         }
+        "setting Gladiators" should {
+            "return an updated playingField for player one" in {
+                val playingField = createPlayingField()
+                val updatedPlayingField = playingField.setGladiator(0, 1, GladiatorFactory.createGladiator(0, 1, GladiatorType.BOW, playingField.gladiatorPlayer1.head.player))
+                updatedPlayingField.gladiatorPlayer1.head.gladiatorType should be (GladiatorType.BOW)
+            }
+            "return an updated playingField for player two" in {
+                val playingField = createPlayingField()
+                val updatedPlayingField = playingField.setGladiator(1, 1, GladiatorFactory.createGladiator(1, 1, GladiatorType.TANK, playingField.gladiatorPlayer2.head.player))
+                updatedPlayingField.gladiatorPlayer2.head.gladiatorType should be (GladiatorType.TANK)
+            }
+        }
     }
 
     def createPlayingField(): PlayingField = {
