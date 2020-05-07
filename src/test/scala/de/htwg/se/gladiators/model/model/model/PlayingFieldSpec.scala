@@ -13,7 +13,7 @@ class PlayingFieldSpec extends WordSpec with Matchers {
             val playingField = createPlayingField()
             print(playingField.formatLine(0))
             "have a nice String representation" in {
-                playingField.formatLine(0) should be("201")
+                playingField.formatLine(0) should be("2S1")
                 playingField.formatLine(1) should be("0S1")
                 playingField.formatLine(2) should be("002")
             }
@@ -49,10 +49,30 @@ class PlayingFieldSpec extends WordSpec with Matchers {
             }
             "return move out of bounds" in {
                 val playingField = createPlayingField()
-                playingField.checkMoveType(Coordinate(1, 1), Coordinate(-1, -1), playingField.gladiatorPlayer2.head.player) should be (MoveType.MOVE_OUT_OF_BOUNDS)
-                playingField.checkMoveType(Coordinate(1, 1), Coordinate(1, playingField.size), playingField.gladiatorPlayer2.head.player) should be (MoveType.MOVE_OUT_OF_BOUNDS)
-                playingField.checkMoveType(Coordinate(1, 1), Coordinate(playingField.size, 1), playingField.gladiatorPlayer2.head.player) should be (MoveType.MOVE_OUT_OF_BOUNDS)
+                val playerTwo = playingField.gladiatorPlayer2.head.player
+                playingField.checkMoveType(Coordinate(1, 1), Coordinate(-1, -1), playerTwo) should be (MoveType.MOVE_OUT_OF_BOUNDS)
+                playingField.checkMoveType(Coordinate(1, 1), Coordinate(1, playingField.size), playerTwo) should be (MoveType.MOVE_OUT_OF_BOUNDS)
+                playingField.checkMoveType(Coordinate(1, 1), Coordinate(playingField.size, 1), playerTwo) should be (MoveType.MOVE_OUT_OF_BOUNDS)
 
+            }
+            "return base attack" in {
+                val playingField = createPlayingField().resetGladiatorMoved()
+                val playerOne = playingField.gladiatorPlayer1.head.player
+                playingField.checkMoveType(Coordinate(0, 1), Coordinate(0, 0), playerOne) should be (MoveType.BASE_ATTACK)
+            }
+            "return unit not existing" in {
+                val playingField = createPlayingField()
+                playingField.checkMoveType(Coordinate(0, 0), Coordinate(0, 1), Player()) should be (MoveType.UNIT_NOT_EXISTING)
+            }
+            "return unit not owned by player" in {
+                val playingField = createPlayingField().resetGladiatorMoved()
+                val playerOne = playingField.gladiatorPlayer1.head.player
+                playingField.checkMoveType(Coordinate(1, 1), Coordinate(1, 0), playerOne) should be (MoveType.UNIT_NOT_OWNED_BY_PLAYER)
+            }
+            "return move to palm" in {
+                val playingField = createPlayingField().resetGladiatorMoved()
+                val playerTwo = playingField.gladiatorPlayer2.head.player
+                playingField.checkMoveType(Coordinate(1, 1), Coordinate(0, 2), playerTwo) should be (MoveType.MOVE_TO_PALM)
             }
         }
     }
@@ -68,6 +88,12 @@ class PlayingFieldSpec extends WordSpec with Matchers {
         cells(2)(0) = Cell(CellType.SAND)
         cells(2)(1) = Cell(CellType.SAND)
         cells(2)(2) = Cell(CellType.BASE)
+        /*
+          0 1 2
+        0 B S P
+        1 S S P
+        2 S S B
+        */
 
         val SAND_BACKGROUND = "\033[103m"
         val PALM_BACKGROUND = "\033[43m"
@@ -76,11 +102,12 @@ class PlayingFieldSpec extends WordSpec with Matchers {
         val TEXT_COLOR_BLACK = "\33[97m"
         val RESET_ANSI_ESCAPE = "\033[0m"
 
-        var playingField = PlayingField()
+        var playingField = PlayingField(size=3)
         playingField = playingField.updateCells(cells)
 
-        var glad1 = GladiatorFactory.createGladiator(0, 0, GladiatorType.SWORD, Player())
-        var glad2 = GladiatorFactory.createGladiator(1, 1, GladiatorType.SWORD, Player())
+        var glad1 = GladiatorFactory.createGladiator(0, 1, GladiatorType.SWORD, Player())
+        var glad2 = GladiatorFactory.createGladiator(1, 1, GladiatorType.SWORD, Player(enemyBaseLine = playingField.size - 1))
+
 
         playingField = playingField.addGladPlayerOne(glad1)
         playingField = playingField.addGladPlayerTwo(glad2)

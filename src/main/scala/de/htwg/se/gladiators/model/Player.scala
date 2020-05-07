@@ -9,6 +9,10 @@ case class Player(name: String = "NO_NAME", var credits: Int = 50, baseHP: Int =
         case _ => false
     }
 
+    def !=(p: Player): Boolean = {
+        p.enemyBaseLine != enemyBaseLine
+    }
+
     def updateName(name: String): Player = {
         this.copy(name = name)
     }
