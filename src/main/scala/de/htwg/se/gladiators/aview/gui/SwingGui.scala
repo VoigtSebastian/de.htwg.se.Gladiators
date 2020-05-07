@@ -89,11 +89,8 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
                 if (!controller.players(controller.gameStatus.id).boughtGladiator) {
                     for ((c, i) <- glad_buttons.zipWithIndex) {
                         if (c == b) {
-                            //controller = controller.changeCommand(CommandStatus.CR)
-
                             controller.selectedGlad = controller.shop.stock(i)._1
                             for (i <- controller.baseArea(controller.players(controller.gameStatus.id))) {
-                                // cells(i._1)(i._2).cell.border = LineBorder(java.awt.Color.GREEN, 7)
                                 cells(i._1)(i._2).setHighlightedSand()
                             }
                             refreshStatus
@@ -124,25 +121,22 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
     }
 
     val gladPanel = new GridPanel(1, 3) {
-
-        val gladType = new TextField("TY:\nTest")
-        gladType.font = new Font("Verdana", 1, 20)
+        val gladType = new TextField("TY:\nTest")	
+        gladType.font = new Font("Verdana", 1, 20)	
         gladType.horizontalAlignment = Alignment.Center
 
         val gladAP = new Button("")
         gladAP.font = new Font("Algeria", 1, 20)
-        //gladAP.background = java.awt.Color.CYAN.darker().darker().darker()
         gladAP.foreground = java.awt.Color.BLACK
         gladAP.horizontalAlignment = Alignment.Center
         gladAP.background = java.awt.Color.WHITE
+
         val gladHP = new Button(" ")
         gladHP.font = new Font("Verdana", 1, 20)
-        //gladHP.background = java.awt.Color.CYAN.darker().darker().darker()
         gladHP.foreground = java.awt.Color.BLACK
         gladHP.horizontalAlignment = Alignment.Center
         gladHP.background = java.awt.Color.WHITE
 
-        // contents += gladType
         contents += gladHP
         contents += gladAP
     }
@@ -175,8 +169,6 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
                 if (b == next)
                     controller.endTurn()
         }
-
-        //      contents += command
         contents += statusline
         contents += credits
         contents += next
@@ -185,8 +177,6 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
 
     val infoPanel: GridPanel = new GridPanel(1, 1) {
         contents += gladPanel
-        //  contents += navPanel
-        //contents += statusPanel
     }
 
     contents = new BorderPanel {
@@ -196,9 +186,7 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
         add(infoPanel, BorderPanel.Position.South)
     }
 
-    // def gridPanel : BoxPanel = new BoxPanel(Orientation.NoOrientation)  {
     def gridPanel: GridPanel = new GridPanel(controller.playingField.size, controller.playingField.size) {
-        //border = LineBorder(java.awt.Color.GREEN.darker(), 3)
         background = java.awt.Color.BLACK
         for {
             line <- 0 until controller.playingField.size
@@ -217,7 +205,6 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
     menuBar = new MenuBar {
         contents += new Menu("Menu") {
             contents += new MenuItem(scala.swing.Action("New Game") {
-                //controller = controller.resetGame()
                 controller.resetGame()
                 redraw()
             })
@@ -240,14 +227,14 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
                     "Change Names",
                     JOptionPane.QUESTION_MESSAGE
                 )
-                controller.players(0).name = nameInput
+                controller.players(0) = controller.players(0).updateName(nameInput)
                 nameInput = JOptionPane.showInputDialog(
                     null,
                     "Player Two",
                     "Change Names",
                     JOptionPane.QUESTION_MESSAGE
                 )
-                controller.players(1).name = nameInput
+                controller.players(1) = controller.players(0).updateName(nameInput)
                 refreshStatus
             })
             contents += new Separator()
@@ -289,8 +276,7 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
                         i <- 0 until controller.playingField.size
                         j <- 0 until controller.playingField.size
                     } {
-                        if (controller.checkMovementPoints(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)
-                            && controller.checkforPalm(selectedGlad.line, selectedGlad.row, i, j)) {
+                        if (controller.checkMovementPoints(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)) {
                             if (controller.checkCellEmpty(i, j)) {
                                 cells(i)(j).setHighlightedSand()
                             }
@@ -412,5 +398,4 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
         imageIcon = new ImageIcon(newimg); // transform it back
         imageIcon
     }
-
 }
