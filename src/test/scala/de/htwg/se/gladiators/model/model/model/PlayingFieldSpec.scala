@@ -75,6 +75,44 @@ class PlayingFieldSpec extends WordSpec with Matchers {
                 playingField.checkMoveType(Coordinate(1, 1), Coordinate(0, 2), playerTwo) should be (MoveType.MOVE_TO_PALM)
             }
         }
+        "setting Gladiators" should {
+            "return an updated playingField for player one" in {
+                val playingField = createPlayingField()
+                val updatedPlayingField = playingField.setGladiator(0, 1, GladiatorFactory.createGladiator(0, 1, GladiatorType.BOW, playingField.gladiatorPlayer1.head.player))
+                updatedPlayingField.gladiatorPlayer1.head.gladiatorType should be (GladiatorType.BOW)
+            }
+            "return an updated playingField for player two" in {
+                val playingField = createPlayingField()
+                val updatedPlayingField = playingField.setGladiator(1, 1, GladiatorFactory.createGladiator(1, 1, GladiatorType.TANK, playingField.gladiatorPlayer2.head.player))
+                updatedPlayingField.gladiatorPlayer2.head.gladiatorType should be (GladiatorType.TANK)
+            }
+        }
+        "getting asked for Gladiator Information" should {
+            "return an empty string" in {
+                val playingField = createPlayingField()
+                playingField.gladiatorInfo(0, 0) should fullyMatch regex ""
+            }
+            "return a string representation of the gladiators of player one" in {
+                val playingField = createPlayingField()
+                playingField.gladiatorInfo(0, 1) should fullyMatch regex playingField.gladiatorPlayer1.head.toString()
+            }
+            "return a string representation of the gladiators of player two" in {
+                val playingField = createPlayingField()
+                playingField.gladiatorInfo(1, 1) should fullyMatch regex playingField.gladiatorPlayer2.head.toString()
+            }
+        }
+        "moving gladiators" should {
+            "return an updated playingField for Player One" in {
+                val playingField = createPlayingField()
+                playingField.moveGladiator(0, 1, 1, 1).gladiatorPlayer1.head.line should be (1)
+                playingField.moveGladiator(0, 1, 2, 0).gladiatorPlayer1.head.row should be (0)
+            }
+            "return an updated playingField for Player Two" in {
+                val playingField = createPlayingField()
+                playingField.moveGladiator(1, 1, 1, 2).gladiatorPlayer2.head.row should be (2)
+                playingField.moveGladiator(1, 1, 2, 0).gladiatorPlayer2.head.line should be (2)
+            }
+        }
     }
 
     def createPlayingField(): PlayingField = {

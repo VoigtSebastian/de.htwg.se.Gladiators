@@ -125,21 +125,12 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): PlayingField = {
-        var i = gladiatorPlayer1.indexWhere(x => x.line == line && x.row == row)
-        if (i != -1) {
-            val glad = gladiatorPlayer1(i).move(lineDest, rowDest)
-            var gladiatorPlayerNew = gladiatorPlayer1.updated(i, glad)
-            this.copy(gladiatorPlayer1 = gladiatorPlayerNew)
+        val filter = (gladiator: Gladiator) => gladiator.line == line && gladiator.row == row
+        val newGlad = (gladiatorPlayer1 ::: gladiatorPlayer2).filter(filter).head.move(lineDest, rowDest)
 
-        } else {
-            var i = gladiatorPlayer2.indexWhere(x => x.line == line && x.row == row)
-            if (i != -1) {
-                val glad = gladiatorPlayer2(i).move(lineDest, rowDest)
-                var gladiatorPlayerNew = gladiatorPlayer2.updated(i, glad)
-                this.copy(gladiatorPlayer2 = gladiatorPlayerNew)
-            } else {
-                this
-            }
+        gladiatorPlayer1.exists(filter) match {
+            case true => this.copy(gladiatorPlayer1 = newGlad :: gladiatorPlayer1.filter(g => g.line != line && g.row != row))
+            case false => this.copy(gladiatorPlayer2 = newGlad :: gladiatorPlayer2.filter(g => g.line != line && g.row != row))
         }
     }
 
@@ -152,17 +143,11 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     def cellAtCoordinate(coordinate: Coordinate): Cell = cell(coordinate.line, coordinate.row)
 
     def gladiatorInfo(line: Int, row: Int): String = {
-        var ret = ""
-        for (glad <- gladiatorPlayer1)
-            if (glad.line == line && glad.row == row) {
-                ret = glad.toString()
-                return ret
-            }
-        for (glad <- gladiatorPlayer2)
-            if (glad.line == line && glad.row == row)
-                ret = glad.toString()
-
-        ret
+        val glad = (gladiatorPlayer1 ::: gladiatorPlayer2).filter(g => g.line == line && g.row == row)
+        glad.length match {
+            case 0 => ""
+            case _ => glad.head.toString()
+        }
     }
 
 
@@ -201,17 +186,10 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def setGladiator(line: Int, row: Int, glad: Gladiator): PlayingField = {
-        var i = gladiatorPlayer1.indexWhere(x => x.line == line && x.row == row)
-        if (i != -1) {
-            var gladiatorPlayerNew = gladiatorPlayer1.updated(i, glad)
-            this.copy(gladiatorPlayer1 = gladiatorPlayerNew)
-
-        } else {
-            var i = gladiatorPlayer2.indexWhere(x => x.line == line && x.row == row)
-            var gladiatorPlayerNew = gladiatorPlayer2.updated(i, glad)
-            this.copy(gladiatorPlayer2 = gladiatorPlayerNew)
+        gladiatorPlayer1.exists(g => g.line == line && g.row == row) match {
+            case true => this.copy(gladiatorPlayer1 = glad :: gladiatorPlayer1.filter(g => g != glad))
+            case false => this.copy(gladiatorPlayer2 = glad :: gladiatorPlayer2.filter(g => g != glad))
         }
-
     }
 
     def resetPlayingField(): PlayingField = {
