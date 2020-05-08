@@ -212,6 +212,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
     def redoGladiator(): Unit = {
         undoManager.redoStep
+        publish(new GladChanged)
     }
 
     def attack(lineAttack: Int, rowAttack: Int, lineDest: Int, rowDest: Int): (Boolean, String) = {

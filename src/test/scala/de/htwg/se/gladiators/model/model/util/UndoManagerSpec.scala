@@ -27,11 +27,10 @@ class UndoManagerSpec extends WordSpec with Matchers {
       controller.undoManager.undoStep
       controller.playingField.gladiatorPlayer1.head.row should be(1)
     }
-    // Todo: Find bug in implementation
-    // "redoing that step" in {
-    //   controller.redoGladiator()
-    //   controller.playingField.gladiatorPlayer1.head.row should be(0)
-    // }
+    "redoing that step" in {
+      controller.redoGladiator()
+      controller.playingField.gladiatorPlayer1.head.row should be(0)
+    }
   }
   "A empty manager" when {
     val manager = new UndoManager()
