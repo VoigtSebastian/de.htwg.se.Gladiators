@@ -142,6 +142,17 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
 
     def cellAtCoordinate(coordinate: Coordinate): Cell = cell(coordinate.line, coordinate.row)
 
+    def checkCellEmpty(coord: Coordinate): Boolean = {
+        if (cells(coord.line)(coord.row).cellType == CellType.SAND) {
+            getGladiatorOption(coord) match {
+                case None => true
+                case Some(g) => false
+            }
+        } else {
+            false
+        }
+    }
+
     def gladiatorInfo(line: Int, row: Int): String = {
         val glad = (gladiatorPlayer1 ::: gladiatorPlayer2).filter(g => g.line == line && g.row == row)
         glad.length match {
@@ -272,10 +283,39 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
         false
     }
 
-    def checkMovementPoints(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean = {
-        if (g.row == startPosition.row && g.line == startPosition.line &&
-            g.movementPoints >= (Math.abs(destination.line - startPosition.line) + Math.abs(destination.row - startPosition.row)))
-            return true
-        false
+    def checkMovementPointsMove(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean = {
+        return getValidMoveCoordinates(g, startPosition).exists(coord => coord == destination)
+    }
+
+    def getValidMoveCoordinates(g: Gladiator, startPosition: Coordinate): List[Coordinate] = {
+        var validCells : List[Coordinate] = List()
+        getValidMoveCoordinatesHelper(startPosition, 1, g.movementPoints, List()).foreach(coord =>
+            if (!validCells.exists(item => item == coord._1)) {
+                validCells = coord._1 :: validCells
+            }
+        )
+        validCells
+    }
+
+    def getValidMoveCoordinatesHelper(curr: Coordinate, dist: Int, maxDist: Double, validCells: List[(Coordinate, Int)]): List[(Coordinate, Int)] = {
+        var currValidCells = validCells
+        var nextCoordinates: List[Coordinate] = List(
+            Coordinate(curr.line, curr.row - 1),
+            Coordinate(curr.line, curr.row + 1),
+            Coordinate(curr.line - 1, curr.row),
+            Coordinate(curr.line + 1, curr.row)
+        )
+        nextCoordinates.foreach(next => {
+            if (isCoordinateLegal(next)
+                && checkCellEmpty(next) 
+                && !currValidCells.exists(item => item._1 == next && item._2 <= dist)){
+
+                currValidCells = (next, dist) :: currValidCells
+                if (dist + 1 <= maxDist) {
+                    currValidCells = currValidCells ::: getValidMoveCoordinatesHelper(next, dist + 1, maxDist, currValidCells) //recursion
+                } 
+            } 
+        })
+        currValidCells
     }
 }
