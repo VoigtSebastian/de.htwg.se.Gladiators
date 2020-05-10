@@ -5,14 +5,15 @@ import de.htwg.se.gladiators.model.CellType.CellType
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.model.{Cell, Gladiator, Player}
 import de.htwg.se.gladiators.util.Coordinate
+import scala.collection.mutable.ListBuffer
 
 import scala.util.matching.Regex
 
 trait PlayingFieldInterface {
 
   val size: Integer
-  val gladiatorPlayer1: List[Gladiator]
-  val gladiatorPlayer2: List[Gladiator]
+  val gladiatorPlayer1: ListBuffer[Gladiator]
+  val gladiatorPlayer2: ListBuffer[Gladiator]
   val cells: Array[Array[Cell]]
   var toggleUnitStats: Boolean
 

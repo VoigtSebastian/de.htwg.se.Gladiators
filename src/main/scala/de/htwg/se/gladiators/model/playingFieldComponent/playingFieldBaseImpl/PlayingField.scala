@@ -9,10 +9,11 @@ import de.htwg.se.gladiators.model.CellType.CellType
 import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.{Cell, CellType, Gladiator, GladiatorType, Player}
 import de.htwg.se.gladiators.util.Coordinate
+import scala.collection.mutable.ListBuffer
 
 import scala.util.matching.Regex
 
-case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gladiator] = List(), gladiatorPlayer2: List[Gladiator] = List(), cells: Array[Array[Cell]] = Array.ofDim[Cell](15, 15)) extends PlayingFieldInterface {
+case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: ListBuffer[Gladiator] = ListBuffer(), gladiatorPlayer2: ListBuffer[Gladiator] = ListBuffer(), cells: Array[Array[Cell]] = Array.ofDim[Cell](15, 15)) extends PlayingFieldInterface {
 
     var toggleUnitStats = true
 
@@ -113,22 +114,24 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def addGladPlayerOne(gladiator: Gladiator): PlayingField = {
-        val gladiatorPlayer1New = gladiator :: gladiatorPlayer1
+        val gladiatorPlayer1New = gladiatorPlayer1
+        gladiatorPlayer1New += gladiator
         this.copy(gladiatorPlayer1 = gladiatorPlayer1New)
     }
 
     def addGladPlayerTwo(gladiator: Gladiator): PlayingField = {
-        val gladiatorPlayer2New = gladiator :: gladiatorPlayer2
+        val gladiatorPlayer2New = gladiatorPlayer2
+        gladiatorPlayer2New += gladiator
         this.copy(gladiatorPlayer2 = gladiatorPlayer2New)
     }
 
     def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): PlayingField = {
         val filter = (gladiator: Gladiator) => gladiator.line == line && gladiator.row == row
-        val newGlad = (gladiatorPlayer1 ::: gladiatorPlayer2).filter(filter).head.move(lineDest, rowDest)
+        val newGlad = (gladiatorPlayer1 ++ gladiatorPlayer2).filter(filter).head.move(lineDest, rowDest)
 
         gladiatorPlayer1.exists(filter) match {
-            case true => this.copy(gladiatorPlayer1 = newGlad :: gladiatorPlayer1.filter(g => g.line != line && g.row != row))
-            case false => this.copy(gladiatorPlayer2 = newGlad :: gladiatorPlayer2.filter(g => g.line != line && g.row != row))
+            case true => this.copy(gladiatorPlayer1 = gladiatorPlayer1.filter(g => g.line != line && g.row != row) += newGlad)
+            case false => this.copy(gladiatorPlayer2 = gladiatorPlayer2.filter(g => g.line != line && g.row != row) += newGlad)
         }
     }
 
@@ -141,7 +144,7 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     def cellAtCoordinate(coordinate: Coordinate): Cell = cell(coordinate.line, coordinate.row)
 
     def gladiatorInfo(line: Int, row: Int): String = {
-        val glad = (gladiatorPlayer1 ::: gladiatorPlayer2).filter(g => g.line == line && g.row == row)
+        val glad = (gladiatorPlayer1 ++ gladiatorPlayer2).filter(g => g.line == line && g.row == row)
         glad.length match {
             case 0 => ""
             case _ => glad.head.toString()
@@ -178,20 +181,20 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
         val newGladiator = gladiatorDest.getAttacked(gladiatorAttack.ap)
 
         gladiatorPlayer1.contains(gladiatorDest) match {
-            case true => this.copy(gladiatorPlayer1 = (newGladiator :: gladiatorPlayer1).filter(g => g != gladiatorDest && g.hp > 0))
-            case false => this.copy(gladiatorPlayer2 = (newGladiator :: gladiatorPlayer2).filter(g => g != gladiatorDest && g.hp > 0))
+            case true => this.copy(gladiatorPlayer1 = (gladiatorPlayer1).filter(g => g != gladiatorDest && g.hp > 0) += newGladiator)
+            case false => this.copy(gladiatorPlayer2 = (gladiatorPlayer2).filter(g => g != gladiatorDest && g.hp > 0) += newGladiator)
         }
     }
 
     def setGladiator(line: Int, row: Int, glad: Gladiator): PlayingField = {
         gladiatorPlayer1.exists(g => g.line == line && g.row == row) match {
-            case true => this.copy(gladiatorPlayer1 = glad :: gladiatorPlayer1.filter(g => g != glad))
-            case false => this.copy(gladiatorPlayer2 = glad :: gladiatorPlayer2.filter(g => g != glad))
+            case true => this.copy(gladiatorPlayer1 = gladiatorPlayer1.filter(g => g != glad) += glad)
+            case false => this.copy(gladiatorPlayer2 = gladiatorPlayer2.filter(g => g != glad) += glad)
         }
     }
 
     def resetPlayingField(): PlayingField = {
-        this.copy(gladiatorPlayer1 = List(), gladiatorPlayer2 = List())
+        this.copy(gladiatorPlayer1 = ListBuffer(), gladiatorPlayer2 = ListBuffer())
     }
 
     def setCell(line: Int, row: Int, cellType: CellType): Unit = {
@@ -250,7 +253,7 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def getGladiatorOption(position: Coordinate): Option[Gladiator] = {
-        for (g <- gladiatorPlayer1 ::: gladiatorPlayer2) {
+        for (g <- gladiatorPlayer1 ++ gladiatorPlayer2) {
             if (g.line == position.line && g.row == position.row)
                 return Some(g)
         }

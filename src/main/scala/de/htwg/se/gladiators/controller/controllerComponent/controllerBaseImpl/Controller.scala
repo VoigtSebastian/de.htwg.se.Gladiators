@@ -154,7 +154,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         area = area ::: (base1._1, base1._2 - 1) :: Nil
         area = area ::: (base1._1, base1._2 + 1) :: Nil
 
-        for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
+        for (g <- playingField.gladiatorPlayer1 ++ playingField.gladiatorPlayer2) {
             area = area.filter(c => !(c._1 == g.line && c._2 == g.row))
         }
         area.filter(c => playingField.cells(c._1)(c._2).cellType != CellType.PALM)
@@ -248,7 +248,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
     }
 
     def checkGladiator(line: Int, row: Int): Boolean = {
-        for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
+        for (g <- playingField.gladiatorPlayer1 ++ playingField.gladiatorPlayer2) {
             if (g.line == line && g.row == row)
                 return true
         }
@@ -257,7 +257,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
     def getGladiator(line: Int, row: Int): Gladiator = {
         var glad = GladiatorFactory.createGladiator(Int.MinValue, Int.MinValue, GladiatorType.SWORD, players(P1.id))
-        for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
+        for (g <- playingField.gladiatorPlayer1 ++ playingField.gladiatorPlayer2) {
             if (g.line == line && g.row == row)
                 glad = g
         }
@@ -265,7 +265,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
     }
 
     def getGladiatorOption(line: Int, row: Int): Option[Gladiator] = {
-        for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
+        for (g <- playingField.gladiatorPlayer1 ++ playingField.gladiatorPlayer2) {
             if (g.line == line && g.row == row)
                 return Some(g)
         }
