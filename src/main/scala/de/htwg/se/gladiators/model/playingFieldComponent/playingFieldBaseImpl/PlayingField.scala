@@ -71,10 +71,8 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     def resetGladiatorMoved(): PlayingField = {
         var gladiatorPlayer1New = gladiatorPlayer1
         var gladiatorPlayer2New = gladiatorPlayer2
-        for (i <- gladiatorPlayer1New.indices)
-            gladiatorPlayer1New = gladiatorPlayer1.updated(i, gladiatorPlayer1(i).updateMoved(false))
-        for (i <- gladiatorPlayer2New.indices)
-            gladiatorPlayer2New = gladiatorPlayer2.updated(i, gladiatorPlayer2(i).updateMoved(false))
+        gladiatorPlayer1New = gladiatorPlayer1New.map(glad => glad.updateMoved(false))
+        gladiatorPlayer2New = gladiatorPlayer2New.map(glad => glad.updateMoved(false))
 
         this.copy(gladiatorPlayer1 = gladiatorPlayer1New, gladiatorPlayer2 = gladiatorPlayer2New)
     }
@@ -129,8 +127,8 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
         val newGlad = (gladiatorPlayer1 ::: gladiatorPlayer2).filter(filter).head.move(lineDest, rowDest)
 
         gladiatorPlayer1.exists(filter) match {
-            case true => this.copy(gladiatorPlayer1 = newGlad :: gladiatorPlayer1.filter(g => g.line != line && g.row != row))
-            case false => this.copy(gladiatorPlayer2 = newGlad :: gladiatorPlayer2.filter(g => g.line != line && g.row != row))
+            case true => this.copy(gladiatorPlayer1 = newGlad :: gladiatorPlayer1.filter(g => g.line != line || g.row != row))
+            case false => this.copy(gladiatorPlayer2 = newGlad :: gladiatorPlayer2.filter(g => g.line != line || g.row != row))
         }
     }
 
