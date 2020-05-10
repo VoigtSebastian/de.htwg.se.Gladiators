@@ -71,10 +71,8 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     def resetGladiatorMoved(): PlayingField = {
         var gladiatorPlayer1New = gladiatorPlayer1
         var gladiatorPlayer2New = gladiatorPlayer2
-        for (i <- gladiatorPlayer1New.indices)
-            gladiatorPlayer1New = gladiatorPlayer1.updated(i, gladiatorPlayer1(i).updateMoved(false))
-        for (i <- gladiatorPlayer2New.indices)
-            gladiatorPlayer2New = gladiatorPlayer2.updated(i, gladiatorPlayer2(i).updateMoved(false))
+        gladiatorPlayer1New = gladiatorPlayer1New.map(glad => glad.updateMoved(false))
+        gladiatorPlayer2New = gladiatorPlayer2New.map(glad => glad.updateMoved(false))
 
         this.copy(gladiatorPlayer1 = gladiatorPlayer1New, gladiatorPlayer2 = gladiatorPlayer2New)
     }
