@@ -54,6 +54,8 @@ trait PlayingFieldInterface {
 
   def checkCellEmpty(coord: Coordinate): Boolean
 
+  def checkCellWalk(coord: Coordinate): Boolean
+
   def gladiatorInfo(line: Int, row: Int): String
 
   def evalPrintLine(line: String): String

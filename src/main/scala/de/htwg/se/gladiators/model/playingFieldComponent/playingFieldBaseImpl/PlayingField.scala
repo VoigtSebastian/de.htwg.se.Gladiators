@@ -151,6 +151,18 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
         }
     }
 
+    def checkCellWalk(coord: Coordinate): Boolean = {
+        if (cells(coord.line)(coord.row).cellType == CellType.SAND 
+            || cells(coord.line)(coord.row).cellType == CellType.BASE) {
+            getGladiatorOption(coord) match {
+                case None => true
+                case Some(g) => false
+            }
+        } else {
+            false
+        }
+    }
+
     def gladiatorInfo(line: Int, row: Int): String = {
         val glad = (gladiatorPlayer1 ::: gladiatorPlayer2).filter(g => g.line == line && g.row == row)
         glad.length match {
@@ -158,7 +170,6 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
             case _ => glad.head.toString()
         }
     }
-
 
     def evalPrintLine(line: String): String = {
         var returnValue = ""
@@ -288,7 +299,7 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     def getValidMoveCoordinates(g: Gladiator, startPosition: Coordinate): List[Coordinate] = {
         var validCells : List[Coordinate] = List()
         getValidMoveCoordinatesHelper(startPosition, 1, g.movementPoints, List()).foreach(coord =>
-            if (!validCells.exists(item => item == coord._1)) {
+            if (!validCells.exists(item => item == coord._1) && checkCellEmpty(coord._1)) {
                 validCells = coord._1 :: validCells
             }
         )
@@ -305,7 +316,7 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
         )
         nextCoordinates.foreach(next => {
             if (isCoordinateLegal(next)
-                && checkCellEmpty(next) 
+                && checkCellWalk(next)
                 && !currValidCells.exists(item => item._1 == next && item._2 <= dist)){
 
                 currValidCells = (next, dist) :: currValidCells
