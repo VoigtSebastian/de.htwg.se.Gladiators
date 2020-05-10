@@ -138,10 +138,6 @@ class CellPanel(line: Int, row: Int, controller: ControllerInterface, val dimWid
         label.icon = resizedTexture("textures/sand_small_green.png", dimHeight, dimWidth)
     }
 
-    def getGladText(glad: Gladiator): String = {
-        glad.hp.toString
-    }
-
     def resizedTexture(path: String, width: Int, height: Int): ImageIcon = {
         var imageIcon = new ImageIcon(path)
         var image = imageIcon.getImage; // transform it
