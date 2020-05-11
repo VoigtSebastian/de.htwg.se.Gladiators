@@ -73,11 +73,13 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         if (playingField.cells(line)(row).cellType == CellType.PALM)
             return false
 
-        if (checkGladiator(line, row))
-            return false
-
         if (!baseArea(players(gameStatus.id)).contains((line, row)))
             return false
+
+        getGladiatorOption(Coordinate(line, row)) match {
+            case Some(g) => return false
+            case None => 
+        }
 
         if (selectedGlad.line == -2) {
             for ((g, i) <- shop.stock.zipWithIndex) {
@@ -178,7 +180,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         status match {
             case MoveType.LEGAL_MOVE =>
                 undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
-                getGladiatorOption(lineDest, rowDest) match {
+                getGladiatorOption(Coordinate(lineDest, rowDest)) match {
                     case Some(g) =>
                         var gladiator = g
                         gladiator = gladiator.updateMoved(true)
@@ -221,7 +223,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         status match {
             case MoveType.ATTACK =>
                 val ret = playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
-                getGladiatorOption(lineAttack, rowAttack) match {
+                getGladiatorOption(Coordinate(lineAttack, rowAttack)) match {
                     case Some(g) =>
                         var gladiator = g
                         gladiator = gladiator.updateMoved(true)
@@ -247,14 +249,6 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         }
     }
 
-    def checkGladiator(line: Int, row: Int): Boolean = {
-        for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
-            if (g.line == line && g.row == row)
-                return true
-        }
-        false
-    }
-
     def getGladiator(line: Int, row: Int): Gladiator = {
         var glad = GladiatorFactory.createGladiator(Int.MinValue, Int.MinValue, GladiatorType.SWORD, players(P1.id))
         for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
@@ -264,12 +258,8 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         glad
     }
 
-    def getGladiatorOption(line: Int, row: Int): Option[Gladiator] = {
-        for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
-            if (g.line == line && g.row == row)
-                return Some(g)
-        }
-        None
+    def getGladiatorOption(position: Coordinate): Option[Gladiator] = {
+        playingField.getGladiatorOption(position)
     }
 
     def cellSelected(line: Int, row: Int): Unit = {
@@ -307,12 +297,6 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         false
     }
 
-    def checkMovementPoints(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
-        playingField.checkMovementPoints(g, Coordinate(lineStart, rowStart), Coordinate(lineDest, rowDest))
-        //https://www.geeksforgeeks.org/shortest-path-in-a-binary-maze/
-    }
-
-
     def checkMovementPointsAttack(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
         playingField.checkMovementPointsAttack(g, Coordinate(lineStart, rowStart), Coordinate(lineDest, rowDest))
     }
@@ -327,22 +311,13 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         players(playerId) = players(playerId).addCredits((gladiatorAttack.ap / 10).toInt)
         var randLine = scala.util.Random.nextInt(playingField.size - 4) + 2
         var randRow = scala.util.Random.nextInt(playingField.size)
-        while (!checkCellEmpty(randLine, randRow)) {
+        while (!playingField.checkCellEmpty(Coordinate(randLine, randRow))) {
             randLine = scala.util.Random.nextInt(playingField.size - 4) + 2
             randRow = scala.util.Random.nextInt(playingField.size)
         }
         playingField.cells(line)(row) = Cell(CellType.SAND)
         playingField.cells(randLine)(randRow) = Cell(CellType.GOLD)
         gladiatorAttack + " is goldmining"
-    }
-
-    def checkCellEmpty(line: Int, row: Int): Boolean = {
-        if (playingField.cells(line)(row).cellType == CellType.SAND
-            && !checkGladiator(line, row)) {
-            true
-        } else {
-            false
-        }
     }
 
     def save(): Unit = {
