@@ -222,7 +222,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
         status match {
             case MoveType.ATTACK =>
-                val ret = playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
+                playingField = playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
                 getGladiatorOption(Coordinate(lineAttack, rowAttack)) match {
                     case Some(g) =>
                         var gladiator = g
