@@ -112,6 +112,18 @@ class PlayingFieldSpec extends WordSpec with Matchers {
                 playingField.moveGladiator(1, 1, 1, 2).gladiatorPlayer2.head.row should be (2)
                 playingField.moveGladiator(1, 1, 2, 0).gladiatorPlayer2.head.line should be (2)
             }
+            "determine all valid coordinates to move to" in {
+                val playingField = createPlayingField()
+                val newGladiator = GladiatorFactory.createGladiator(1, 1, GladiatorType.SWORD, playingField.gladiatorPlayer2.head.player)
+                val updatedPlayingField = playingField.setGladiator(1, 1, newGladiator)
+                playingField.getValidMoveCoordinates(newGladiator, Coordinate(1, 1)).length should be (3)
+            }
+            "check if a destination is a valid move coordination" in {
+                val playingField = createPlayingField()
+                val newGladiator = GladiatorFactory.createGladiator(1, 1, GladiatorType.SWORD, playingField.gladiatorPlayer2.head.player)
+                val updatedPlayingField = playingField.setGladiator(1, 1, newGladiator)
+                playingField.checkMovementPointsMove(newGladiator, Coordinate(1, 1), Coordinate(2,0)) should be (true)
+            }
         }
     }
 
