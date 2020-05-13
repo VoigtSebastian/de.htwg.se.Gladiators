@@ -98,6 +98,8 @@ class Tui (controller: ControllerInterface) extends Reactor {
         case event: GladChanged => printPf()
     }
 
+    def toInt(s: String): Try[Int] = Try(Integer.parseInt(s.trim))
+
     def buyCommandBuilder(v: Vector[String]): Option[(Int, Int, Int)] = {
         if (v.size != 4)
             None
@@ -140,7 +142,6 @@ class Tui (controller: ControllerInterface) extends Reactor {
         }
     }
 
-    def toInt(s: String): Try[Int] = Try(Integer.parseInt(s.trim))
 
     def printPf(): Unit = {
         print(controller.printPlayingField())
