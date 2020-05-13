@@ -3,6 +3,7 @@ package de.htwg.se.gladiators.aview
 import de.htwg.se.gladiators.controller.controllerComponent.{ControllerInterface, GladChanged, PlayingFieldChanged}
 import scala.util.matching.Regex
 import scala.swing.Reactor
+import scala.util.{Try,Success,Failure}
 
 class Tui (controller: ControllerInterface) extends Reactor {
 
@@ -102,7 +103,7 @@ class Tui (controller: ControllerInterface) extends Reactor {
             None
         val ret = (toInt(v(1)), toInt(v(2)), toInt(v(3)))
         ret match {
-            case (Some(i), Some(j), Some(k)) => Some(i, j, k)
+            case (Success(i), Success(j), Success(k)) => Some(i, j, k)
             case _ => None
         }
     }
@@ -112,7 +113,7 @@ class Tui (controller: ControllerInterface) extends Reactor {
             None
         val ret = (toInt(v(1)), toInt(v(2)))
         ret match {
-            case (Some(i), Some(j)) => Some(i, j)
+            case (Success(i), Success(j)) => Some(i, j)
             case _ => None
         }
     }
@@ -122,7 +123,7 @@ class Tui (controller: ControllerInterface) extends Reactor {
             None
         val ret = (toInt(v(1)), toInt(v(2)), toInt(v(3)), toInt(v(4)))
         ret match {
-            case (Some(i), Some(j), Some(k), Some(l)) => Some(i, j, k, l)
+            case (Success(i), Success(j), Success(k), Success(l)) => Some(i, j, k, l)
             case _ => None
         }
     }
@@ -130,20 +131,16 @@ class Tui (controller: ControllerInterface) extends Reactor {
     def moveCommandBuilder(v: Vector[String]): Option[(Int, Int, Int, Int)] = {
         if (v.size != 5)
             return None
+       
         val ret = (toInt(v(1)), toInt(v(2)), toInt(v(3)), toInt(v(4)))
+        
         ret match {
-            case (Some(i), Some(j), Some(k), Some(l)) => Some(i, j, k, l)
+            case (Success(i), Success(j), Success(k), Success(l)) => Some(i, j, k, l)
             case _ => None
         }
     }
 
-    def toInt(str: String): Option[Int] = {
-        try {
-            Some(str.toInt)
-        } catch {
-            case e: Exception => None
-        }
-    }
+    def toInt(s: String): Try[Int] = Try(Integer.parseInt(s.trim))
 
     def printPf(): Unit = {
         print(controller.printPlayingField())
