@@ -255,6 +255,8 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
             return MoveType.ALREADY_MOVED
         if (gladiator.player != currentPlayer)
             return MoveType.UNIT_NOT_OWNED_BY_PLAYER
+        if (!checkMovementPointsMove(gladiator, startCoordinate, targetCoordinate))
+            return MoveType.INSUFFICIENT_MOVEMENT_POINTS
         cellAtCoordinate(targetCoordinate).cellType match {
             case CellType.PALM => MoveType.MOVE_TO_PALM
             case CellType.SAND => MoveType.LEGAL_MOVE
