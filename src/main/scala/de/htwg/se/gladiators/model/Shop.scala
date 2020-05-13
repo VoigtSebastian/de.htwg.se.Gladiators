@@ -2,7 +2,7 @@ package de.htwg.se.gladiators.model
 
 import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
 
-case class Shop(amountGladiatorsInStock: Int) {
+case class Shop(amountGladiatorsInStock: Int = 10) {
 
     var stock: List[(Gladiator, Int)] = List()
     for (i <- 0 until amountGladiatorsInStock) {
@@ -65,7 +65,7 @@ case class Shop(amountGladiatorsInStock: Int) {
         stock = stock ::: (genGlad(), 0) :: Nil
         glad = glad.assignPlayer(player)
         player.boughtGladiator = true
-        Option(glad)
+        Some(glad)
     }
 
     def endTurn(): Unit = {
