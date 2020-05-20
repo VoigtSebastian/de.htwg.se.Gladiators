@@ -1,4 +1,4 @@
-package de.htwg.se.gladiators.model.model.model
+package de.htwg.se.gladiators.model
 
 import de.htwg.se.gladiators.model._
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField

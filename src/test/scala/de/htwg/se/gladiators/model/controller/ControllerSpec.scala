@@ -1,8 +1,9 @@
-package de.htwg.se.gladiators.model.model.controller
+package de.htwg.se.gladiators.model.controller
 
 import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.gladiators.controller.controllerComponent.{CommandStatus, GameStatus, MoveType}
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
+import de.htwg.se.gladiators.model.{Cell, CellType, GladiatorType}
 import org.scalatest.{Matchers, WordSpec}
 
 class ControllerSpec extends WordSpec with Matchers {
