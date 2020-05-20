@@ -1,8 +1,9 @@
-name := "de.htwg.se.Gladiators"
-
-version := "0.1"
+name := "Gladiators"
+version := "1.0"
 
 scalaVersion := "2.12.8"
+
+coverageExcludedPackages := ".*aview.gui.*"
 
 libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.5"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
