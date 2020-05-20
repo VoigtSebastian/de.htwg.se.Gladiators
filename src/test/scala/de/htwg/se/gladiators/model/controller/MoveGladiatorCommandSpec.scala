@@ -1,4 +1,4 @@
-package de.htwg.se.gladiators.model.model.controller
+package de.htwg.se.gladiators.model.controller
 
 import de.htwg.se.gladiators.controller.controllerComponent.{GameStatus, MoveGladiatorCommand}
 import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller

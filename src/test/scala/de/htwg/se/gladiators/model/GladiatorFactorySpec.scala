@@ -1,6 +1,8 @@
-package de.htwg.se.gladiators.model.model.model
+package de.htwg.se.gladiators.model
 
 import org.scalatest.{Matchers, WordSpec}
+
+import de.htwg.se.gladiators.model.{GladiatorType, GladiatorFactory, Player}
 
 class GladiatorFactorySpec extends WordSpec with Matchers  {
     "The GladiatorFactory called with a GladiatorType of bow " when {

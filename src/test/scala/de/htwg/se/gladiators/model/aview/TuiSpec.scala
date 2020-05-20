@@ -1,10 +1,10 @@
-package de.htwg.se.gladiators.model.model.aview
+package de.htwg.se.gladiators.model.aview
 
 import de.htwg.se.gladiators.aview.Tui
 import de.htwg.se.gladiators.controller.controllerComponent.GameStatus
 import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
-import de.htwg.se.gladiators.model.{Gladiator, GladiatorType}
+import de.htwg.se.gladiators.model.{Cell, Gladiator, GladiatorType}
 import org.scalatest.{Matchers, WordSpec}
 
 class TuiSpec extends WordSpec with Matchers {

@@ -1,4 +1,4 @@
-package de.htwg.se.gladiators.model.model.model
+package de.htwg.se.gladiators.model
 
 import de.htwg.se.gladiators.model.{Cell, CellType}
 import org.scalatest.{Matchers, WordSpec}
