@@ -1,6 +1,6 @@
 package de.htwg.se.gladiators.model
 
-import de.htwg.se.gladiators.model.Player
+
 import org.scalatest.{Matchers, WordSpec}
 
 class PlayerSpec extends WordSpec with Matchers{

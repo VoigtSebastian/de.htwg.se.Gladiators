@@ -1,6 +1,5 @@
 package de.htwg.se.gladiators.model
 
-import de.htwg.se.gladiators.model.Gladiator
 import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
 import org.scalatest.{Matchers, WordSpec}
 
@@ -41,4 +40,3 @@ class GladiatorSpec extends WordSpec with Matchers {
 
   }
 }
-
