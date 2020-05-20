@@ -1,4 +1,5 @@
 package de.htwg.se.gladiators.model
+
 import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
 
 case class Shop(amountGladiatorsInStock: Int) {
