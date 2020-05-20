@@ -1,14 +1,40 @@
-name := "de.htwg.se.Gladiators"
+//name := "de.htwg.se.Gladiators"
 
-version := "0.1"
+import sbt.Keys.libraryDependencies
 
-scalaVersion := "2.12.8"
+ThisBuild / version := "0.1"
 
-libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.5"
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
-libraryDependencies += "org.scala-lang.modules" % "scala-swing_2.12" % "2.0.3"
-libraryDependencies += "com.google.inject" % "guice" % "4.1.0"
-libraryDependencies += "net.codingwell" %% "scala-guice" % "4.1.0"
-libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.6"
+ThisBuild / scalaVersion := "2.12.8"
 
-trapExit := false
+ThisBuild / trapExit := false
+
+val commonDependencies = Seq(
+  "org.scalactic" %% "scalactic" % "3.1.1",
+  "org.scalatest" %% "scalatest" % "3.1.1" % Test,
+  "org.scalamock" %% "scalamock" % "4.4.0" % Test,
+  "org.scala-lang.modules" %% "scala-swing" % "2.1.1",
+  "org.scala-lang.modules" %% "scala-xml" % "1.3.0",
+  "com.typesafe.play" %% "play-json" % "2.8.1",
+  "com.google.inject" % "guice" % "4.2.2",
+  "net.codingwell" %% "scala-guice" % "4.2.6",
+)
+
+lazy val root = (project in file(".")).settings(
+  name := "Gladiators",
+  libraryDependencies ++= commonDependencies,
+).dependsOn(Shop, Player, GladiatorType) //% "compile->compile;test->test")
+
+lazy val Shop = project.settings(
+  name := "de.htwg.se.gladiators.model.Shop",
+  libraryDependencies ++= commonDependencies,
+).dependsOn(GladiatorType)
+
+lazy val Player = project.settings(
+  name :=  "Player",
+  libraryDependencies ++= commonDependencies
+)
+
+lazy val GladiatorType = project.settings(
+  name :=  "GladiatorType",
+  libraryDependencies ++= commonDependencies
+)

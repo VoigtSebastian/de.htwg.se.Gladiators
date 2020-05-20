@@ -11,6 +11,8 @@ import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.UndoManager
 
+
+
 import scala.swing.Publisher
 
 trait ControllerInterface extends Publisher {
