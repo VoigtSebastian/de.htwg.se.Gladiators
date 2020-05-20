@@ -22,15 +22,15 @@ val commonDependencies = Seq(
 lazy val root = (project in file(".")).settings(
   name := "Gladiators",
   libraryDependencies ++= commonDependencies,
-).dependsOn(Shop, Player, GladiatorType) //% "compile->compile;test->test")
+).aggregate(Shop, Gladiator, GladiatorType).dependsOn(Shop, Gladiator, GladiatorType) //% "compile->compile;test->test")
 
 lazy val Shop = project.settings(
   name := "de.htwg.se.gladiators.model.Shop",
   libraryDependencies ++= commonDependencies,
-).dependsOn(GladiatorType)
+).dependsOn(GladiatorType, Gladiator)
 
-lazy val Player = project.settings(
-  name :=  "Player",
+lazy val Gladiator = project.settings(
+  name :=  "Gladiator",
   libraryDependencies ++= commonDependencies
 )
 
