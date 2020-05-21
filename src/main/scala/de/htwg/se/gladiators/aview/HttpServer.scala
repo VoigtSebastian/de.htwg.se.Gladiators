@@ -1,23 +1,12 @@
 package de.htwg.se.gladiators.aview
-import akka.actor.ActorSystem
-import akka.http.scaladsl.Http
+
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.{Route, StandardRoute}
-import akka.stream.ActorMaterializer
 import de.htwg.se.gladiators.controller.controllerComponent.{ControllerInterface, GladChanged, PlayingFieldChanged}
-import scala.concurrent.{ExecutionContextExecutor, Future}
-import scala.concurrent.duration.FiniteDuration
-import akka.stream.scaladsl._
-import akka.http.scaladsl.model.HttpMethods._
-import akka.http.scaladsl.Http
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.HttpMethods._
-import akka.http.scaladsl.model._
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.Sink
-
 class HttpServer(controller: ControllerInterface) {
 
     implicit val system = ActorSystem("my-system")
