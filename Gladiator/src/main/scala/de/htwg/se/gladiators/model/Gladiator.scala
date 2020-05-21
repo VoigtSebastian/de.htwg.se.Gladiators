@@ -6,7 +6,7 @@ import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
 case class Gladiator(line: Int, row: Int, movementPoints: Double, ap: Double, hp: Double, gladiatorType: GladiatorType, player: Player, moved: Boolean = true) {
 
     def move(line: Int, row: Int): Gladiator = {
-        this.copy(line = line, row = row)
+        this.copy(line = line, row = row, moved = true)
     }
 
     def updateMoved(moved: Boolean): Gladiator = {

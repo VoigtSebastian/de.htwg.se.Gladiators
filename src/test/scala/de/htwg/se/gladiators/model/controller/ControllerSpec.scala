@@ -26,10 +26,11 @@ class ControllerSpec extends WordSpec with Matchers {
         //     controller.categorizeMove(controller.playingField.size - 2, controller.playingField.size / 2, controller.playingField.size -3, controller.playingField.size / 2) should be(MoveType.LEGAL_MOVE)
         // }
 
-        "trying to move a unit that is not owned by the current player " in {
-            controller.gameStatus = GameStatus.P1
-            controller.categorizeMove(1, controller.playingField.size / 2, 4, 4) should be(MoveType.UNIT_NOT_OWNED_BY_PLAYER)
-        }
+        // Todo: Move to playingFieldSpec
+        // "trying to move a unit that is not owned by the current player " in {
+        //     controller.gameStatus = GameStatus.P1
+        //     controller.categorizeMove(1, controller.playingField.size / 2, 4, 4) should be(MoveType.UNIT_NOT_OWNED_BY_PLAYER)
+        // }
     }
     "A controller" when {
         val controller = new Controller()

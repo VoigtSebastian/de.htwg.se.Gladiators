@@ -3,6 +3,7 @@ package de.htwg.se.gladiators.aview
 import de.htwg.se.gladiators.controller.controllerComponent.{ControllerInterface, GladChanged, PlayingFieldChanged}
 import scala.util.matching.Regex
 import scala.swing.Reactor
+import scala.util.{Try,Success,Failure}
 
 class Tui (controller: ControllerInterface) extends Reactor {
 
@@ -50,12 +51,12 @@ class Tui (controller: ControllerInterface) extends Reactor {
             case "h" => println(HELP_MESSAGE)
             case "t" => controller.toggleUnitStats()
             case "m" =>
-                moveCommandBuilder(splitInput) match {
+                commandBuilder(splitInput.patch(0, Nil, 1)) match {
                     case Some(moveCommand) =>
-                        println(controller.moveGladiator(moveCommand._1,
-                            moveCommand._2,
-                            moveCommand._3,
-                            moveCommand._4)._2)
+                        println(controller.moveGladiator(moveCommand(0),
+                            moveCommand(1),
+                            moveCommand(2),
+                            moveCommand(3))._2)
                     case None => println(CORRECT_FORMAT_MESSAGE)
                 }
 
@@ -63,27 +64,27 @@ class Tui (controller: ControllerInterface) extends Reactor {
             case "r" => controller.redoGladiator()
 
             case "a" =>
-                attackCommandBuilder(splitInput) match {
+                commandBuilder(splitInput.patch(0, Nil, 1)) match {
                     case Some(attackCommand) =>
-                        println(controller.attack(attackCommand._1,
-                            attackCommand._2,
-                            attackCommand._3,
-                            attackCommand._4)._2)
+                        println(controller.attack(attackCommand(0),
+                            attackCommand(1),
+                            attackCommand(2),
+                            attackCommand(3))._2)
                     case None => println(CORRECT_FORMAT_MESSAGE)
                 }
             case "i" =>
-                infoCommandBuilder(splitInput) match {
+                commandBuilder(splitInput.patch(0, Nil, 1)) match {
                     case Some(infoCommand) =>
-                        println(controller.gladiatorInfo(infoCommand._1, infoCommand._2))
+                        println(controller.gladiatorInfo(infoCommand(0), infoCommand(1)))
                     case None => println(CORRECT_FORMAT_MESSAGE)
                 }
             case "s" => println(controller.getShop)
             case "b" =>
-                buyCommandBuilder(splitInput) match {
+                commandBuilder(splitInput.patch(0, Nil, 1)) match {
                     case Some(buyCommand) =>
-                        println(controller.buyGladiator(buyCommand._1,
-                            buyCommand._2,
-                            buyCommand._3))
+                        println(controller.buyGladiator(buyCommand(0),
+                            buyCommand(1),
+                            buyCommand(2)))
                     case None => println(CORRECT_FORMAT_MESSAGE)
                 }
             case "e" => println(controller.endTurn())
@@ -97,52 +98,16 @@ class Tui (controller: ControllerInterface) extends Reactor {
         case event: GladChanged => printPf()
     }
 
-    def buyCommandBuilder(v: Vector[String]): Option[(Int, Int, Int)] = {
-        if (v.size != 4)
-            None
-        val ret = (toInt(v(1)), toInt(v(2)), toInt(v(3)))
-        ret match {
-            case (Some(i), Some(j), Some(k)) => Some(i, j, k)
-            case _ => None
-        }
-    }
+    def toInt(s: String): Try[Int] = Try(Integer.parseInt(s.trim))
 
-    def infoCommandBuilder(v: Vector[String]): Option[(Int, Int)] = {
-        if (v.size != 3)
-            None
-        val ret = (toInt(v(1)), toInt(v(2)))
-        ret match {
-            case (Some(i), Some(j)) => Some(i, j)
-            case _ => None
-        }
-    }
-
-    def attackCommandBuilder(v: Vector[String]): Option[(Int, Int, Int, Int)] = {
-        if (v.size != 5)
-            None
-        val ret = (toInt(v(1)), toInt(v(2)), toInt(v(3)), toInt(v(4)))
-        ret match {
-            case (Some(i), Some(j), Some(k), Some(l)) => Some(i, j, k, l)
-            case _ => None
-        }
-    }
-
-    def moveCommandBuilder(v: Vector[String]): Option[(Int, Int, Int, Int)] = {
-        if (v.size != 5)
-            return None
-        val ret = (toInt(v(1)), toInt(v(2)), toInt(v(3)), toInt(v(4)))
-        ret match {
-            case (Some(i), Some(j), Some(k), Some(l)) => Some(i, j, k, l)
-            case _ => None
-        }
-    }
-
-    def toInt(str: String): Option[Int] = {
-        try {
-            Some(str.toInt)
-        } catch {
-            case e: Exception => None
-        }
+    def commandBuilder(v: Vector[String]): Option[Vector[Int]] = {
+        val ret: Vector[Int] = v.map(s => {
+            toInt(s) match {
+                case Success(i) => i
+                case _ => return None
+            }
+        })
+        Some(ret)
     }
 
     def printPf(): Unit = {

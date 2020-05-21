@@ -71,10 +71,8 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     def resetGladiatorMoved(): PlayingField = {
         var gladiatorPlayer1New = gladiatorPlayer1
         var gladiatorPlayer2New = gladiatorPlayer2
-        for (i <- gladiatorPlayer1New.indices)
-            gladiatorPlayer1New = gladiatorPlayer1.updated(i, gladiatorPlayer1(i).updateMoved(false))
-        for (i <- gladiatorPlayer2New.indices)
-            gladiatorPlayer2New = gladiatorPlayer2.updated(i, gladiatorPlayer2(i).updateMoved(false))
+        gladiatorPlayer1New = gladiatorPlayer1New.map(glad => glad.updateMoved(false))
+        gladiatorPlayer2New = gladiatorPlayer2New.map(glad => glad.updateMoved(false))
 
         this.copy(gladiatorPlayer1 = gladiatorPlayer1New, gladiatorPlayer2 = gladiatorPlayer2New)
     }
@@ -125,21 +123,12 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def moveGladiator(line: Int, row: Int, lineDest: Int, rowDest: Int): PlayingField = {
-        var i = gladiatorPlayer1.indexWhere(x => x.line == line && x.row == row)
-        if (i != -1) {
-            val glad = gladiatorPlayer1(i).move(lineDest, rowDest)
-            var gladiatorPlayerNew = gladiatorPlayer1.updated(i, glad)
-            this.copy(gladiatorPlayer1 = gladiatorPlayerNew)
+        val filter = (gladiator: Gladiator) => gladiator.line == line && gladiator.row == row
+        val newGlad = (gladiatorPlayer1 ::: gladiatorPlayer2).filter(filter).head.move(lineDest, rowDest)
 
-        } else {
-            var i = gladiatorPlayer2.indexWhere(x => x.line == line && x.row == row)
-            if (i != -1) {
-                val glad = gladiatorPlayer2(i).move(lineDest, rowDest)
-                var gladiatorPlayerNew = gladiatorPlayer2.updated(i, glad)
-                this.copy(gladiatorPlayer2 = gladiatorPlayerNew)
-            } else {
-                this
-            }
+        gladiatorPlayer1.exists(filter) match {
+            case true => this.copy(gladiatorPlayer1 = newGlad :: gladiatorPlayer1.filter(g => g.line != line || g.row != row))
+            case false => this.copy(gladiatorPlayer2 = newGlad :: gladiatorPlayer2.filter(g => g.line != line || g.row != row))
         }
     }
 
@@ -151,20 +140,36 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
 
     def cellAtCoordinate(coordinate: Coordinate): Cell = cell(coordinate.line, coordinate.row)
 
-    def gladiatorInfo(line: Int, row: Int): String = {
-        var ret = ""
-        for (glad <- gladiatorPlayer1)
-            if (glad.line == line && glad.row == row) {
-                ret = glad.toString()
-                return ret
+    def checkCellEmpty(coord: Coordinate): Boolean = {
+        if (cells(coord.line)(coord.row).cellType == CellType.SAND) {
+            getGladiatorOption(coord) match {
+                case None => true
+                case Some(g) => false
             }
-        for (glad <- gladiatorPlayer2)
-            if (glad.line == line && glad.row == row)
-                ret = glad.toString()
-
-        ret
+        } else {
+            false
+        }
     }
 
+    def checkCellWalk(coord: Coordinate): Boolean = {
+        if (cells(coord.line)(coord.row).cellType == CellType.SAND 
+            || cells(coord.line)(coord.row).cellType == CellType.BASE) {
+            getGladiatorOption(coord) match {
+                case None => true
+                case Some(g) => false
+            }
+        } else {
+            false
+        }
+    }
+
+    def gladiatorInfo(line: Int, row: Int): String = {
+        val glad = (gladiatorPlayer1 ::: gladiatorPlayer2).filter(g => g.line == line && g.row == row)
+        glad.length match {
+            case 0 => ""
+            case _ => glad.head.toString()
+        }
+    }
 
     def evalPrintLine(line: String): String = {
         var returnValue = ""
@@ -201,17 +206,10 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def setGladiator(line: Int, row: Int, glad: Gladiator): PlayingField = {
-        var i = gladiatorPlayer1.indexWhere(x => x.line == line && x.row == row)
-        if (i != -1) {
-            var gladiatorPlayerNew = gladiatorPlayer1.updated(i, glad)
-            this.copy(gladiatorPlayer1 = gladiatorPlayerNew)
-
-        } else {
-            var i = gladiatorPlayer2.indexWhere(x => x.line == line && x.row == row)
-            var gladiatorPlayerNew = gladiatorPlayer2.updated(i, glad)
-            this.copy(gladiatorPlayer2 = gladiatorPlayerNew)
+        gladiatorPlayer1.exists(g => g.line == line && g.row == row) match {
+            case true => this.copy(gladiatorPlayer1 = glad :: gladiatorPlayer1.filter(g => g != glad))
+            case false => this.copy(gladiatorPlayer2 = glad :: gladiatorPlayer2.filter(g => g != glad))
         }
-
     }
 
     def resetPlayingField(): PlayingField = {
@@ -257,6 +255,8 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
             return MoveType.ALREADY_MOVED
         if (gladiator.player != currentPlayer)
             return MoveType.UNIT_NOT_OWNED_BY_PLAYER
+        if (!checkMovementPointsMove(gladiator, startCoordinate, targetCoordinate))
+            return MoveType.INSUFFICIENT_MOVEMENT_POINTS
         cellAtCoordinate(targetCoordinate).cellType match {
             case CellType.PALM => MoveType.MOVE_TO_PALM
             case CellType.SAND => MoveType.LEGAL_MOVE
@@ -294,10 +294,39 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
         false
     }
 
-    def checkMovementPoints(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean = {
-        if (g.row == startPosition.row && g.line == startPosition.line &&
-            g.movementPoints >= (Math.abs(destination.line - startPosition.line) + Math.abs(destination.row - startPosition.row)))
-            return true
-        false
+    def checkMovementPointsMove(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean = {
+        return getValidMoveCoordinates(g, startPosition).exists(coord => coord == destination)
+    }
+
+    def getValidMoveCoordinates(g: Gladiator, startPosition: Coordinate): List[Coordinate] = {
+        var validCells : List[Coordinate] = List()
+        getValidMoveCoordinatesHelper(startPosition, 1, g.movementPoints, List()).foreach(coord =>
+            if (!validCells.exists(item => item == coord._1) && checkCellEmpty(coord._1)) {
+                validCells = coord._1 :: validCells
+            }
+        )
+        validCells
+    }
+
+    def getValidMoveCoordinatesHelper(curr: Coordinate, dist: Int, maxDist: Double, validCells: List[(Coordinate, Int)]): List[(Coordinate, Int)] = {
+        var currValidCells = validCells
+        var nextCoordinates: List[Coordinate] = List(
+            Coordinate(curr.line, curr.row - 1),
+            Coordinate(curr.line, curr.row + 1),
+            Coordinate(curr.line - 1, curr.row),
+            Coordinate(curr.line + 1, curr.row)
+        )
+        nextCoordinates.foreach(next => {
+            if (isCoordinateLegal(next)
+                && checkCellWalk(next)
+                && !currValidCells.exists(item => item._1 == next && item._2 <= dist)){
+
+                currValidCells = (next, dist) :: currValidCells
+                if (dist + 1 <= maxDist) {
+                    currValidCells = currValidCells ::: getValidMoveCoordinatesHelper(next, dist + 1, maxDist, currValidCells) //recursion
+                } 
+            } 
+        })
+        currValidCells
     }
 }

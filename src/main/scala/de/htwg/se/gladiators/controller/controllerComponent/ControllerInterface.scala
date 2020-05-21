@@ -10,6 +10,7 @@ import de.htwg.se.gladiators.model.fileIoComponent.FileIOInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.UndoManager
+import de.htwg.se.gladiators.util.Coordinate
 
 
 
@@ -82,11 +83,9 @@ trait ControllerInterface extends Publisher {
 
     def attack(lineAttack: Int, rowAttack: Int, lineDest: Int, rowDest: Int): (Boolean, String)
 
-    def checkGladiator(line: Int, row: Int): Boolean
-
     def getGladiator(line: Int, row: Int): Gladiator
 
-    def getGladiatorOption(line: Int, row: Int): Option[Gladiator]
+    def getGladiatorOption(position: Coordinate): Option[Gladiator]
 
     def cellSelected(line: Int, row: Int): Unit
 
@@ -96,13 +95,9 @@ trait ControllerInterface extends Publisher {
 
     def isGladiatorInList(list: List[Gladiator], line: Int, row: Int): Boolean
 
-    def checkMovementPoints(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean
-
     def checkMovementPointsAttack(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean
 
     def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int): String
-
-    def checkCellEmpty(line: Int, row: Int): Boolean
 
     def save: Unit
 
