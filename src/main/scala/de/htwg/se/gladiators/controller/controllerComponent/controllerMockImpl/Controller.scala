@@ -11,6 +11,7 @@ import de.htwg.se.gladiators.model.fileIoComponent.FileIOInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.UndoManager
+import de.htwg.se.gladiators.util.Coordinate
 
 import scala.swing.Publisher
 
@@ -65,11 +66,9 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
     def attack(lineAttack: Int, rowAttack: Int, lineDest: Int, rowDest: Int): (Boolean, String) = (false, "")
 
-    def checkGladiator(line: Int, row: Int): Boolean = false
-
     def getGladiator(line: Int, row: Int): Gladiator = GladiatorFactory.createGladiator(0, 0, GladiatorType.SWORD, Player(""))
 
-    def getGladiatorOption(line: Int, row: Int): Option[Gladiator] = None
+    def getGladiatorOption(position: Coordinate): Option[Gladiator] = None
 
     def cellSelected(line: Int, row: Int): Unit = {}
 
@@ -79,13 +78,9 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
     def isGladiatorInList(list: List[Gladiator], line: Int, row: Int): Boolean = false
 
-    def checkMovementPoints(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = false
-
     def checkMovementPointsAttack(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = false
 
     def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int): String = ""
-
-    def checkCellEmpty(line: Int, row: Int): Boolean = false
 
     def save(): Unit = {}
 

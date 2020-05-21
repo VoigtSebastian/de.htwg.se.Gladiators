@@ -46,9 +46,15 @@ trait PlayingFieldInterface {
 
   def setGladiator(line: Int, row: Int, glad: Gladiator): PlayingField
 
+  def getGladiatorOption(position: Coordinate): Option[Gladiator]
+
   def getSize: Integer
 
   def cell(line: Int, row: Int): Cell
+
+  def checkCellEmpty(coord: Coordinate): Boolean
+
+  def checkCellWalk(coord: Coordinate): Boolean
 
   def gladiatorInfo(line: Int, row: Int): String
 
@@ -64,6 +70,10 @@ trait PlayingFieldInterface {
 
   def checkMovementPointsAttack(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean
 
-  def checkMovementPoints(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean
+  def checkMovementPointsMove(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean
+
+  def getValidMoveCoordinates(g: Gladiator, startPosition: Coordinate): List[Coordinate]
+
+  def getValidMoveCoordinatesHelper(curr: Coordinate, dist: Int, maxDist: Double, validCells: List[(Coordinate, Int)]): List[(Coordinate, Int)]
 }
 

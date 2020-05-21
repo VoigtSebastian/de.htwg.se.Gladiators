@@ -21,9 +21,7 @@ class MoveGladiatorCommand(x: Int, y: Int, xDest: Int, yDest: Int, controller: C
     }
 
     override def redoStep: Unit = {
-        val gladiator = controller.getGladiator(xNew, yNew).updateMoved(true)
-        controller.playingField = controller.playingField.setGladiator(xNew, yNew, gladiator)
-        controller.moveGladiator(xOld, yOld, xNew, yNew)
+        controller.playingField = controller.playingField.moveGladiator(x, y, xDest, yDest)
     }
 
 }

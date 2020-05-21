@@ -2,6 +2,7 @@ package de.htwg.se.gladiators.aview.gui
 
 import de.htwg.se.gladiators.controller.controllerComponent._
 import de.htwg.se.gladiators.model.{Gladiator, GladiatorType}
+import de.htwg.se.gladiators.util.{Coordinate}
 import javax.swing._
 
 import scala.swing.{Alignment, BorderPanel, Button, Dimension, Font, Frame, GridPanel, TextField, _}
@@ -269,31 +270,29 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
             redraw()
         case event: CellClicked =>
             redraw()
-            if (controller.checkGladiator(controller.selectedCell._1, controller.selectedCell._2)) {
-                val selectedGlad: Gladiator = controller.getGladiator(controller.selectedCell._1, controller.selectedCell._2)
-                if (!selectedGlad.moved && selectedGlad.player == controller.players(controller.gameStatus.id)) {
-                    for {
-                        i <- 0 until controller.playingField.size
-                        j <- 0 until controller.playingField.size
-                    } {
-                        if (controller.checkMovementPoints(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)) {
-                            if (controller.checkCellEmpty(i, j)) {
-                                cells(i)(j).setHighlightedSand()
+            controller.getGladiatorOption(Coordinate(controller.selectedCell._1, controller.selectedCell._2)) match {
+                case None =>
+                case Some(g) => {
+                    if (!g.moved && g.player == controller.players(controller.gameStatus.id)) {
+                        for {
+                            i <- 0 until controller.playingField.size
+                            j <- 0 until controller.playingField.size
+                        } {
+                            if (controller.checkMovementPointsAttack(g, g.line, g.row, i, j)) {
+                                if //(cells(i)(j).myCell.cellType != CellType.PALM &&
+                                (!(i == g.line && j == g.row)) {
+                                    cells(i)(j).cell.border = LineBorder(java.awt.Color.RED.darker(), 4)
+                                }
                             }
-                        }
-                        if (controller.checkMovementPointsAttack(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)) {
-                            if //(cells(i)(j).myCell.cellType != CellType.PALM &&
-                            (!(i == selectedGlad.line && j == selectedGlad.row)) {
-                                // && !((i, j) == controller.getBase(controller.players(controller.gameStatus.id)))) {
-                                cells(i)(j).cell.border = LineBorder(java.awt.Color.RED.darker(), 4)
-                            }
-                        }
 
+                        }
+                        val validMoveCoordinates = controller.playingField.getValidMoveCoordinates(g, Coordinate(g.line, g.row))
+                        validMoveCoordinates.foreach(coord => {
+                            cells(coord.line)(coord.row).setHighlightedSand()
+                        })
                     }
                 }
             }
-
-
     }
 
     def redraw(): Unit = {
@@ -319,20 +318,20 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
     }
 
     def refreshGladPanel: Unit = {
-        if (controller.checkGladiator(controller.selectedCell._1, controller.selectedCell._2)) {
-            val glad = controller.getGladiator(controller.selectedCell._1, controller.selectedCell._2)
-            gladPanel.gladType.text = glad.gladiatorType.toString
-            gladPanel.gladAP.text = glad.ap.toString
-            gladPanel.gladHP.text = glad.hp.toString
-            gladPanel.gladHP.icon = resizedTexture("textures/hp_black.png", 40, 40)
-            gladPanel.gladAP.icon = resizedTexture("textures/ap_black.png", 40, 40)
-        } else {
-            gladPanel.gladType.text = ""
-            gladPanel.gladAP.text = " "
-            gladPanel.gladHP.text = " "
-            gladPanel.gladAP.icon = resizedTexture("textures/empty_small.png", 40, 40)
-            gladPanel.gladHP.icon = resizedTexture("textures/empty_small.png", 40, 40)
-        }
+        controller.getGladiatorOption(Coordinate(controller.selectedCell._1, controller.selectedCell._2)) match {
+            case Some(g) =>
+                gladPanel.gladType.text = g.gladiatorType.toString
+                gladPanel.gladAP.text = g.ap.toString
+                gladPanel.gladHP.text = g.hp.toString
+                gladPanel.gladHP.icon = resizedTexture("textures/hp_black.png", 40, 40)
+                gladPanel.gladAP.icon = resizedTexture("textures/ap_black.png", 40, 40)
+            case None =>
+                gladPanel.gladType.text = ""
+                gladPanel.gladAP.text = " "
+                gladPanel.gladHP.text = " "
+                gladPanel.gladAP.icon = resizedTexture("textures/empty_small.png", 40, 40)
+                gladPanel.gladHP.icon = resizedTexture("textures/empty_small.png", 40, 40)
+        }       
     }
 
     def showGladiators: Unit = {
