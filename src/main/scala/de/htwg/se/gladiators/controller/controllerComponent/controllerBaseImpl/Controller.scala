@@ -330,4 +330,6 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         publish(new PlayingFieldChanged)
     }
 
+    def playingFieldToHtml: String = playingField.toHtml
+
 }

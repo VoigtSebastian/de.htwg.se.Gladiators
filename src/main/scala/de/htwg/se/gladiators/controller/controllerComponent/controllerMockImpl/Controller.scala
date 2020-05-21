@@ -86,4 +86,5 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
     def load(): Unit = {}
 
+    def playingFieldToHtml(): String = ""
 }

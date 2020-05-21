@@ -75,5 +75,7 @@ trait PlayingFieldInterface {
   def getValidMoveCoordinates(g: Gladiator, startPosition: Coordinate): List[Coordinate]
 
   def getValidMoveCoordinatesHelper(curr: Coordinate, dist: Int, maxDist: Double, validCells: List[(Coordinate, Int)]): List[(Coordinate, Int)]
+
+  def toHtml: String
 }
 

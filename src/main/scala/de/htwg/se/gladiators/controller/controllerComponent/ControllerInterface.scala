@@ -102,4 +102,6 @@ trait ControllerInterface extends Publisher {
     def save: Unit
 
     def load: Unit
+
+    def playingFieldToHtml: String
 }

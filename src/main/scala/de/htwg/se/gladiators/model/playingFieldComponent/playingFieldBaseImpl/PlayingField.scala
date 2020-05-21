@@ -329,4 +329,12 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
         })
         currValidCells
     }
+
+    def toHtml: String = {
+        var cellsHtml = ""
+        for (i <- cells.indices) {
+            cellsHtml += formatLine(i) + "</br>"
+        }
+        "</p>" + cellsHtml + "</p>"
+    }
 }
