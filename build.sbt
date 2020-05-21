@@ -16,12 +16,14 @@ val commonDependencies = Seq(
   "org.scala-lang.modules" %% "scala-xml" % "1.3.0",
   "com.typesafe.play" %% "play-json" % "2.8.1",
   "com.google.inject" % "guice" % "4.2.2",
-  "net.codingwell" %% "scala-guice" % "4.2.6",
+  "net.codingwell" %% "scala-guice" % "4.2.6"
 )
 
 lazy val root = (project in file(".")).settings(
   name := "Gladiators",
   libraryDependencies ++= commonDependencies,
+  libraryDependencies +="com.typesafe.akka" %% "akka-http"   % "10.1.12",
+  libraryDependencies += "com.typesafe.akka" %% "akka-stream" % "2.6.5"
 ).aggregate(Gladiator, Player).dependsOn(Gladiator, Player) //% "compile->compile;test->test")
 
 
