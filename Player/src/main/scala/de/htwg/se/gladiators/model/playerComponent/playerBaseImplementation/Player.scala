@@ -1,6 +1,10 @@
-package de.htwg.se.gladiators.model;
+package de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation
+import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
 
-case class Player(name: String = "NO_NAME", var credits: Int = 50, baseHP: Int = 200, var boughtGladiator: Boolean = false, enemyBaseLine: Int = 0) {
+import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
+import play.api.libs.json.{JsValue, Json}
+
+case class Player(name: String = "NO_NAME", var credits: Int = 50, baseHP: Int = 200, var boughtGladiator: Boolean = false, enemyBaseLine: Int = 0) extends PlayerInterface with PlayJsonSupport {
     override def toString: String = name
 
     override def equals(that: Any): Boolean =
@@ -38,4 +42,12 @@ case class Player(name: String = "NO_NAME", var credits: Int = 50, baseHP: Int =
     def updateEnemyBaseLine(line: Int) : Player = {
         this.copy(enemyBaseLine = line)
     }
+
+    def toJson: JsValue = Json.obj(
+        "name" -> this.name,
+        "credits" -> this.credits,
+        "baseHP" -> this.baseHP,
+        "boughtGladiator" -> this.boughtGladiator,
+        "enemyBaseLine" -> this.enemyBaseLine
+    )
 }

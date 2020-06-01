@@ -1,6 +1,8 @@
 package de.htwg.se.gladiators.model
 
 import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
+import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
+import de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation.Player
 
 case class Shop(amountGladiatorsInStock: Int) {
 
@@ -52,7 +54,7 @@ case class Shop(amountGladiatorsInStock: Int) {
         (((gladiator.ap + gladiator.hp) * (gladiator.movementPoints + 1)) / 35).toInt
     }
 
-    def buy(index: Int, player: Player): Option[Gladiator] = {
+    def buy(index: Int, player: PlayerInterface): Option[Gladiator] = {
         if (index >= stock.size || index < 0)
             return None
         var glad = stock(index)._1

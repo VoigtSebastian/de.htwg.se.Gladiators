@@ -16,13 +16,16 @@ object Gladiators {
 
         val injector = Guice.createInjector(new GladiatorsModule)
         val controller = injector.getInstance(classOf[ControllerInterface])
+
         val webserver = new HttpServer(controller)
         val tui = new Tui(controller)
         val gui = new SwingGui(controller)
+
         controller.publish(new PlayingFieldChanged)
         var input: String  = ""
         if(args.length > 0) input = args(0)
         var output: String = ""
+        
         if (!input.isEmpty) tui.processInputLine(input)
         else do {
             print(WAITING_FOR_INPUT)
