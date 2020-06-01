@@ -228,7 +228,7 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
                     "Change Names",
                     JOptionPane.QUESTION_MESSAGE
                 )
-                controller.players(0) = controller.players(0).updateName(nameInput)
+                controller.setPlayerName(0, nameInput)
                 nameInput = JOptionPane.showInputDialog(
                     null,
                     "Player Two",

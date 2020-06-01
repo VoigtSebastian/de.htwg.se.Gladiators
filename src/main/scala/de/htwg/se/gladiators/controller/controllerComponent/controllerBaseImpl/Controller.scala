@@ -11,6 +11,20 @@ import de.htwg.se.gladiators.model.fileIoComponent.FileIOInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.{Coordinate, UndoManager}
+import de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation.Player
+import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
+
+import akka.actor.ActorSystem
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.client.RequestBuilding._
+import akka.http.scaladsl.model.HttpRequest
+import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.stream.ActorMaterializer
+import de.htwg.se.gladiators.playerModule.util._
+import play.api.libs.json.{JsValue, Json}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContextExecutor, Future}
+import java.util.concurrent.TimeUnit
 
 import scala.swing.Publisher
 
@@ -27,6 +41,10 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
     val injector = Guice.createInjector(new GladiatorsModule)
     val kickOutTurns = 7
     var fileIo = injector.getInstance((classOf[FileIOInterface]))
+
+    implicit val system: ActorSystem = ActorSystem()
+    implicit val materializer: ActorMaterializer = ActorMaterializer()
+    implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
     def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
 
@@ -58,7 +76,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
     def getShop: String = shop.toString
 
-    def getCurrentPlayer: Player = players(gameStatus.id)
+    def getCurrentPlayer: PlayerInterface = players(gameStatus.id)
 
     def printPlayingField(): String = {
         playingField.toString +
@@ -142,7 +160,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         }
     }
 
-    def baseArea(player: Player): List[(Int, Int)] = {
+    def baseArea(player: PlayerInterface): List[(Int, Int)] = {
         var base1: (Int, Int) = (0, 0)
         var area: List[(Int, Int)] = Nil
         if (player == players(0)) {
@@ -331,5 +349,17 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
     }
 
     def playingFieldToHtml: String = playingField.toHtml
+
+
+    def setPlayerName(ind: Int, name: String) : Unit = {
+        val playerRename = {
+            val response = Http().singleRequest(Post("http://localhost:1234/gladiators/updateName",
+            UpdateNameArgumentContainer(players(ind), name)))
+            println(response)
+            val jsonStringFuture = response.flatMap(r => Unmarshal(r.entity).to[PlayerInterface])
+            Await.result(jsonStringFuture, Duration(1, TimeUnit.SECONDS))
+        }
+        players(ind) = playerRename
+    }
 
 }

@@ -46,7 +46,7 @@ class HttpServer(controller: ControllerInterface) {
     }
 
     def processInputLine(command: String): Unit = {
-        // todo: validate input here and call controller (similar to TUI)
+        // validate input here and call controller (similar to TUI)
         controller.nextPlayer()
     }
 }

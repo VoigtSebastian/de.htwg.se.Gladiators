@@ -11,10 +11,12 @@ import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.UndoManager
 import de.htwg.se.gladiators.util.Coordinate
+import de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation.Player
 
 
 
 import scala.swing.Publisher
+import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
 
 trait ControllerInterface extends Publisher {
 
@@ -22,7 +24,7 @@ trait ControllerInterface extends Publisher {
     val undoManager: UndoManager
     var gameStatus: GameStatus
     var commandStatus: CommandStatus
-    var players: Array[Player]
+    var players: Array[PlayerInterface]
     var selectedCell: (Int, Int)
     var selectedGlad: Gladiator
     var shop: Shop
@@ -65,7 +67,7 @@ trait ControllerInterface extends Publisher {
 
     def buyGladiator(index: Int, line: Int, row: Int): String
 
-    def baseArea(player: Player): List[(Int, Int)]
+    def baseArea(player: PlayerInterface): List[(Int, Int)]
 
     def getBase(player: Player): (Int, Int)
 
@@ -104,4 +106,6 @@ trait ControllerInterface extends Publisher {
     def load: Unit
 
     def playingFieldToHtml: String
+
+    def setPlayerName(ind: Int, name: String): Unit
 }

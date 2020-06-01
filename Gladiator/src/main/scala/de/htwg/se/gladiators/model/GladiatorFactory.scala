@@ -1,10 +1,11 @@
 package de.htwg.se.gladiators.model
 
 import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
+import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
 
 object GladiatorFactory {
 
-  def createGladiator(line: Int, row: Int, gladiatorType: GladiatorType, player: Player) = {
+  def createGladiator(line: Int, row: Int, gladiatorType: GladiatorType, player: PlayerInterface) = {
     var ap : Int = 0
     var hp : Int = 0
     var mp : Int = 0

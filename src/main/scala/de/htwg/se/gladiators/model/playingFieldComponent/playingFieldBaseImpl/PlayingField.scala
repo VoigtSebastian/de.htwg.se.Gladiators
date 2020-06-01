@@ -7,8 +7,11 @@ import de.htwg.se.gladiators.controller.controllerComponent.MoveType
 import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
 import de.htwg.se.gladiators.model.CellType.CellType
 import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
-import de.htwg.se.gladiators.model.{Cell, CellType, Gladiator, GladiatorType, Player}
+import de.htwg.se.gladiators.model.{Cell, CellType, Gladiator, GladiatorType}
 import de.htwg.se.gladiators.util.Coordinate
+import de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation.Player
+import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
+
 
 import scala.util.matching.Regex
 
@@ -220,7 +223,7 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
         cells(line)(row) = Cell(cellType)
     }
 
-    def checkMoveType(startPosition: Coordinate, destinationPosition: Coordinate, currentPlayer: Player): MoveType = {
+    def checkMoveType(startPosition: Coordinate, destinationPosition: Coordinate, currentPlayer: PlayerInterface): MoveType = {
         if (!isCoordinateLegal(startPosition) || !isCoordinateLegal(destinationPosition))
             return MoveType.MOVE_OUT_OF_BOUNDS
         val startGlad = getGladiatorOption(startPosition)
@@ -237,7 +240,7 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
         coordinate.line < size && coordinate.line >= 0 && coordinate.row < size && coordinate.row >= 0
     }
 
-    def checkAttackValid(attackingGladiator: Gladiator, target: Gladiator, attackingPosition: Coordinate, targetPosition: Coordinate, currentPlayer: Player): MoveType = {
+    def checkAttackValid(attackingGladiator: Gladiator, target: Gladiator, attackingPosition: Coordinate, targetPosition: Coordinate, currentPlayer: PlayerInterface): MoveType = {
         if (attackingGladiator.moved)
             return MoveType.ALREADY_MOVED
         if (attackingGladiator.player != currentPlayer)
@@ -250,7 +253,7 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
             MoveType.INSUFFICIENT_MOVEMENT_POINTS
     }
 
-    def checkMoveOrBaseAttack(gladiator: Gladiator, startCoordinate: Coordinate, targetCoordinate: Coordinate, currentPlayer: Player): MoveType = {
+    def checkMoveOrBaseAttack(gladiator: Gladiator, startCoordinate: Coordinate, targetCoordinate: Coordinate, currentPlayer: PlayerInterface): MoveType = {
         if (gladiator.moved)
             return MoveType.ALREADY_MOVED
         if (gladiator.player != currentPlayer)
@@ -265,7 +268,7 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
         }
     }
 
-    def checkBaseAttack(start: Coordinate, destination: Coordinate, gladiator: Gladiator, currentPlayer: Player): MoveType = {
+    def checkBaseAttack(start: Coordinate, destination: Coordinate, gladiator: Gladiator, currentPlayer: PlayerInterface): MoveType = {
          ((destination.line == currentPlayer.enemyBaseLine) && checkMovementPointsAttack(gladiator, start, destination)) match {
              case true => MoveType.BASE_ATTACK
              case false => MoveType.OWN_BASE
