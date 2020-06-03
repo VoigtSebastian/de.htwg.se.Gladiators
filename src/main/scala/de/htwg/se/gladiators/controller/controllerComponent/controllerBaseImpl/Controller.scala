@@ -14,8 +14,11 @@ import de.htwg.se.gladiators.util.{Coordinate, UndoManager}
 import de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation.Player
 import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
 
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.model.headers.Accept
+import akka.http.scaladsl.model.{HttpEntity, HttpResponse, ContentTypes, MediaTypes, headers}
 import akka.actor.ActorSystem
-import akka.http.scaladsl.Http
+import akka.http.scaladsl.{Http}
 import akka.http.scaladsl.client.RequestBuilding._
 import akka.http.scaladsl.model.HttpRequest
 import akka.http.scaladsl.unmarshalling.Unmarshal
@@ -353,10 +356,10 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
     def setPlayerName(ind: Int, name: String) : Unit = {
         val playerRename = {
-            val response = Http().singleRequest(Put("http://localhost:1234/gladiators/updateName",
-            UpdateNameArgumentContainer(players(ind), name)))
-            println(response)
+            val response = Http().singleRequest(Put("http://localhost:8102/gladiators/updateName",
+                UpdateNameArgumentContainer(players(ind), name)).addHeader(Accept(MediaTypes.`application/json`)))
             val jsonStringFuture = response.flatMap(r => Unmarshal(r.entity).to[PlayerInterface])
+            //val jsonStringFuture: Future[PlayerInterface] = Unmarshal(response).to[PlayerInterface]
             Await.result(jsonStringFuture, Duration(1, TimeUnit.SECONDS))
         }
         players(ind) = playerRename

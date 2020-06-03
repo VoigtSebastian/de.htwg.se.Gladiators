@@ -50,4 +50,13 @@ case class Player(name: String = "NO_NAME", var credits: Int = 50, baseHP: Int =
         "boughtGladiator" -> this.boughtGladiator,
         "enemyBaseLine" -> this.enemyBaseLine
     )
+
+    def fromJson(jsValue: JsValue): PlayerInterface = {
+        val name = (jsValue \ "name").get.as[String]
+        val credits = (jsValue \ "credits").get.as[Int]
+        val baseHP = (jsValue \ "baseHP").get.as[Int]
+        val boughtGladiator = (jsValue \ "boughtGladiator").get.as[Boolean]
+        val enemyBaseLine = (jsValue \ "enemyBaseLine").get.as[Int]
+        this.copy(name, credits, baseHP, boughtGladiator, enemyBaseLine)
+    }
 }
