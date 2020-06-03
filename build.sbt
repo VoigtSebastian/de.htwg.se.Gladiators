@@ -54,7 +54,7 @@ lazy val Gladiator = project.settings(
 ).dependsOn(Player)
 
 lazy val Player = project.settings(
-  name :=  "PlayerMod",
+  name := "Player",
   libraryDependencies ++= commonDependencies,
   commonSettings,
   assemblyMergeStrategy in assembly := {
