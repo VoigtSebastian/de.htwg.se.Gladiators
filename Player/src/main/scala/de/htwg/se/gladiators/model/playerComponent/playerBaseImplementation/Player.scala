@@ -3,6 +3,7 @@ import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
 
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsObject
 
 case class Player(name: String = "NO_NAME", var credits: Int = 50, baseHP: Int = 200, var boughtGladiator: Boolean = false, enemyBaseLine: Int = 0) extends PlayerInterface with PlayJsonSupport {
     override def toString: String = name
@@ -43,7 +44,7 @@ case class Player(name: String = "NO_NAME", var credits: Int = 50, baseHP: Int =
         this.copy(enemyBaseLine = line)
     }
 
-    def toJson: JsValue = Json.obj(
+    def toJson: JsObject = Json.obj(
         "name" -> this.name,
         "credits" -> this.credits,
         "baseHP" -> this.baseHP,
