@@ -28,6 +28,7 @@ import play.api.libs.json.{JsValue, Json}
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 import java.util.concurrent.TimeUnit
+import scala.util.Properties.envOrElse
 
 import akka.http.scaladsl.unmarshalling.Unmarshaller._
 
@@ -46,6 +47,9 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
     val injector = Guice.createInjector(new GladiatorsModule)
     val kickOutTurns = 7
     var fileIo = injector.getInstance((classOf[FileIOInterface]))
+
+    val port = envOrElse("PLAYER-SERVICE-PORT", "8081").toInt
+    val domain = envOrElse("DOMAIN", "localhost")
 
     implicit val system: ActorSystem = ActorSystem()
     implicit val materializer: ActorMaterializer = ActorMaterializer()
@@ -357,7 +361,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
 
     def setPlayerName(ind: Int, name: String) : Unit = {
-        val response = Http().singleRequest(Put("http://localhost:8081/gladiators/player/updateName",
+        val response = Http().singleRequest(Put(s"http://$domain:$port/gladiators/player/updateName",
                                                 UpdateNameArgumentContainer(players(ind), name)))
         val future = response.flatMap(r => Unmarshal[HttpEntity](r.entity.withContentType(ContentTypes.`application/json`)).to[PlayerInterface])
         players(ind) = Await.result(future, Duration(1, TimeUnit.SECONDS))
