@@ -9,9 +9,8 @@ import de.htwg.se.gladiators.model.{ Cell, CellType }
 import scala.util.Properties.envOrElse
 
 object Gladiators {
-
     def main(args: Array[String]): Unit = {
-        val RESET_ANSI_ESCAPE = "\033[0m"
+        val RESET_ANSI_ESCAPE = "\u001b[0m"
         val INPUT_BLUE = "\u001B[34m"
         val WAITING_FOR_INPUT: String = INPUT_BLUE + "▶ " + RESET_ANSI_ESCAPE
 

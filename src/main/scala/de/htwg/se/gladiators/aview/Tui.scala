@@ -10,15 +10,15 @@ class Tui(controller: ControllerInterface) extends Reactor {
     //controller.add(this)
     listenTo(controller)
     val REGEX_COMMANDS = new Regex("([a-zA-Z]+)|([0-9]+)")
-    val SAND_BACKGROUND = "\033[103m"
-    val PALM_BACKGROUND = "\033[43m"
-    val BASE_BACKGROUND = "\033[101m"
-    val UNIT_BACKGROUND = "\033[45m"
-    val TEXT_COLOR_BLACK = "\33[97m"
-    val RESET_ANSI_ESCAPE = "\033[0m"
+    val SAND_BACKGROUND = "\u001b[103m"
+    val PALM_BACKGROUND = "\u001b[43m"
+    val BASE_BACKGROUND = "\u001b[101m"
+    val UNIT_BACKGROUND = "\u001b[45m"
+    val TEXT_COLOR_BLACK = "\u001b[97m"
+    val RESET_ANSI_ESCAPE = "\u001b[0m"
 
     val CORRECT_FORMAT_MESSAGE = "Please use the correct format, press h to get help.\n"
-    val RED_BOLD = "\033[1;31m"
+    val RED_BOLD = "\u001b[1;31m"
     val LISTING: String = RED_BOLD + ">" + RESET_ANSI_ESCAPE
     val HELP_MESSAGE: String = "Gladiators instructions:" +
         "\nGladiators is a turn-based game which let's you buy, move and fight units on a chess-like playingField.\n" +
@@ -120,4 +120,3 @@ class Tui(controller: ControllerInterface) extends Reactor {
         REGEX_COMMANDS.findAllIn(input).toVector
     }
 }
-
