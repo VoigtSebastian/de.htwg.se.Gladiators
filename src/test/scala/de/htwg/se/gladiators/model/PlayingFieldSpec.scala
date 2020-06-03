@@ -145,12 +145,12 @@ class PlayingFieldSpec extends WordSpec with Matchers {
         2 S S B
         */
 
-        val SAND_BACKGROUND = "\033[103m"
-        val PALM_BACKGROUND = "\033[43m"
-        val BASE_BACKGROUND = "\033[101m"
-        val UNIT_BACKGROUND = "\033[45m"
-        val TEXT_COLOR_BLACK = "\33[97m"
-        val RESET_ANSI_ESCAPE = "\033[0m"
+        val SAND_BACKGROUND = "\u001b[103m"
+        val PALM_BACKGROUND = "\u001b[43m"
+        val BASE_BACKGROUND = "\u001b[101m"
+        val UNIT_BACKGROUND = "\u001b[45m"
+        val TEXT_COLOR_BLACK = "\u001b[97m"
+        val RESET_ANSI_ESCAPE = "\u001b[0m"
 
         var playingField = PlayingField(size=3)
         playingField = playingField.updateCells(cells)

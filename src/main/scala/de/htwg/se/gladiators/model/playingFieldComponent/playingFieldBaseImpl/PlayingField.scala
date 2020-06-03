@@ -18,12 +18,12 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
 
     var toggleUnitStats = true
 
-    val SAND_BACKGROUND = "\033[103m"
-    val PALM_BACKGROUND = "\033[43m"
-    val BASE_BACKGROUND = "\033[101m"
-    val UNIT_BACKGROUND = "\033[45m"
-    val TEXT_COLOR_BLACK = "\33[97m"
-    val RESET_ANSI_ESCAPE = "\033[0m"
+    val SAND_BACKGROUND = "\u001b[103m"
+    val PALM_BACKGROUND = "\u001b[43m"
+    val BASE_BACKGROUND = "\u001b[101m"
+    val UNIT_BACKGROUND = "\u001b[45m"
+    val TEXT_COLOR_BLACK = "\u001b[97m"
+    val RESET_ANSI_ESCAPE = "\u001b[0m"
     val REGEX_COMMANDS = new Regex("([a-zA-Z]+)|([0-9]+)")
 
     def updateCells(cells: Array[Array[Cell]]): PlayingField = {
