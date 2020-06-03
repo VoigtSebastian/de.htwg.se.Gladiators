@@ -2,11 +2,11 @@ package de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImple
 import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
 
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
-import play.api.libs.json.{JsValue, Json}
-import play.api.libs.json.JsObject
+import play.api.libs.json.{JsValue, Json, JsObject, JsSuccess, Reads}
 
 case class Player(name: String = "NO_NAME", var credits: Int = 50, baseHP: Int = 200, var boughtGladiator: Boolean = false, enemyBaseLine: Int = 0) extends PlayerInterface with PlayJsonSupport {
     override def toString: String = name
+    implicit val playerReads: Reads[PlayerInterface] = (json: JsValue) => JsSuccess(this.fromJson(json))
 
     override def equals(that: Any): Boolean =
         that match {
