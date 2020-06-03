@@ -9,6 +9,7 @@ import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import de.htwg.se.gladiators.playerModule.util._
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
+import scala.util.Properties.envOrElse
 
 case class PlayerHttpServer(controller: PlayerControllerInterface) extends PlayJsonSupport {
 
@@ -42,9 +43,10 @@ case class PlayerHttpServer(controller: PlayerControllerInterface) extends PlayJ
             }
         }
     )
-    val bindingFuture = Http().bindAndHandle(route, "localhost", 8102)
+    val port = envOrElse("SERVICE-PORT", "8081").toInt
+    val bindingFuture = Http().bindAndHandle(route, "localhost", port)
 
-    println("Player Rest Service started on port 8102")
+    println(s"Player Rest Service started on port $port")
 
     def shutdownWebServer() : Unit = {
         bindingFuture

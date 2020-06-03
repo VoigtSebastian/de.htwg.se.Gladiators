@@ -22,19 +22,46 @@ val commonDependencies = Seq(
   "de.heikoseeberger" %% "akka-http-play-json" % "1.32.0"
 )
 
+lazy val commonSettings = Seq(
+  test in assembly := {}
+)
+
 lazy val root = (project in file(".")).settings(
   name := "Gladiators",
   libraryDependencies ++= commonDependencies,
-
-).aggregate(Gladiator, Player).dependsOn(Gladiator, Player) //% "compile->compile;test->test")
+  commonSettings,
+  assemblyMergeStrategy in assembly := {
+    case PathList("reference.conf") => MergeStrategy.concat
+    case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+    case x => MergeStrategy.first
+  },
+  assemblyJarName in assembly := "Gladiators.jar",
+  mainClass in assembly := Some("de.htwg.se.gladiators.Gladiators")
+).aggregate(Gladiator, Player).dependsOn(Gladiator, Player)
 
 
 lazy val Gladiator = project.settings(
   name :=  "Gladiator",
-  libraryDependencies ++= commonDependencies
+  libraryDependencies ++= commonDependencies,
+  commonSettings,
+  assemblyMergeStrategy in assembly := {
+    case PathList("reference.conf") => MergeStrategy.concat
+    case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+    case x => MergeStrategy.first
+  },
+  assemblyJarName in assembly := "Gladiator-Service.jar",
+  mainClass in assembly := Some("de.htwg.se.gladiators.Gladiator")
 ).dependsOn(Player)
 
 lazy val Player = project.settings(
-  name :=  "Player",
-  libraryDependencies ++= commonDependencies
+  name :=  "PlayerMod",
+  libraryDependencies ++= commonDependencies,
+  commonSettings,
+  assemblyMergeStrategy in assembly := {
+    case PathList("reference.conf") => MergeStrategy.concat
+    case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+    case x => MergeStrategy.first
+  },
+  assemblyJarName in assembly := "Player-Service.jar",
+  mainClass in assembly := Some("de.htwg.se.gladiators.playerModule.PlayerMod")
 )
