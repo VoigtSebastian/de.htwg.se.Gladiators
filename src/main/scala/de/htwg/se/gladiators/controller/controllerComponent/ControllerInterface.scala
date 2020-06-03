@@ -69,7 +69,7 @@ trait ControllerInterface extends Publisher {
 
     def baseArea(player: PlayerInterface): List[(Int, Int)]
 
-    def getBase(player: Player): (Int, Int)
+    def getBase(player: PlayerInterface): (Int, Int)
 
     def gladiatorInfo(line: Int, row: Int): String
 

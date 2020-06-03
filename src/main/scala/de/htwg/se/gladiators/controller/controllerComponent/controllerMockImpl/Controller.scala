@@ -50,7 +50,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
     def baseArea(player: PlayerInterface): List[(Int, Int)] = List()
 
 
-    def getBase(player: Player): (Int, Int) = (0, 0)
+    def getBase(player: PlayerInterface): (Int, Int) = (0, 0)
 
     def gladiatorInfo(line: Int, row: Int): String = {
         playingField.gladiatorInfo(line: Int, row: Int) + " and is owned by " + players(gameStatus.id)

@@ -189,7 +189,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         area.filter(c => playingField.cells(c._1)(c._2).cellType != CellType.PALM)
     }
 
-    def getBase(player: Player): (Int, Int) = {
+    def getBase(player: PlayerInterface): (Int, Int) = {
         if (player == players(0)) {
             (playingField.size - 1, playingField.size / 2)
         } else {
