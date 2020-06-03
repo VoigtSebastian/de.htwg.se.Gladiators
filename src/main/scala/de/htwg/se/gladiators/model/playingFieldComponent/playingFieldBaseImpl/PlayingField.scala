@@ -7,15 +7,14 @@ import de.htwg.se.gladiators.controller.controllerComponent.MoveType
 import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
 import de.htwg.se.gladiators.model.CellType.CellType
 import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
-import de.htwg.se.gladiators.model.{Cell, CellType, Gladiator, GladiatorType}
+import de.htwg.se.gladiators.model.{ Cell, CellType, Gladiator, GladiatorType }
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation.Player
 import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
 
-
 import scala.util.matching.Regex
 
-case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gladiator] = List(), gladiatorPlayer2: List[Gladiator] = List(), cells: Array[Array[Cell]] = Array.ofDim[Cell](15, 15)) extends PlayingFieldInterface {
+case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gladiator] = List(), gladiatorPlayer2: List[Gladiator] = List(), cells: Array[Array[Cell]] = Array.ofDim[Cell](15, 15)) extends PlayingFieldInterface {
 
     var toggleUnitStats = true
 
@@ -26,7 +25,6 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     val TEXT_COLOR_BLACK = "\33[97m"
     val RESET_ANSI_ESCAPE = "\033[0m"
     val REGEX_COMMANDS = new Regex("([a-zA-Z]+)|([0-9]+)")
-
 
     def updateCells(cells: Array[Array[Cell]]): PlayingField = {
         this.copy(cells = cells)
@@ -155,7 +153,7 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def checkCellWalk(coord: Coordinate): Boolean = {
-        if (cells(coord.line)(coord.row).cellType == CellType.SAND 
+        if (cells(coord.line)(coord.row).cellType == CellType.SAND
             || cells(coord.line)(coord.row).cellType == CellType.BASE) {
             getGladiatorOption(coord) match {
                 case None => true
@@ -269,10 +267,10 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def checkBaseAttack(start: Coordinate, destination: Coordinate, gladiator: Gladiator, currentPlayer: PlayerInterface): MoveType = {
-         ((destination.line == currentPlayer.enemyBaseLine) && checkMovementPointsAttack(gladiator, start, destination)) match {
-             case true => MoveType.BASE_ATTACK
-             case false => MoveType.OWN_BASE
-         }
+        ((destination.line == currentPlayer.enemyBaseLine) && checkMovementPointsAttack(gladiator, start, destination)) match {
+            case true => MoveType.BASE_ATTACK
+            case false => MoveType.OWN_BASE
+        }
 
     }
 
@@ -302,12 +300,11 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def getValidMoveCoordinates(g: Gladiator, startPosition: Coordinate): List[Coordinate] = {
-        var validCells : List[Coordinate] = List()
+        var validCells: List[Coordinate] = List()
         getValidMoveCoordinatesHelper(startPosition, 1, g.movementPoints, List()).foreach(coord =>
             if (!validCells.exists(item => item == coord._1) && checkCellEmpty(coord._1)) {
                 validCells = coord._1 :: validCells
-            }
-        )
+            })
         validCells
     }
 
@@ -317,18 +314,17 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
             Coordinate(curr.line, curr.row - 1),
             Coordinate(curr.line, curr.row + 1),
             Coordinate(curr.line - 1, curr.row),
-            Coordinate(curr.line + 1, curr.row)
-        )
+            Coordinate(curr.line + 1, curr.row))
         nextCoordinates.foreach(next => {
             if (isCoordinateLegal(next)
                 && checkCellWalk(next)
-                && !currValidCells.exists(item => item._1 == next && item._2 <= dist)){
+                && !currValidCells.exists(item => item._1 == next && item._2 <= dist)) {
 
                 currValidCells = (next, dist) :: currValidCells
                 if (dist + 1 <= maxDist) {
                     currValidCells = currValidCells ::: getValidMoveCoordinatesHelper(next, dist + 1, maxDist, currValidCells) //recursion
-                } 
-            } 
+                }
+            }
         })
         currValidCells
     }

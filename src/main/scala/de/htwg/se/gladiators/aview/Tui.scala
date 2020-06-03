@@ -1,11 +1,11 @@
 package de.htwg.se.gladiators.aview
 
-import de.htwg.se.gladiators.controller.controllerComponent.{ControllerInterface, GladChanged, PlayingFieldChanged}
+import de.htwg.se.gladiators.controller.controllerComponent.{ ControllerInterface, GladChanged, PlayingFieldChanged }
 import scala.util.matching.Regex
 import scala.swing.Reactor
-import scala.util.{Try,Success,Failure}
+import scala.util.{ Try, Success, Failure }
 
-class Tui (controller: ControllerInterface) extends Reactor {
+class Tui(controller: ControllerInterface) extends Reactor {
 
     //controller.add(this)
     listenTo(controller)
@@ -39,7 +39,6 @@ class Tui (controller: ControllerInterface) extends Reactor {
         LISTING + " Enter 'r' to redo a step\n" +
         LISTING + " Enter 'i' with a coordinate to show information about a unit (use t to toggle unit stats)\n"
 
-
     def processInputLine(input: String): Unit = {
 
         val splitInput = evalCommand(input)
@@ -53,7 +52,8 @@ class Tui (controller: ControllerInterface) extends Reactor {
             case "m" =>
                 commandBuilder(splitInput.patch(0, Nil, 1)) match {
                     case Some(moveCommand) =>
-                        println(controller.moveGladiator(moveCommand(0),
+                        println(controller.moveGladiator(
+                            moveCommand(0),
                             moveCommand(1),
                             moveCommand(2),
                             moveCommand(3))._2)
@@ -66,7 +66,8 @@ class Tui (controller: ControllerInterface) extends Reactor {
             case "a" =>
                 commandBuilder(splitInput.patch(0, Nil, 1)) match {
                     case Some(attackCommand) =>
-                        println(controller.attack(attackCommand(0),
+                        println(controller.attack(
+                            attackCommand(0),
                             attackCommand(1),
                             attackCommand(2),
                             attackCommand(3))._2)
@@ -82,7 +83,8 @@ class Tui (controller: ControllerInterface) extends Reactor {
             case "b" =>
                 commandBuilder(splitInput.patch(0, Nil, 1)) match {
                     case Some(buyCommand) =>
-                        println(controller.buyGladiator(buyCommand(0),
+                        println(controller.buyGladiator(
+                            buyCommand(0),
                             buyCommand(1),
                             buyCommand(2)))
                     case None => println(CORRECT_FORMAT_MESSAGE)

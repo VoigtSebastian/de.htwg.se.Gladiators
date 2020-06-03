@@ -4,13 +4,12 @@ import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation.Player
 import play.api.libs.json._
 
-import scala.xml.{Elem, Node}
-
+import scala.xml.{ Elem, Node }
 
 trait PlayerInterface {
-//    case class Player(name: String = "NO_NAME", var credits: Int = 50, baseHP: Int = 200, var boughtGladiator: Boolean = false, enemyBaseLine: Int = 0) extends PlayerInterface with PlayJsonSupport {
+    //    case class Player(name: String = "NO_NAME", var credits: Int = 50, baseHP: Int = 200, var boughtGladiator: Boolean = false, enemyBaseLine: Int = 0) extends PlayerInterface with PlayJsonSupport {
     val name: String
-    var credits : Int
+    var credits: Int
     val baseHP: Int
     var boughtGladiator: Boolean
     val enemyBaseLine: Int
@@ -20,7 +19,7 @@ trait PlayerInterface {
     def buyItem(costs: Int): PlayerInterface
     def baseAttacked(ap: Int): PlayerInterface
     def updateBoughtGladiator(bought: Boolean): PlayerInterface
-    def updateEnemyBaseLine(line: Int) : PlayerInterface
+    def updateEnemyBaseLine(line: Int): PlayerInterface
     def toJson: JsObject
     def fromJson(jsValue: JsValue): PlayerInterface
 }

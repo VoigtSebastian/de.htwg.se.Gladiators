@@ -3,8 +3,8 @@ package de.htwg.se.gladiators.aview.gui
 import scala.swing._
 import scala.swing.event._
 import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.GameStatus
-import de.htwg.se.gladiators.controller.controllerComponent.{ControllerInterface, GameStatus}
-import de.htwg.se.gladiators.model.{Cell, Gladiator, GladiatorType}
+import de.htwg.se.gladiators.controller.controllerComponent.{ ControllerInterface, GameStatus }
+import de.htwg.se.gladiators.model.{ Cell, Gladiator, GladiatorType }
 import javax.swing.ImageIcon
 import scala.swing.Swing.LineBorder
 class CellPanel(line: Int, row: Int, controller: ControllerInterface, val dimWidth: Int, val dimHeight: Int) extends GridPanel(1, 1) {
@@ -22,7 +22,7 @@ class CellPanel(line: Int, row: Int, controller: ControllerInterface, val dimWid
     val TEXTURE_BOW_P2: ImageIcon = resizedTexture("textures/sandbow_small_p2.png", dimWidth, dimHeight)
     val TEXTURE_SHIELD_P2: ImageIcon = resizedTexture("textures/sandshield_small_p2.png", dimWidth, dimHeight)
 
-    val TEXTURE_SAND: ImageIcon =  resizedTexture("textures/sand_60.png", dimWidth, dimHeight)
+    val TEXTURE_SAND: ImageIcon = resizedTexture("textures/sand_60.png", dimWidth, dimHeight)
     val TEXTURE_PALM: ImageIcon = resizedTexture("textures/palmsand_60_color.png", dimWidth, dimHeight)
     val TEXTURE_GOLD: ImageIcon = resizedTexture("textures/sandgold_small.png", dimWidth, dimHeight)
 
@@ -44,7 +44,6 @@ class CellPanel(line: Int, row: Int, controller: ControllerInterface, val dimWid
     val cell: BorderPanel = new BorderPanel() {
         add(label, BorderPanel.Position.Center)
         add(hp, BorderPanel.Position.South)
-
 
         background = getCellColor
         preferredSize = new Dimension(80, 80)

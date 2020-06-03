@@ -1,32 +1,32 @@
 package de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl
 
-import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.{GameStatus, P1, P2}
+import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.{ GameStatus, P1, P2 }
 import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
 import de.htwg.se.gladiators.controller.controllerComponent._
 import CommandStatus._
-import com.google.inject.{Guice, Inject}
+import com.google.inject.{ Guice, Inject }
 import de.htwg.se.gladiators.GladiatorsModule
 import de.htwg.se.gladiators.model._
 import de.htwg.se.gladiators.model.fileIoComponent.FileIOInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
-import de.htwg.se.gladiators.util.{Coordinate, UndoManager}
+import de.htwg.se.gladiators.util.{ Coordinate, UndoManager }
 import de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation.Player
 import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
 
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.Accept
-import akka.http.scaladsl.model.{HttpEntity, HttpResponse, ContentTypes, MediaTypes, headers}
+import akka.http.scaladsl.model.{ HttpEntity, HttpResponse, ContentTypes, MediaTypes, headers }
 import akka.actor.ActorSystem
-import akka.http.scaladsl.{Http}
+import akka.http.scaladsl.{ Http }
 import akka.http.scaladsl.client.RequestBuilding._
 import akka.http.scaladsl.model.HttpRequest
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
 import de.htwg.se.gladiators.playerModule.util._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContextExecutor, Future}
+import scala.concurrent.{ Await, ExecutionContextExecutor, Future }
 import java.util.concurrent.TimeUnit
 import scala.util.Properties.envOrElse
 
@@ -36,7 +36,7 @@ import scala.swing.Publisher
 
 class Controller @Inject() () extends ControllerInterface with Publisher {
 
-    var playingField : PlayingFieldInterface = PlayingField().createRandomCells(15)
+    var playingField: PlayingFieldInterface = PlayingField().createRandomCells(15)
     val undoManager = new UndoManager
     var gameStatus: GameStatus = GameStatus.P1
     var commandStatus: CommandStatus = CommandStatus.IDLE
@@ -238,7 +238,6 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         publish(new GameStatusChanged)
     }
 
-
     def redoGladiator(): Unit = {
         undoManager.redoStep
         publish(new GladChanged)
@@ -359,10 +358,10 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
     def playingFieldToHtml: String = playingField.toHtml
 
-
-    def setPlayerName(ind: Int, name: String) : Unit = {
-        val response = Http().singleRequest(Put(s"http://$domain:$port/gladiators/player/updateName",
-                                                UpdateNameArgumentContainer(players(ind), name)))
+    def setPlayerName(ind: Int, name: String): Unit = {
+        val response = Http().singleRequest(Put(
+            s"http://$domain:$port/gladiators/player/updateName",
+            UpdateNameArgumentContainer(players(ind), name)))
         val future = response.flatMap(r => Unmarshal[HttpEntity](r.entity.withContentType(ContentTypes.`application/json`)).to[PlayerInterface])
         players(ind) = Await.result(future, Duration(1, TimeUnit.SECONDS))
     }
