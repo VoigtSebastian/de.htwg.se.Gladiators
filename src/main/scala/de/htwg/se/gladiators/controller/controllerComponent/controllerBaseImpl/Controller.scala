@@ -3,8 +3,6 @@ package de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl
 import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.{ GameStatus, P1, P2 }
 import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
 import de.htwg.se.gladiators.controller.controllerComponent._
-import CommandStatus._
-import com.google.inject.{ Guice, Inject }
 import de.htwg.se.gladiators.GladiatorsModule
 import de.htwg.se.gladiators.model._
 import de.htwg.se.gladiators.model.fileIoComponent.FileIOInterface
@@ -13,6 +11,7 @@ import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.Pl
 import de.htwg.se.gladiators.util.{ Coordinate, UndoManager }
 import de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation.Player
 import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
+import de.htwg.se.gladiators.playerModule.util._
 
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.Accept
@@ -23,16 +22,17 @@ import akka.http.scaladsl.client.RequestBuilding._
 import akka.http.scaladsl.model.HttpRequest
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
-import de.htwg.se.gladiators.playerModule.util._
-import play.api.libs.json.{ JsValue, Json }
-import scala.concurrent.duration.Duration
-import scala.concurrent.{ Await, ExecutionContextExecutor, Future }
-import java.util.concurrent.TimeUnit
-import scala.util.Properties.envOrElse
-
 import akka.http.scaladsl.unmarshalling.Unmarshaller._
 
+import scala.concurrent.duration.Duration
+import scala.concurrent.{ Await, ExecutionContextExecutor, Future }
+import scala.util.Properties.envOrElse
 import scala.swing.Publisher
+
+import play.api.libs.json.{ JsValue, Json }
+import java.util.concurrent.TimeUnit
+import com.google.inject.{ Guice, Inject }
+import CommandStatus._
 
 class Controller @Inject() () extends ControllerInterface with Publisher {
 
