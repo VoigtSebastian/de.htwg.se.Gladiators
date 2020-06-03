@@ -6,6 +6,7 @@ import de.htwg.se.gladiators.controller.controllerComponent.{ControllerInterface
 import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.model.{Cell, CellType}
+import scala.util.Properties.envOrElse
 
 object Gladiators {
 
@@ -19,13 +20,14 @@ object Gladiators {
 
         val webserver = new HttpServer(controller)
         val tui = new Tui(controller)
-        val gui = new SwingGui(controller)
-
+        if (envOrElse("DOCKERENV", "FALSE") == "FALSE") {
+            val gui = new SwingGui(controller)
+        }
         controller.publish(new PlayingFieldChanged)
         var input: String  = ""
         if(args.length > 0) input = args(0)
         var output: String = ""
-        
+
         if (!input.isEmpty) tui.processInputLine(input)
         else do {
             print(WAITING_FOR_INPUT)
