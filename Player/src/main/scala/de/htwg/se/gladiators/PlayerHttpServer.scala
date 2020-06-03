@@ -26,7 +26,7 @@ case class PlayerHttpServer(controller: PlayerControllerInterface) extends PlayJ
             path("gladiators" / "player" / "static") {
                 complete(Json.obj("name" -> "gladiators"))
             }
-        } ~
+        },
         put {
             path("gladiators" / "player" / "updateName") {
                 entity(as[UpdateNameArgumentContainer]) { params =>
