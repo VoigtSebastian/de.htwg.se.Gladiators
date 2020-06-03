@@ -2,6 +2,7 @@ package de.htwg.se.gladiators.model
 
 import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
 import org.scalatest.{Matchers, WordSpec}
+import de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation.Player
 
 class GladiatorSpec extends WordSpec with Matchers {
   "A Gladiator is a fighter in the game. A Gladiator" when {
