@@ -22,6 +22,7 @@ trait PlayerInterface {
     def updateBoughtGladiator(bought: Boolean): PlayerInterface
     def updateEnemyBaseLine(line: Int) : PlayerInterface
     def toJson: JsValue
+    def fromJson(jsValue: JsValue): PlayerInterface
 }
 
 object PlayerInterface extends PlayJsonSupport {
@@ -33,10 +34,7 @@ object PlayerInterface extends PlayJsonSupport {
     }
 
     implicit val playerReads: Reads[PlayerInterface] = (json: JsValue) => {
-        val playerName = (json \ "name").get.as[String]
-        val playerCredits = (json \ "credits").get.as[Int]
-        // ...
-        val player = Player(playerName, playerCredits)
+        val player = Player().fromJson(json)
         JsSuccess(player)
     }
 }
