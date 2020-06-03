@@ -9,8 +9,7 @@ object GameStatus extends Enumeration {
         P1 -> "Player One",
         P2 -> "Player Two",
         END -> "End of Game",
-        IDLE -> ""
-    )
+        IDLE -> "")
 
     def message(gameStatus: GameStatus): String = {
         map(gameStatus)

@@ -13,11 +13,9 @@ object GladiatorType extends Enumeration {
     }
 
     val map = Map[GladiatorType, String](
-        SWORD   -> "Sword",
-        BOW     -> "Bow",
-        TANK    -> "Tank"
-    )
-
+        SWORD -> "Sword",
+        BOW -> "Bow",
+        TANK -> "Tank")
 
     def message(gladiatorType: GladiatorType): String = {
         map(gladiatorType)

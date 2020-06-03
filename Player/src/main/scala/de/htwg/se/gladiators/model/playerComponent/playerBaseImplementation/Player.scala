@@ -2,7 +2,7 @@ package de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImple
 import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
 
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
-import play.api.libs.json.{JsValue, Json, JsObject, JsSuccess, Reads}
+import play.api.libs.json.{ JsValue, Json, JsObject, JsSuccess, Reads }
 
 case class Player(name: String = "NO_NAME", var credits: Int = 50, baseHP: Int = 200, var boughtGladiator: Boolean = false, enemyBaseLine: Int = 0) extends PlayerInterface with PlayJsonSupport {
     override def toString: String = name
@@ -10,9 +10,9 @@ case class Player(name: String = "NO_NAME", var credits: Int = 50, baseHP: Int =
 
     override def equals(that: Any): Boolean =
         that match {
-        case that: Player => that.canEqual(this) && this.name == that.name && this.enemyBaseLine == that.enemyBaseLine
-        case _ => false
-    }
+            case that: Player => that.canEqual(this) && this.name == that.name && this.enemyBaseLine == that.enemyBaseLine
+            case _ => false
+        }
 
     def !=(p: Player): Boolean = {
         p.enemyBaseLine != enemyBaseLine
@@ -40,7 +40,7 @@ case class Player(name: String = "NO_NAME", var credits: Int = 50, baseHP: Int =
         this
     }
 
-    def updateEnemyBaseLine(line: Int) : Player = {
+    def updateEnemyBaseLine(line: Int): Player = {
         this.copy(enemyBaseLine = line)
     }
 
@@ -49,8 +49,7 @@ case class Player(name: String = "NO_NAME", var credits: Int = 50, baseHP: Int =
         "credits" -> this.credits,
         "baseHP" -> this.baseHP,
         "boughtGladiator" -> this.boughtGladiator,
-        "enemyBaseLine" -> this.enemyBaseLine
-    )
+        "enemyBaseLine" -> this.enemyBaseLine)
 
     def fromJson(jsValue: JsValue): PlayerInterface = {
         val name = (jsValue \ "name").get.as[String]

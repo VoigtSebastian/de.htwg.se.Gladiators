@@ -1,8 +1,8 @@
 package de.htwg.se.gladiators.playerModule
 
-import akka.http.scaladsl.model.{HttpEntity, HttpResponse, ContentTypes, MediaTypes}
+import akka.http.scaladsl.model.{ HttpEntity, HttpResponse, ContentTypes, MediaTypes }
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.{Route, StandardRoute}
+import akka.http.scaladsl.server.{ Route, StandardRoute }
 import de.htwg.se.gladiators.playerModule.controller.controllerComponent.PlayerControllerInterface;
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
@@ -12,7 +12,7 @@ import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import scala.util.Properties.envOrElse
 
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{ JsValue, Json }
 import de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation.Player
 
 case class PlayerHttpServer(controller: PlayerControllerInterface) extends PlayJsonSupport {
@@ -44,8 +44,7 @@ case class PlayerHttpServer(controller: PlayerControllerInterface) extends PlayJ
                     complete(player)
                 }
             }
-        }
-    )
+        })
 
     val port = envOrElse("PLAYER-SERVICE-PORT", "8081").toInt
     val domain = envOrElse("DOMAIN", "localhost")
@@ -53,9 +52,9 @@ case class PlayerHttpServer(controller: PlayerControllerInterface) extends PlayJ
     val bindingFuture = Http().bindAndHandle(route, domain, port)
     println(s"Player Rest Service started on $domain $port")
 
-    def shutdownWebServer() : Unit = {
+    def shutdownWebServer(): Unit = {
         bindingFuture
-        .flatMap(_.unbind()) // trigger unbinding from the port
-        .onComplete(_ => system.terminate()) // and shutdown when done
+            .flatMap(_.unbind()) // trigger unbinding from the port
+            .onComplete(_ => system.terminate()) // and shutdown when done
     }
 }

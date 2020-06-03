@@ -1,6 +1,5 @@
 package de.htwg.se.gladiators.controller.controllerComponent
 
-
 import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
 import CommandStatus.CommandStatus
 import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.GameStatus
@@ -12,8 +11,6 @@ import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.Pl
 import de.htwg.se.gladiators.util.UndoManager
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation.Player
-
-
 
 import scala.swing.Publisher
 import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
@@ -33,32 +30,32 @@ trait ControllerInterface extends Publisher {
     def cell(line: Int, row: Int): Cell
 
     /**
-      * Resets the game and return a reset ControllerInterface implementation.
-      *
-      * @return a reset ControllerInterface implementation
-      */
+     * Resets the game and return a reset ControllerInterface implementation.
+     *
+     * @return a reset ControllerInterface implementation
+     */
     def resetGame(): Unit
 
     /**
-      * Ends the turn for the current player.
-      *
-      * @return String containing a message that can be shown in a Tui.
-      */
+     * Ends the turn for the current player.
+     *
+     * @return String containing a message that can be shown in a Tui.
+     */
     def endTurn(): String
 
     /**
-      * Creates a random PlayingField, giving all cells a new CellType.
-      *
-      * @param size     : The size of the new playing field.
-      * @param palmRate : The rate at which palm should appear between 0 and 100.
-      */
+     * Creates a random PlayingField, giving all cells a new CellType.
+     *
+     * @param size     : The size of the new playing field.
+     * @param palmRate : The rate at which palm should appear between 0 and 100.
+     */
     def createRandom(size: Int, palmRate: Int = 17): Unit
 
     /**
-      * Returns the current shop.
-      *
-      * @return current shop.
-      */
+     * Returns the current shop.
+     *
+     * @return current shop.
+     */
     def getShop: String
 
     def printPlayingField(): String

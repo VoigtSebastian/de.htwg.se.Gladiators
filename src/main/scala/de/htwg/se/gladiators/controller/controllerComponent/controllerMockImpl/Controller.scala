@@ -1,9 +1,9 @@
 package de.htwg.se.gladiators.controller.controllerComponent.controllerMockImpl
 
-import com.google.inject.{Guice, Inject}
+import com.google.inject.{ Guice, Inject }
 import de.htwg.se.gladiators.GladiatorsModule
 import de.htwg.se.gladiators.controller.controllerComponent.CommandStatus._
-import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.{GameStatus, P1, P2}
+import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.{ GameStatus, P1, P2 }
 import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
 import de.htwg.se.gladiators.controller.controllerComponent._
 import de.htwg.se.gladiators.model._
@@ -27,7 +27,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
     var selectedGlad: Gladiator = GladiatorFactory.createGladiator(-1, -1, GladiatorType.SWORD, players(gameStatus.id))
     var shop = Shop(10)
     val injector = Guice.createInjector(new GladiatorsModule)
-    var fileIo =  injector.getInstance((classOf[FileIOInterface]))
+    var fileIo = injector.getInstance((classOf[FileIOInterface]))
     var playingField: PlayingFieldInterface = PlayingField()
     // val playingField = PlayingField()
 
@@ -48,7 +48,6 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
     def buyGladiator(index: Int, line: Int, row: Int): String = ""
 
     def baseArea(player: PlayerInterface): List[(Int, Int)] = List()
-
 
     def getBase(player: PlayerInterface): (Int, Int) = (0, 0)
 
@@ -90,5 +89,5 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
     def playingFieldToHtml(): String = ""
 
-    def setPlayerName(ind: Int, name: String) : Unit = {}
+    def setPlayerName(ind: Int, name: String): Unit = {}
 }

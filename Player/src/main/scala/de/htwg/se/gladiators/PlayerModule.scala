@@ -6,9 +6,9 @@ import de.htwg.se.gladiators.playerModule.controller.controllerComponent.control
 
 import net.codingwell.scalaguice.ScalaModule
 
-class PlayerModule extends AbstractModule with ScalaModule{
-  override def configure(): Unit = {
-    bind[PlayerControllerInterface].to[PlayerController]
-  }
+class PlayerModule extends AbstractModule with ScalaModule {
+    override def configure(): Unit = {
+        bind[PlayerControllerInterface].to[PlayerController]
+    }
 }
 

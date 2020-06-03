@@ -3,7 +3,6 @@ package de.htwg.se.gladiators.model
 import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
 import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
 
-
 case class Gladiator(line: Int, row: Int, movementPoints: Double, ap: Double, hp: Double, gladiatorType: GladiatorType, player: PlayerInterface, moved: Boolean = true) {
 
     def move(line: Int, row: Int): Gladiator = {
