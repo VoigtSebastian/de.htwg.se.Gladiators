@@ -21,12 +21,12 @@ trait PlayerInterface {
     def baseAttacked(ap: Int): PlayerInterface
     def updateBoughtGladiator(bought: Boolean): PlayerInterface
     def updateEnemyBaseLine(line: Int) : PlayerInterface
-    def toJson: JsValue
+    def toJson: JsObject
     def fromJson(jsValue: JsValue): PlayerInterface
 }
 
 object PlayerInterface extends PlayJsonSupport {
-  
+
     import play.api.libs.json._
 
     implicit val playerWrites: Writes[PlayerInterface] = {
