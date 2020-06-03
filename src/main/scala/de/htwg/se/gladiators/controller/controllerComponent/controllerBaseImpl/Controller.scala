@@ -29,6 +29,8 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 import java.util.concurrent.TimeUnit
 
+import akka.http.scaladsl.unmarshalling.Unmarshaller._
+
 import scala.swing.Publisher
 
 class Controller @Inject() () extends ControllerInterface with Publisher {
@@ -99,7 +101,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
         getGladiatorOption(Coordinate(line, row)) match {
             case Some(g) => return false
-            case None => 
+            case None =>
         }
 
         if (selectedGlad.line == -2) {
@@ -355,14 +357,10 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
 
     def setPlayerName(ind: Int, name: String) : Unit = {
-        val playerRename = {
-            val response = Http().singleRequest(Put("http://localhost:8081/gladiators/updateName",
-                UpdateNameArgumentContainer(players(ind), name)).addHeader(Accept(MediaTypes.`application/json`)))
-            val jsonStringFuture = response.flatMap(r => Unmarshal(r.entity).to[PlayerInterface])
-            //val jsonStringFuture: Future[PlayerInterface] = Unmarshal(response).to[PlayerInterface]
-            Await.result(jsonStringFuture, Duration(1, TimeUnit.SECONDS))
-        }
-        players(ind) = playerRename
+        val response = Http().singleRequest(Put("http://localhost:8081/gladiators/player/updateName",
+                                                UpdateNameArgumentContainer(players(ind), name)))
+        val future = response.flatMap(r => Unmarshal[HttpEntity](r.entity.withContentType(ContentTypes.`application/json`)).to[PlayerInterface])
+        players(ind) = Await.result(future, Duration(1, TimeUnit.SECONDS))
     }
 
 }
