@@ -11,7 +11,6 @@ import akka.stream.ActorMaterializer
 class HttpServer(controller: ControllerInterface) {
 
     implicit val system = ActorSystem("my-system")
-    implicit val materializer = ActorMaterializer()
     implicit val executionContext = system.dispatcher
 
     val route: Route = concat(

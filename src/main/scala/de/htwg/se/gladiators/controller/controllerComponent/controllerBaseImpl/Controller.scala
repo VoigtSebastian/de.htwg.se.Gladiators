@@ -52,7 +52,6 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
     val domain = envOrElse("DOMAIN", "localhost")
 
     implicit val system: ActorSystem = ActorSystem()
-    implicit val materializer: ActorMaterializer = ActorMaterializer()
     implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
     def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
