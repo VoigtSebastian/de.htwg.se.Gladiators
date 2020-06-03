@@ -356,7 +356,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
     def setPlayerName(ind: Int, name: String) : Unit = {
         val playerRename = {
-            val response = Http().singleRequest(Put("http://localhost:8102/gladiators/updateName",
+            val response = Http().singleRequest(Put("http://localhost:8081/gladiators/updateName",
                 UpdateNameArgumentContainer(players(ind), name)).addHeader(Accept(MediaTypes.`application/json`)))
             val jsonStringFuture = response.flatMap(r => Unmarshal(r.entity).to[PlayerInterface])
             //val jsonStringFuture: Future[PlayerInterface] = Unmarshal(response).to[PlayerInterface]
