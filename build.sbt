@@ -1,11 +1,8 @@
 //name := "de.htwg.se.Gladiators"
-
 import sbt.Keys.libraryDependencies
 
 ThisBuild / version := "0.1"
-
 ThisBuild / scalaVersion := "2.12.8"
-
 ThisBuild / trapExit := false
 
 val commonDependencies = Seq(
@@ -21,6 +18,9 @@ val commonDependencies = Seq(
   "com.typesafe.akka" %% "akka-stream" % "2.6.5",
   "de.heikoseeberger" %% "akka-http-play-json" % "1.32.0"
 )
+
+// Show deprecation and feature warning
+scalacOptions ++= Seq("-deprecation", "-feature")
 
 lazy val commonSettings = Seq(
   test in assembly := {}
