@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   main:
     image: gladiators-main:latest
@@ -7,12 +7,11 @@ services:
     stdin_open: true
     tty: true
     environment:
-        - DOCKERENV=TRUE
+      - DOCKERENV=TRUE
   player:
     image: gladiators-player-service:latest
     stdin_open: true
     ports:
       - "8081:8081"
     environment:
-        - SERVICE-PORT=8081
-        - DOCKERENV=TRUE
+      - DOCKERENV=TRUE

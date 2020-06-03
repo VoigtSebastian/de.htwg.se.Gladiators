@@ -46,10 +46,12 @@ case class PlayerHttpServer(controller: PlayerControllerInterface) extends PlayJ
             }
         }
     )
-    val port = envOrElse("SERVICE-PORT", "8081").toInt
-    val bindingFuture = Http().bindAndHandle(route, "localhost", port)
 
-    println(s"Player Rest Service started on port $port")
+    val port = envOrElse("PLAYER-SERVICE-PORT", "8081").toInt
+    val domain = envOrElse("DOMAIN", "localhost")
+
+    val bindingFuture = Http().bindAndHandle(route, domain, port)
+    println(s"Player Rest Service started on $domain $port")
 
     def shutdownWebServer() : Unit = {
         bindingFuture
