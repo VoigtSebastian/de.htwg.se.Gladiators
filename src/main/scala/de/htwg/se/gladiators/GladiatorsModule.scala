@@ -10,19 +10,16 @@ import de.htwg.se.gladiators.model.fileIoComponent._
 
 class GladiatorsModule extends AbstractModule with ScalaModule {
 
-  val defaultSize: Int = 15
+    val defaultSize: Int = 15
 
-  def configure(): Unit = {
+    override def configure(): Unit = {
 
-    bind[ControllerInterface].to[controllerBaseImpl.Controller]
-    bind[PlayingFieldInterface].to[playingFieldBaseImpl.PlayingField]
-    bind[FileIOInterface].to[fileIoJsonImpl.FileIO]
+        bind[ControllerInterface].to[controllerBaseImpl.Controller]
+        bind[PlayingFieldInterface].to[playingFieldBaseImpl.PlayingField]
+        bind[FileIOInterface].to[fileIoJsonImpl.FileIO]
 
-    bind[PlayingField].toInstance(new PlayingField(defaultSize))
+        bind[PlayingField].toInstance(new PlayingField(defaultSize))
 
-  }
+    }
 }
-
-
-
 

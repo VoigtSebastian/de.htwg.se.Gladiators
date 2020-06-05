@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  main:
+    image: gladiators-main:latest
+    depends_on:
+      - player
+    stdin_open: true
+    tty: true
+    environment:
+      - DOCKERENV=TRUE
+  player:
+    image: gladiators-player-service:latest
+    stdin_open: true
+    ports:
+      - "8081:8081"
+    environment:
+      - DOCKERENV=TRUE

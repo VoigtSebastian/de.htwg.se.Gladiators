@@ -7,23 +7,24 @@ import de.htwg.se.gladiators.controller.controllerComponent.MoveType
 import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
 import de.htwg.se.gladiators.model.CellType.CellType
 import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
-import de.htwg.se.gladiators.model.{Cell, CellType, Gladiator, GladiatorType, Player}
+import de.htwg.se.gladiators.model.{ Cell, CellType, Gladiator, GladiatorType }
 import de.htwg.se.gladiators.util.Coordinate
+import de.htwg.se.gladiators.model.Player
+
 
 import scala.util.matching.Regex
 
-case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gladiator] = List(), gladiatorPlayer2: List[Gladiator] = List(), cells: Array[Array[Cell]] = Array.ofDim[Cell](15, 15)) extends PlayingFieldInterface {
+case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gladiator] = List(), gladiatorPlayer2: List[Gladiator] = List(), cells: Array[Array[Cell]] = Array.ofDim[Cell](15, 15)) extends PlayingFieldInterface {
 
     var toggleUnitStats = true
 
-    val SAND_BACKGROUND = "\033[103m"
-    val PALM_BACKGROUND = "\033[43m"
-    val BASE_BACKGROUND = "\033[101m"
-    val UNIT_BACKGROUND = "\033[45m"
-    val TEXT_COLOR_BLACK = "\33[97m"
-    val RESET_ANSI_ESCAPE = "\033[0m"
+    val SAND_BACKGROUND = "\u001b[103m"
+    val PALM_BACKGROUND = "\u001b[43m"
+    val BASE_BACKGROUND = "\u001b[101m"
+    val UNIT_BACKGROUND = "\u001b[45m"
+    val TEXT_COLOR_BLACK = "\u001b[97m"
+    val RESET_ANSI_ESCAPE = "\u001b[0m"
     val REGEX_COMMANDS = new Regex("([a-zA-Z]+)|([0-9]+)")
-
 
     def updateCells(cells: Array[Array[Cell]]): PlayingField = {
         this.copy(cells = cells)
@@ -71,10 +72,8 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     def resetGladiatorMoved(): PlayingField = {
         var gladiatorPlayer1New = gladiatorPlayer1
         var gladiatorPlayer2New = gladiatorPlayer2
-        for (i <- gladiatorPlayer1New.indices)
-            gladiatorPlayer1New = gladiatorPlayer1.updated(i, gladiatorPlayer1(i).updateMoved(false))
-        for (i <- gladiatorPlayer2New.indices)
-            gladiatorPlayer2New = gladiatorPlayer2.updated(i, gladiatorPlayer2(i).updateMoved(false))
+        gladiatorPlayer1New = gladiatorPlayer1New.map(glad => glad.updateMoved(false))
+        gladiatorPlayer2New = gladiatorPlayer2New.map(glad => glad.updateMoved(false))
 
         this.copy(gladiatorPlayer1 = gladiatorPlayer1New, gladiatorPlayer2 = gladiatorPlayer2New)
     }
@@ -129,8 +128,8 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
         val newGlad = (gladiatorPlayer1 ::: gladiatorPlayer2).filter(filter).head.move(lineDest, rowDest)
 
         gladiatorPlayer1.exists(filter) match {
-            case true => this.copy(gladiatorPlayer1 = newGlad :: gladiatorPlayer1.filter(g => g.line != line && g.row != row))
-            case false => this.copy(gladiatorPlayer2 = newGlad :: gladiatorPlayer2.filter(g => g.line != line && g.row != row))
+            case true => this.copy(gladiatorPlayer1 = newGlad :: gladiatorPlayer1.filter(g => g.line != line || g.row != row))
+            case false => this.copy(gladiatorPlayer2 = newGlad :: gladiatorPlayer2.filter(g => g.line != line || g.row != row))
         }
     }
 
@@ -142,6 +141,29 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
 
     def cellAtCoordinate(coordinate: Coordinate): Cell = cell(coordinate.line, coordinate.row)
 
+    def checkCellEmpty(coord: Coordinate): Boolean = {
+        if (cells(coord.line)(coord.row).cellType == CellType.SAND) {
+            getGladiatorOption(coord) match {
+                case None => true
+                case Some(g) => false
+            }
+        } else {
+            false
+        }
+    }
+
+    def checkCellWalk(coord: Coordinate): Boolean = {
+        if (cells(coord.line)(coord.row).cellType == CellType.SAND
+            || cells(coord.line)(coord.row).cellType == CellType.BASE) {
+            getGladiatorOption(coord) match {
+                case None => true
+                case Some(g) => false
+            }
+        } else {
+            false
+        }
+    }
+
     def gladiatorInfo(line: Int, row: Int): String = {
         val glad = (gladiatorPlayer1 ::: gladiatorPlayer2).filter(g => g.line == line && g.row == row)
         glad.length match {
@@ -149,7 +171,6 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
             case _ => glad.head.toString()
         }
     }
-
 
     def evalPrintLine(line: String): String = {
         var returnValue = ""
@@ -235,6 +256,8 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
             return MoveType.ALREADY_MOVED
         if (gladiator.player != currentPlayer)
             return MoveType.UNIT_NOT_OWNED_BY_PLAYER
+        if (!checkMovementPointsMove(gladiator, startCoordinate, targetCoordinate))
+            return MoveType.INSUFFICIENT_MOVEMENT_POINTS
         cellAtCoordinate(targetCoordinate).cellType match {
             case CellType.PALM => MoveType.MOVE_TO_PALM
             case CellType.SAND => MoveType.LEGAL_MOVE
@@ -244,10 +267,10 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
     }
 
     def checkBaseAttack(start: Coordinate, destination: Coordinate, gladiator: Gladiator, currentPlayer: Player): MoveType = {
-         ((destination.line == currentPlayer.enemyBaseLine) && checkMovementPointsAttack(gladiator, start, destination)) match {
-             case true => MoveType.BASE_ATTACK
-             case false => MoveType.OWN_BASE
-         }
+        ((destination.line == currentPlayer.enemyBaseLine) && checkMovementPointsAttack(gladiator, start, destination)) match {
+            case true => MoveType.BASE_ATTACK
+            case false => MoveType.OWN_BASE
+        }
 
     }
 
@@ -272,10 +295,45 @@ case class PlayingField @Inject()(size: Integer = 15, gladiatorPlayer1: List[Gla
         false
     }
 
-    def checkMovementPoints(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean = {
-        if (g.row == startPosition.row && g.line == startPosition.line &&
-            g.movementPoints >= (Math.abs(destination.line - startPosition.line) + Math.abs(destination.row - startPosition.row)))
-            return true
-        false
+    def checkMovementPointsMove(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean = {
+        return getValidMoveCoordinates(g, startPosition).exists(coord => coord == destination)
+    }
+
+    def getValidMoveCoordinates(g: Gladiator, startPosition: Coordinate): List[Coordinate] = {
+        var validCells: List[Coordinate] = List()
+        getValidMoveCoordinatesHelper(startPosition, 1, g.movementPoints, List()).foreach(coord =>
+            if (!validCells.exists(item => item == coord._1) && checkCellEmpty(coord._1)) {
+                validCells = coord._1 :: validCells
+            })
+        validCells
+    }
+
+    def getValidMoveCoordinatesHelper(curr: Coordinate, dist: Int, maxDist: Double, validCells: List[(Coordinate, Int)]): List[(Coordinate, Int)] = {
+        var currValidCells = validCells
+        var nextCoordinates: List[Coordinate] = List(
+            Coordinate(curr.line, curr.row - 1),
+            Coordinate(curr.line, curr.row + 1),
+            Coordinate(curr.line - 1, curr.row),
+            Coordinate(curr.line + 1, curr.row))
+        nextCoordinates.foreach(next => {
+            if (isCoordinateLegal(next)
+                && checkCellWalk(next)
+                && !currValidCells.exists(item => item._1 == next && item._2 <= dist)) {
+
+                currValidCells = (next, dist) :: currValidCells
+                if (dist + 1 <= maxDist) {
+                    currValidCells = currValidCells ::: getValidMoveCoordinatesHelper(next, dist + 1, maxDist, currValidCells) //recursion
+                }
+            }
+        })
+        currValidCells
+    }
+
+    def toHtml: String = {
+        var cellsHtml = ""
+        for (i <- cells.indices) {
+            cellsHtml += formatLine(i) + "</br>"
+        }
+        "</p>" + cellsHtml + "</p>"
     }
 }
