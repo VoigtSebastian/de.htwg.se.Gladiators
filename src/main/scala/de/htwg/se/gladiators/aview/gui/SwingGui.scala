@@ -1,14 +1,15 @@
 package de.htwg.se.gladiators.aview.gui
 
 import de.htwg.se.gladiators.controller.controllerComponent._
-import de.htwg.se.gladiators.model.{Gladiator, GladiatorType}
+import de.htwg.se.gladiators.model.{ Gladiator, GladiatorType }
+import de.htwg.se.gladiators.util.{ Coordinate }
 import javax.swing._
 
-import scala.swing.{Alignment, BorderPanel, Button, Dimension, Font, Frame, GridPanel, TextField, _}
+import scala.swing.{ Alignment, BorderPanel, Button, Dimension, Font, Frame, GridPanel, TextField, _ }
 import scala.swing.Swing.LineBorder
-import scala.swing.event.{ButtonClicked, MouseClicked}
+import scala.swing.event.{ ButtonClicked, MouseClicked }
 
-class SwingGui (controller: ControllerInterface) extends MainFrame {
+class SwingGui(controller: ControllerInterface) extends MainFrame {
 
     preferredSize = new Dimension(850, 950)
     title = "Gladiators"
@@ -81,7 +82,6 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
         add(glad5, constraints(0, 13))
         add(glad5_l, constraints(0, 14, 1, 1, 0, 0.1))
 
-
         listenTo(glad1, glad2, glad3, glad4, glad5)
         val glad_buttons: List[Button] = List(glad1, glad2, glad3, glad4, glad5)
         reactions += {
@@ -101,10 +101,9 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
 
         // Quelle : http://otfried.org/scala/index_42.html
         def constraints(x: Int, y: Int,
-                        gridwidth: Int = 1, gridheight: Int = 1,
-                        weightx: Double = 0.0, weighty: Double = 0.0,
-                        fill: GridBagPanel.Fill.Value = GridBagPanel.Fill.None)
-        : Constraints = {
+            gridwidth: Int = 1, gridheight: Int = 1,
+            weightx: Double = 0.0, weighty: Double = 0.0,
+            fill: GridBagPanel.Fill.Value = GridBagPanel.Fill.None): Constraints = {
 
             val c = new Constraints
             c.gridx = x
@@ -121,8 +120,8 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
     }
 
     val gladPanel = new GridPanel(1, 3) {
-        val gladType = new TextField("TY:\nTest")	
-        gladType.font = new Font("Verdana", 1, 20)	
+        val gladType = new TextField("TY:\nTest")
+        gladType.font = new Font("Verdana", 1, 20)
         gladType.horizontalAlignment = Alignment.Center
 
         val gladAP = new Button("")
@@ -174,7 +173,6 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
         contents += next
     }
 
-
     val infoPanel: GridPanel = new GridPanel(1, 1) {
         contents += gladPanel
     }
@@ -225,15 +223,13 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
                     null,
                     "Player One",
                     "Change Names",
-                    JOptionPane.QUESTION_MESSAGE
-                )
-                controller.players(0) = controller.players(0).updateName(nameInput)
+                    JOptionPane.QUESTION_MESSAGE)
+                controller.setPlayerName(0, nameInput)
                 nameInput = JOptionPane.showInputDialog(
                     null,
                     "Player Two",
                     "Change Names",
-                    JOptionPane.QUESTION_MESSAGE
-                )
+                    JOptionPane.QUESTION_MESSAGE)
                 controller.players(1) = controller.players(0).updateName(nameInput)
                 refreshStatus
             })
@@ -264,36 +260,33 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
                 null,
                 controller.players(controller.gameStatus.id) + " won",
                 "Game Over",
-                JOptionPane.INFORMATION_MESSAGE
-            )
+                JOptionPane.INFORMATION_MESSAGE)
             redraw()
         case event: CellClicked =>
             redraw()
-            if (controller.checkGladiator(controller.selectedCell._1, controller.selectedCell._2)) {
-                val selectedGlad: Gladiator = controller.getGladiator(controller.selectedCell._1, controller.selectedCell._2)
-                if (!selectedGlad.moved && selectedGlad.player == controller.players(controller.gameStatus.id)) {
-                    for {
-                        i <- 0 until controller.playingField.size
-                        j <- 0 until controller.playingField.size
-                    } {
-                        if (controller.checkMovementPoints(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)) {
-                            if (controller.checkCellEmpty(i, j)) {
-                                cells(i)(j).setHighlightedSand()
+            controller.getGladiatorOption(Coordinate(controller.selectedCell._1, controller.selectedCell._2)) match {
+                case None =>
+                case Some(g) => {
+                    if (!g.moved && g.player == controller.players(controller.gameStatus.id)) {
+                        for {
+                            i <- 0 until controller.playingField.size
+                            j <- 0 until controller.playingField.size
+                        } {
+                            if (controller.checkMovementPointsAttack(g, g.line, g.row, i, j)) {
+                                if //(cells(i)(j).myCell.cellType != CellType.PALM &&
+                                (!(i == g.line && j == g.row)) {
+                                    cells(i)(j).cell.border = LineBorder(java.awt.Color.RED.darker(), 4)
+                                }
                             }
-                        }
-                        if (controller.checkMovementPointsAttack(selectedGlad, selectedGlad.line, selectedGlad.row, i, j)) {
-                            if //(cells(i)(j).myCell.cellType != CellType.PALM &&
-                            (!(i == selectedGlad.line && j == selectedGlad.row)) {
-                                // && !((i, j) == controller.getBase(controller.players(controller.gameStatus.id)))) {
-                                cells(i)(j).cell.border = LineBorder(java.awt.Color.RED.darker(), 4)
-                            }
-                        }
 
+                        }
+                        val validMoveCoordinates = controller.playingField.getValidMoveCoordinates(g, Coordinate(g.line, g.row))
+                        validMoveCoordinates.foreach(coord => {
+                            cells(coord.line)(coord.row).setHighlightedSand()
+                        })
                     }
                 }
             }
-
-
     }
 
     def redraw(): Unit = {
@@ -319,19 +312,19 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
     }
 
     def refreshGladPanel: Unit = {
-        if (controller.checkGladiator(controller.selectedCell._1, controller.selectedCell._2)) {
-            val glad = controller.getGladiator(controller.selectedCell._1, controller.selectedCell._2)
-            gladPanel.gladType.text = glad.gladiatorType.toString
-            gladPanel.gladAP.text = glad.ap.toString
-            gladPanel.gladHP.text = glad.hp.toString
-            gladPanel.gladHP.icon = resizedTexture("textures/hp_black.png", 40, 40)
-            gladPanel.gladAP.icon = resizedTexture("textures/ap_black.png", 40, 40)
-        } else {
-            gladPanel.gladType.text = ""
-            gladPanel.gladAP.text = " "
-            gladPanel.gladHP.text = " "
-            gladPanel.gladAP.icon = resizedTexture("textures/empty_small.png", 40, 40)
-            gladPanel.gladHP.icon = resizedTexture("textures/empty_small.png", 40, 40)
+        controller.getGladiatorOption(Coordinate(controller.selectedCell._1, controller.selectedCell._2)) match {
+            case Some(g) =>
+                gladPanel.gladType.text = g.gladiatorType.toString
+                gladPanel.gladAP.text = g.ap.toString
+                gladPanel.gladHP.text = g.hp.toString
+                gladPanel.gladHP.icon = resizedTexture("textures/hp_black.png", 40, 40)
+                gladPanel.gladAP.icon = resizedTexture("textures/ap_black.png", 40, 40)
+            case None =>
+                gladPanel.gladType.text = ""
+                gladPanel.gladAP.text = " "
+                gladPanel.gladHP.text = " "
+                gladPanel.gladAP.icon = resizedTexture("textures/empty_small.png", 40, 40)
+                gladPanel.gladHP.icon = resizedTexture("textures/empty_small.png", 40, 40)
         }
     }
 
@@ -349,19 +342,24 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
     def showShop: Unit = {
         for ((g, i) <- controller.shop.stock.zipWithIndex) {
             i match {
-                case 0 => shopPanel.glad1.icon = getGladIcon(g._1)
+                case 0 =>
+                    shopPanel.glad1.icon = getGladIcon(g._1)
                     shopPanel.glad1.text = controller.shop.calcCost(g._1) + "$"
                     shopPanel.glad1_l.text = "<html><body>HP: " + g._1.hp.toInt + "<br>AP: " + g._1.ap.toInt + "<br>MV: " + g._1.movementPoints.toInt + "</body></html>\""
-                case 1 => shopPanel.glad2.icon = getGladIcon(g._1)
+                case 1 =>
+                    shopPanel.glad2.icon = getGladIcon(g._1)
                     shopPanel.glad2.text = controller.shop.calcCost(g._1) + "$"
                     shopPanel.glad2_l.text = "<html><body>HP: " + g._1.hp.toInt + "<br>AP: " + g._1.ap.toInt + "<br>MV: " + g._1.movementPoints.toInt + "</body></html>\""
-                case 2 => shopPanel.glad3.icon = getGladIcon(g._1)
+                case 2 =>
+                    shopPanel.glad3.icon = getGladIcon(g._1)
                     shopPanel.glad3.text = controller.shop.calcCost(g._1) + "$"
                     shopPanel.glad3_l.text = "<html><body>HP: " + g._1.hp.toInt + "<br>AP: " + g._1.ap.toInt + "<br>MV: " + g._1.movementPoints.toInt + "</body></html>\""
-                case 3 => shopPanel.glad4.icon = getGladIcon(g._1)
+                case 3 =>
+                    shopPanel.glad4.icon = getGladIcon(g._1)
                     shopPanel.glad4.text = controller.shop.calcCost(g._1) + "$"
                     shopPanel.glad4_l.text = "<html><body>HP: " + g._1.hp.toInt + "<br>AP: " + g._1.ap.toInt + "<br>MV: " + g._1.movementPoints.toInt + "</body></html>\""
-                case 4 => shopPanel.glad5.icon = getGladIcon(g._1)
+                case 4 =>
+                    shopPanel.glad5.icon = getGladIcon(g._1)
                     shopPanel.glad5.text = controller.shop.calcCost(g._1) + "$"
                     shopPanel.glad5_l.text = "<html><body>HP: " + g._1.hp.toInt + "<br>AP: " + g._1.ap.toInt + "<br>MV: " + g._1.movementPoints.toInt + "</body></html>\""
                 case _ =>
@@ -371,12 +369,9 @@ class SwingGui (controller: ControllerInterface) extends MainFrame {
 
     def getGladIcon(glad: Gladiator): ImageIcon = {
         glad.gladiatorType match {
-            case GladiatorType.SWORD
-            => resizedTexture("textures/sword.png", 50, 50)
-            case GladiatorType.BOW
-            => resizedTexture("textures/bow.png", 50, 50)
-            case GladiatorType.TANK
-            => resizedTexture("textures/shield_small.png", 50, 50)
+            case GladiatorType.SWORD => resizedTexture("textures/sword.png", 50, 50)
+            case GladiatorType.BOW => resizedTexture("textures/bow.png", 50, 50)
+            case GladiatorType.TANK => resizedTexture("textures/shield_small.png", 50, 50)
         }
     }
 

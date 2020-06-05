@@ -1,22 +1,41 @@
 package de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl
 
-import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.{GameStatus, P1, P2}
+import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.{ GameStatus, P1, P2 }
 import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
 import de.htwg.se.gladiators.controller.controllerComponent._
-import CommandStatus._
-import com.google.inject.{Guice, Inject}
 import de.htwg.se.gladiators.GladiatorsModule
 import de.htwg.se.gladiators.model._
 import de.htwg.se.gladiators.model.fileIoComponent.FileIOInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
-import de.htwg.se.gladiators.util.{Coordinate, UndoManager}
+import de.htwg.se.gladiators.util.{ Coordinate, UndoManager }
+import de.htwg.se.gladiators.model.Player
+import de.htwg.se.gladiators.util.{ UpdateNameArgumentContainer, JsonSupport }
 
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.model.headers.Accept
+import akka.http.scaladsl.model.{ HttpEntity, HttpResponse, ContentTypes, MediaTypes, headers }
+import akka.actor.ActorSystem
+import akka.http.scaladsl.{ Http }
+import akka.http.scaladsl.client.RequestBuilding._
+import akka.http.scaladsl.model.HttpRequest
+import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.stream.ActorMaterializer
+import akka.http.scaladsl.unmarshalling.Unmarshaller._
+
+import scala.concurrent.duration.Duration
+import scala.concurrent.{ Await, ExecutionContextExecutor, Future }
+import scala.util.Properties.envOrElse
 import scala.swing.Publisher
 
-class Controller @Inject() () extends ControllerInterface with Publisher {
+import play.api.libs.json.{ JsValue, Json }
+import java.util.concurrent.TimeUnit
+import com.google.inject.{ Guice, Inject }
+import CommandStatus._
 
-    var playingField : PlayingFieldInterface = PlayingField().createRandomCells(15)
+class Controller @Inject() () extends ControllerInterface with Publisher with JsonSupport {
+
+    var playingField: PlayingFieldInterface = PlayingField().createRandomCells(15)
     val undoManager = new UndoManager
     var gameStatus: GameStatus = GameStatus.P1
     var commandStatus: CommandStatus = CommandStatus.IDLE
@@ -27,6 +46,12 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
     val injector = Guice.createInjector(new GladiatorsModule)
     val kickOutTurns = 7
     var fileIo = injector.getInstance((classOf[FileIOInterface]))
+
+    val port = envOrElse("PLAYER-SERVICE-PORT", "8081").toInt
+    val domain = envOrElse("DOMAIN", "localhost")
+
+    implicit val system: ActorSystem = ActorSystem()
+    implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
     def cell(line: Int, row: Int): Cell = playingField.cell(line, row)
 
@@ -73,11 +98,13 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         if (playingField.cells(line)(row).cellType == CellType.PALM)
             return false
 
-        if (checkGladiator(line, row))
-            return false
-
         if (!baseArea(players(gameStatus.id)).contains((line, row)))
             return false
+
+        getGladiatorOption(Coordinate(line, row)) match {
+            case Some(g) => return false
+            case None =>
+        }
 
         if (selectedGlad.line == -2) {
             for ((g, i) <- shop.stock.zipWithIndex) {
@@ -178,7 +205,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         status match {
             case MoveType.LEGAL_MOVE =>
                 undoManager.doStep(new MoveGladiatorCommand(line, row, lineDest, rowDest, this))
-                getGladiatorOption(lineDest, rowDest) match {
+                getGladiatorOption(Coordinate(lineDest, rowDest)) match {
                     case Some(g) =>
                         var gladiator = g
                         gladiator = gladiator.updateMoved(true)
@@ -209,7 +236,6 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         publish(new GameStatusChanged)
     }
 
-
     def redoGladiator(): Unit = {
         undoManager.redoStep
         publish(new GladChanged)
@@ -220,8 +246,8 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
         status match {
             case MoveType.ATTACK =>
-                val ret = playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
-                getGladiatorOption(lineAttack, rowAttack) match {
+                playingField = playingField.attack(getGladiator(lineAttack, rowAttack), getGladiator(lineDest, rowDest))
+                getGladiatorOption(Coordinate(lineAttack, rowAttack)) match {
                     case Some(g) =>
                         var gladiator = g
                         gladiator = gladiator.updateMoved(true)
@@ -247,14 +273,6 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         }
     }
 
-    def checkGladiator(line: Int, row: Int): Boolean = {
-        for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
-            if (g.line == line && g.row == row)
-                return true
-        }
-        false
-    }
-
     def getGladiator(line: Int, row: Int): Gladiator = {
         var glad = GladiatorFactory.createGladiator(Int.MinValue, Int.MinValue, GladiatorType.SWORD, players(P1.id))
         for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
@@ -264,12 +282,8 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         glad
     }
 
-    def getGladiatorOption(line: Int, row: Int): Option[Gladiator] = {
-        for (g <- playingField.gladiatorPlayer1 ::: playingField.gladiatorPlayer2) {
-            if (g.line == line && g.row == row)
-                return Some(g)
-        }
-        None
+    def getGladiatorOption(position: Coordinate): Option[Gladiator] = {
+        playingField.getGladiatorOption(position)
     }
 
     def cellSelected(line: Int, row: Int): Unit = {
@@ -307,12 +321,6 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         false
     }
 
-    def checkMovementPoints(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
-        playingField.checkMovementPoints(g, Coordinate(lineStart, rowStart), Coordinate(lineDest, rowDest))
-        //https://www.geeksforgeeks.org/shortest-path-in-a-binary-maze/
-    }
-
-
     def checkMovementPointsAttack(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean = {
         playingField.checkMovementPointsAttack(g, Coordinate(lineStart, rowStart), Coordinate(lineDest, rowDest))
     }
@@ -327,22 +335,13 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         players(playerId) = players(playerId).addCredits((gladiatorAttack.ap / 10).toInt)
         var randLine = scala.util.Random.nextInt(playingField.size - 4) + 2
         var randRow = scala.util.Random.nextInt(playingField.size)
-        while (!checkCellEmpty(randLine, randRow)) {
+        while (!playingField.checkCellEmpty(Coordinate(randLine, randRow))) {
             randLine = scala.util.Random.nextInt(playingField.size - 4) + 2
             randRow = scala.util.Random.nextInt(playingField.size)
         }
         playingField.cells(line)(row) = Cell(CellType.SAND)
         playingField.cells(randLine)(randRow) = Cell(CellType.GOLD)
         gladiatorAttack + " is goldmining"
-    }
-
-    def checkCellEmpty(line: Int, row: Int): Boolean = {
-        if (playingField.cells(line)(row).cellType == CellType.SAND
-            && !checkGladiator(line, row)) {
-            true
-        } else {
-            false
-        }
     }
 
     def save(): Unit = {
@@ -353,6 +352,16 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         val temppf = fileIo.load
         playingField = playingField.updateCells(temppf.cells)
         publish(new PlayingFieldChanged)
+    }
+
+    def playingFieldToHtml: String = playingField.toHtml
+
+    def setPlayerName(ind: Int, name: String): Unit = {
+        val response = Http().singleRequest(Put(
+            s"http://$domain:$port/gladiators/player/updateName",
+            UpdateNameArgumentContainer(players(ind), name)))
+        val future = response.flatMap(r => Unmarshal[HttpEntity](r.entity.withContentType(ContentTypes.`application/json`)).to[Player])
+        players(ind) = Await.result(future, Duration(1, TimeUnit.SECONDS))
     }
 
 }

@@ -1,6 +1,5 @@
 package de.htwg.se.gladiators.controller.controllerComponent
 
-
 import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
 import CommandStatus.CommandStatus
 import de.htwg.se.gladiators.controller.controllerComponent.GameStatus.GameStatus
@@ -10,6 +9,8 @@ import de.htwg.se.gladiators.model.fileIoComponent.FileIOInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.UndoManager
+import de.htwg.se.gladiators.util.Coordinate
+import de.htwg.se.gladiators.model.Player
 
 import scala.swing.Publisher
 
@@ -28,32 +29,32 @@ trait ControllerInterface extends Publisher {
     def cell(line: Int, row: Int): Cell
 
     /**
-      * Resets the game and return a reset ControllerInterface implementation.
-      *
-      * @return a reset ControllerInterface implementation
-      */
+     * Resets the game and return a reset ControllerInterface implementation.
+     *
+     * @return a reset ControllerInterface implementation
+     */
     def resetGame(): Unit
 
     /**
-      * Ends the turn for the current player.
-      *
-      * @return String containing a message that can be shown in a Tui.
-      */
+     * Ends the turn for the current player.
+     *
+     * @return String containing a message that can be shown in a Tui.
+     */
     def endTurn(): String
 
     /**
-      * Creates a random PlayingField, giving all cells a new CellType.
-      *
-      * @param size     : The size of the new playing field.
-      * @param palmRate : The rate at which palm should appear between 0 and 100.
-      */
+     * Creates a random PlayingField, giving all cells a new CellType.
+     *
+     * @param size     : The size of the new playing field.
+     * @param palmRate : The rate at which palm should appear between 0 and 100.
+     */
     def createRandom(size: Int, palmRate: Int = 17): Unit
 
     /**
-      * Returns the current shop.
-      *
-      * @return current shop.
-      */
+     * Returns the current shop.
+     *
+     * @return current shop.
+     */
     def getShop: String
 
     def printPlayingField(): String
@@ -80,11 +81,9 @@ trait ControllerInterface extends Publisher {
 
     def attack(lineAttack: Int, rowAttack: Int, lineDest: Int, rowDest: Int): (Boolean, String)
 
-    def checkGladiator(line: Int, row: Int): Boolean
-
     def getGladiator(line: Int, row: Int): Gladiator
 
-    def getGladiatorOption(line: Int, row: Int): Option[Gladiator]
+    def getGladiatorOption(position: Coordinate): Option[Gladiator]
 
     def cellSelected(line: Int, row: Int): Unit
 
@@ -94,15 +93,15 @@ trait ControllerInterface extends Publisher {
 
     def isGladiatorInList(list: List[Gladiator], line: Int, row: Int): Boolean
 
-    def checkMovementPoints(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean
-
     def checkMovementPointsAttack(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean
 
     def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int): String
 
-    def checkCellEmpty(line: Int, row: Int): Boolean
-
     def save: Unit
 
     def load: Unit
+
+    def playingFieldToHtml: String
+
+    def setPlayerName(ind: Int, name: String): Unit
 }
