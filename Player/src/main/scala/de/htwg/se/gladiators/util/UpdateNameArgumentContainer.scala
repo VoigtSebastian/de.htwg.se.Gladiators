@@ -1,12 +1,13 @@
-package de.htwg.se.gladiators.playerModule.util
+package de.htwg.se.gladiators.util
 
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
-import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
+import de.htwg.se.gladiators.model.Player
 
-case class UpdateNameArgumentContainer(player: PlayerInterface, name: String)
+import spray.json._
 
-object UpdateNameArgumentContainer extends PlayJsonSupport {
-    import play.api.libs.json._
-    implicit val containerWrites: OWrites[UpdateNameArgumentContainer] = Json.writes[UpdateNameArgumentContainer]
-    implicit val containerReads: Reads[UpdateNameArgumentContainer] = Json.reads[UpdateNameArgumentContainer]
+case class UpdateNameArgumentContainer(player: Player, name: String)
+
+object UpdateNameArgumentContainerProtocol extends DefaultJsonProtocol {
+    implicit val playerFormat = jsonFormat5(Player.apply)
+    implicit val shipAddressFormat = jsonFormat2(UpdateNameArgumentContainer.apply)
 }
