@@ -3,19 +3,17 @@ package de.htwg.se.gladiators.playerModule
 import akka.http.scaladsl.model.{ HttpEntity, HttpResponse, ContentTypes, MediaTypes }
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.{ Route, StandardRoute }
-import de.htwg.se.gladiators.playerModule.controller.controllerComponent.PlayerControllerInterface;
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
-import de.htwg.se.gladiators.playerModule.util._
-import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
+import de.htwg.se.gladiators.util.{ UpdateNameArgumentContainer, BaseAttackedArgumentContainer}
 import scala.util.Properties.envOrElse
 
-import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
-import play.api.libs.json.{ JsValue, Json }
-import de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation.Player
+import de.htwg.se.gladiators.model.Player
+import spray.json._
+import de.htwg.se.gladiators.util.JsonSupport
 
-case class PlayerHttpServer(controller: PlayerControllerInterface) extends PlayJsonSupport {
+case class PlayerHttpServer() extends JsonSupport {
 
     implicit val system = ActorSystem("my-system")
     implicit val materializer = ActorMaterializer()
@@ -24,7 +22,7 @@ case class PlayerHttpServer(controller: PlayerControllerInterface) extends PlayJ
     val route: Route = concat(
         get {
             path("gladiators" / "player" / "static") {
-                complete(Json.obj("name" -> "gladiators"))
+                complete("""{ "Gladiators": "online" }""".parseJson)
             }
         },
         put {
@@ -33,14 +31,14 @@ case class PlayerHttpServer(controller: PlayerControllerInterface) extends PlayJ
                     println(params.player)
                     println(params.name)
                     var player = params.player.updateName(params.name)
-                    complete(player.toJson)
+                    complete(player)
                 }
             }
         },
         put {
             path("gladiators" / "player" / "baseAttacked") {
                 entity(as[BaseAttackedArgumentContainer]) { params =>
-                    val player = controller.baseAttacked(params.player, params.ap).toJson
+                    val player = params.player.baseAttacked(params.ap).toJson
                     complete(player)
                 }
             }

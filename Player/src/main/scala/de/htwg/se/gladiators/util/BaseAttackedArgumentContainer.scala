@@ -1,12 +1,6 @@
-package de.htwg.se.gladiators.playerModule.util
+package de.htwg.se.gladiators.util
 
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
-import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
+import de.htwg.se.gladiators.model.Player
 
-case class BaseAttackedArgumentContainer(player: PlayerInterface, ap: Int)
-
-object BaseAttackedArgumentContainer extends PlayJsonSupport {
-    import play.api.libs.json._
-    implicit val containerWrites: OWrites[BaseAttackedArgumentContainer] = Json.writes[BaseAttackedArgumentContainer]
-    implicit val containerReads: Reads[BaseAttackedArgumentContainer] = Json.reads[BaseAttackedArgumentContainer]
-}
+case class BaseAttackedArgumentContainer(player: Player, ap: Int)
