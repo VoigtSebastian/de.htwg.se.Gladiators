@@ -1,9 +1,9 @@
 package de.htwg.se.gladiators.model
 
 import de.htwg.se.gladiators.model.GladiatorType.GladiatorType
-import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
 
-case class Gladiator(line: Int, row: Int, movementPoints: Double, ap: Double, hp: Double, gladiatorType: GladiatorType, player: PlayerInterface, moved: Boolean = true) {
+
+case class Gladiator(line: Int, row: Int, movementPoints: Double, ap: Double, hp: Double, gladiatorType: GladiatorType, player: Player, moved: Boolean = true) {
 
     def move(line: Int, row: Int): Gladiator = {
         this.copy(line = line, row = row, moved = true)
@@ -17,7 +17,7 @@ case class Gladiator(line: Int, row: Int, movementPoints: Double, ap: Double, hp
         this.copy(hp = hp - ap)
     }
 
-    def assignPlayer(player: PlayerInterface): Gladiator = {
+    def assignPlayer(player: Player): Gladiator = {
         this.copy(player = player)
     }
 
