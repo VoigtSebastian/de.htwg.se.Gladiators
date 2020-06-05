@@ -12,8 +12,8 @@ import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.UndoManager
 import de.htwg.se.gladiators.util.Coordinate
-import de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation.Player
-import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
+import de.htwg.se.gladiators.model.Player
+
 
 import scala.swing.Publisher
 
@@ -47,9 +47,9 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
     def buyGladiator(index: Int, line: Int, row: Int): String = ""
 
-    def baseArea(player: PlayerInterface): List[(Int, Int)] = List()
+    def baseArea(player: Player): List[(Int, Int)] = List()
 
-    def getBase(player: PlayerInterface): (Int, Int) = (0, 0)
+    def getBase(player: Player): (Int, Int) = (0, 0)
 
     def gladiatorInfo(line: Int, row: Int): String = {
         playingField.gladiatorInfo(line: Int, row: Int) + " and is owned by " + players(gameStatus.id)

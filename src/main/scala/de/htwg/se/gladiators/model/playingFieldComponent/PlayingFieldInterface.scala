@@ -4,12 +4,10 @@ import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
 import de.htwg.se.gladiators.model.CellType.CellType
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.model.{ Cell, Gladiator }
-import de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation.Player
-
+import de.htwg.se.gladiators.model.Player
 import de.htwg.se.gladiators.util.Coordinate
 
 import scala.util.matching.Regex
-import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
 
 trait PlayingFieldInterface {
 
@@ -69,7 +67,7 @@ trait PlayingFieldInterface {
 
     def setCell(line: Int, row: Int, cellType: CellType): Unit
 
-    def checkMoveType(startPosition: Coordinate, destinationPosition: Coordinate, currentPlayer: PlayerInterface): MoveType
+    def checkMoveType(startPosition: Coordinate, destinationPosition: Coordinate, currentPlayer: Player): MoveType
 
     def checkMovementPointsAttack(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean
 
@@ -81,4 +79,3 @@ trait PlayingFieldInterface {
 
     def toHtml: String
 }
-

@@ -9,9 +9,8 @@ import de.htwg.se.gladiators.model.fileIoComponent.FileIOInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.{ Coordinate, UndoManager }
-import de.htwg.se.gladiators.playerModule.model.playerComponent.playerBaseImplementation.Player
-import de.htwg.se.gladiators.playerModule.model.playerComponent.PlayerInterface
-import de.htwg.se.gladiators.playerModule.util._
+import de.htwg.se.gladiators.model.Player
+import de.htwg.se.gladiators.util.{ UpdateNameArgumentContainer, JsonSupport }
 
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.Accept
@@ -34,7 +33,7 @@ import java.util.concurrent.TimeUnit
 import com.google.inject.{ Guice, Inject }
 import CommandStatus._
 
-class Controller @Inject() () extends ControllerInterface with Publisher {
+class Controller @Inject() () extends ControllerInterface with Publisher with JsonSupport {
 
     var playingField: PlayingFieldInterface = PlayingField().createRandomCells(15)
     val undoManager = new UndoManager
@@ -84,7 +83,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
     def getShop: String = shop.toString
 
-    def getCurrentPlayer: PlayerInterface = players(gameStatus.id)
+    def getCurrentPlayer: Player = players(gameStatus.id)
 
     def printPlayingField(): String = {
         playingField.toString +
@@ -168,7 +167,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         }
     }
 
-    def baseArea(player: PlayerInterface): List[(Int, Int)] = {
+    def baseArea(player: Player): List[(Int, Int)] = {
         var base1: (Int, Int) = (0, 0)
         var area: List[(Int, Int)] = Nil
         if (player == players(0)) {
@@ -188,7 +187,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         area.filter(c => playingField.cells(c._1)(c._2).cellType != CellType.PALM)
     }
 
-    def getBase(player: PlayerInterface): (Int, Int) = {
+    def getBase(player: Player): (Int, Int) = {
         if (player == players(0)) {
             (playingField.size - 1, playingField.size / 2)
         } else {
@@ -361,7 +360,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
         val response = Http().singleRequest(Put(
             s"http://$domain:$port/gladiators/player/updateName",
             UpdateNameArgumentContainer(players(ind), name)))
-        val future = response.flatMap(r => Unmarshal[HttpEntity](r.entity.withContentType(ContentTypes.`application/json`)).to[PlayerInterface])
+        val future = response.flatMap(r => Unmarshal[HttpEntity](r.entity.withContentType(ContentTypes.`application/json`)).to[Player])
         players(ind) = Await.result(future, Duration(1, TimeUnit.SECONDS))
     }
 
