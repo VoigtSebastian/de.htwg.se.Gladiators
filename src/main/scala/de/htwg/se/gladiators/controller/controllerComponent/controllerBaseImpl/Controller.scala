@@ -10,7 +10,7 @@ import de.htwg.se.gladiators.model.playingFieldComponent.PlayingFieldInterface
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.util.{ Coordinate, UndoManager }
 import de.htwg.se.gladiators.model.Player
-import de.htwg.se.gladiators.util.{ UpdateNameArgumentContainer, JsonSupport }
+import de.htwg.se.gladiators.util.{ UpdateNameArgumentContainer, PlayerJsonSupport }
 
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.Accept
@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit
 import com.google.inject.{ Guice, Inject }
 import CommandStatus._
 
-class Controller @Inject() () extends ControllerInterface with Publisher with JsonSupport {
+class Controller @Inject() () extends ControllerInterface with Publisher with PlayerJsonSupport {
 
     var playingField: PlayingFieldInterface = PlayingField().createRandomCells(15)
     val undoManager = new UndoManager

@@ -6,14 +6,13 @@ import akka.http.scaladsl.server.{ Route, StandardRoute }
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
-import de.htwg.se.gladiators.util.{ UpdateNameArgumentContainer, BaseAttackedArgumentContainer}
+import de.htwg.se.gladiators.util.{ UpdateNameArgumentContainer, BaseAttackedArgumentContainer, PlayerJsonSupport}
 import scala.util.Properties.envOrElse
 
 import de.htwg.se.gladiators.model.Player
 import spray.json._
-import de.htwg.se.gladiators.util.JsonSupport
 
-case class PlayerHttpServer() extends JsonSupport {
+case class PlayerHttpServer() extends PlayerJsonSupport {
 
     implicit val system = ActorSystem("my-system")
     implicit val materializer = ActorMaterializer()
