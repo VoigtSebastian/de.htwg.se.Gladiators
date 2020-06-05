@@ -51,6 +51,7 @@ sudoku.log
 # Application backup
 playingfield.json
 
-*.bloop
-.metals/*
+.bloop/
+.metals/
 metals.sbt
+classes/
