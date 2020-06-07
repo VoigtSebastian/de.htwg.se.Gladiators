@@ -7,7 +7,7 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import spray.json._
 
 trait PlayerJsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
-  implicit val playerFormat = jsonFormat5(Player.apply)
-  implicit val updateNameArgumentContainerFormat = jsonFormat2(UpdateNameArgumentContainer.apply)
-  implicit val baseAttackedArgumentContainerFormat = jsonFormat2(BaseAttackedArgumentContainer.apply)
+    implicit val playerFormat = jsonFormat5(Player.apply)
+    implicit val updateNameArgumentContainerFormat = jsonFormat2(UpdateNameArgumentContainer.apply)
+    implicit val baseAttackedArgumentContainerFormat = jsonFormat2(BaseAttackedArgumentContainer.apply)
 }
