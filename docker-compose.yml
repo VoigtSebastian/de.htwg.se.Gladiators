@@ -6,12 +6,12 @@ services:
       - player
     stdin_open: true
     tty: true
-    environment:
-      - DOCKERENV=TRUE
+    env_file:
+      - .env
   player:
     image: gladiators-player-service:latest
     stdin_open: true
     ports:
       - "8081:8081"
-    environment:
-      - DOCKERENV=TRUE
+    env_file:
+      - .env
