@@ -6,7 +6,7 @@ import akka.http.scaladsl.server.{ Route, StandardRoute }
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
-import de.htwg.se.gladiators.util.{ UpdateNameArgumentContainer, BaseAttackedArgumentContainer, PlayerJsonSupport}
+import de.htwg.se.gladiators.util.{ UpdateNameArgumentContainer, BaseAttackedArgumentContainer, PlayerJsonSupport }
 import scala.util.Properties.envOrElse
 
 import de.htwg.se.gladiators.model.Player
