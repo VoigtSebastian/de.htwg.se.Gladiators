@@ -47,7 +47,7 @@ case class PlayerHttpServer() extends PlayerJsonSupport {
     val domain = envOrElse("DOMAIN", "localhost")
 
     val bindingFuture = Http().bindAndHandle(route, domain, port)
-    println(s"Player Rest Service started on $domain $port")
+    println(s"Player Rest Service started on $domain:$port")
 
     def shutdownWebServer(): Unit = {
         bindingFuture
