@@ -18,7 +18,9 @@ val commonDependencies = Seq(
   "com.typesafe.akka" %% "akka-stream" % "2.6.5",
   "de.heikoseeberger" %% "akka-http-play-json" % "1.32.0",
   "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.12",
-  "io.spray" %%  "spray-json" % "1.3.5"
+  "io.spray" %%  "spray-json" % "1.3.5",
+  "com.typesafe.slick" %% "slick" % "3.3.2",
+  "org.slf4j" % "slf4j-nop" % "1.7.26"
 )
 
 // Show deprecation and feature warning
