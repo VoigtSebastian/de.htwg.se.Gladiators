@@ -5,8 +5,8 @@ import de.htwg.se.gladiators.model.Player
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
-import slick.jdbc.MySQLProfile.api._
-import slick.jdbc.JdbcBackend.Database
+import slick.jdbc.H2Profile.api._
+import slick.lifted.ProvenShape
 
 import scala.collection.immutable.SortedSet
 import scala.util.{ Try, Success, Failure }
@@ -23,10 +23,9 @@ object PlayerMappings {
     val players = TableQuery[Players]
 
     val db = Database.forURL(
-        url = "jdbc:mysql://localhost:3306",
-        driver = "com.mysql.cj.jdbc.Driver",
-        user = "root",
-        password = "root")
+        "jdbc:h2:mem:test1",
+        driver = "org.h2.Driver",
+        keepAliveConnection = true)
 
     Await.result(db.run(DBIO.seq(
         players.schema.createIfNotExists)), Duration.Inf)
