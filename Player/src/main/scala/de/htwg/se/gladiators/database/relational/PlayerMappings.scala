@@ -42,14 +42,14 @@ object PlayerMappings {
         }
     }
 
-    def readPlayer(): Option[Player] = {
-        var player: Option[Player] = None
+    def readPlayers(): List[Player] = {
+        var playerList: List[Player] = List()
         Await.result(db.run(DBIO.seq(
             players.result.map(pl => {
                 println(pl)
-                player = Some(Player(pl.head.name))
+                playerList ++= Some(Player(pl.head.name, pl.head.credits))
             }))), Duration.Inf)
-        player
+        playerList
     }
 
 }
