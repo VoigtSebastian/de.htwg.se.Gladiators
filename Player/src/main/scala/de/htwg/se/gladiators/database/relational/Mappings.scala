@@ -34,14 +34,13 @@ object Mappings {
     def createPlayer(player: Player): Boolean = {
         try {
             Await.result(db.run(DBIO.seq(
-                players += DbPlayer(player.name))), Duration.Inf)
+                players += DbPlayer(player.name, player.credits))), Duration.Inf)
             true
         } catch {
             case err: Exception =>
                 println("Error in database", err)
                 false;
         }
-        //    finally db.close
     }
 
     def readPlayer(): Option[Player] = {
@@ -56,16 +55,17 @@ object Mappings {
 
 }
 
-case class DbPlayer(name: String, id: Option[Int] = None)
+case class DbPlayer(name: String, credits: Int)
 
 class Players(tag: Tag) extends Table[DbPlayer](tag, "PLAYERS") {
     // Auto Increment the id primary key column
-    def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
+    //   def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
 
     // The name can't be null
     def name = column[String]("NAME")
 
+    def credits = column[Int]("CREDITS")
     // the * projection (e.g. select * ...) auto-transforms the tupled
     // column values to / from a User
-    def * = (name, id.?) <> (DbPlayer.tupled, DbPlayer.unapply)
+    def * = (name, credits) <> (DbPlayer.tupled, DbPlayer.unapply)
 }
