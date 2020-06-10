@@ -2,7 +2,6 @@ package de.htwg.se.gladiators.database.relational
 
 import de.htwg.se.gladiators.model.Player
 import de.htwg.se.gladiators.database.PlayerDatabase
-import scala.util.{ Try, Success, Failure }
 
 object SlickDatabase extends PlayerDatabase {
     private val mappings: PlayerMappings.type = PlayerMappings
@@ -30,12 +29,8 @@ object SlickDatabase extends PlayerDatabase {
         }
     }
 
-    def updatePlayer(player: Player): Option[Player] = {
-        Some(player)
-    }
+    def updatePlayer(player: Player): Option[Player] = ???
 
-    def deletePlayer(player: Player): Option[Player] = {
-        Some(player)
-    }
+    def deletePlayer(player: Player): Option[Player] = ???
 
 }
