@@ -29,7 +29,7 @@ object PlayerMappings {
         password = "root")
 
     Await.result(db.run(DBIO.seq(
-        players.schema.createIfNotExists)), Duration.Inf)
+        players.schema.create)), Duration.Inf)
 
     def createPlayer(player: Player): Boolean = {
         try {
