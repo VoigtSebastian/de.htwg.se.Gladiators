@@ -21,7 +21,9 @@ val commonDependencies = Seq(
   "io.spray" %%  "spray-json" % "1.3.5",
   "com.typesafe.slick" %% "slick" % "3.3.2",
   "org.slf4j" % "slf4j-nop" % "1.7.26",
-  "mysql" % "mysql-connector-java" % "8.0.20"
+  "mysql" % "mysql-connector-java" % "8.0.20",
+  "org.scalikejdbc" %% "scalikejdbc" % "3.4.+",
+  "com.h2database" % "h2" % "1.4.+"
 )
 
 // Show deprecation and feature warning
