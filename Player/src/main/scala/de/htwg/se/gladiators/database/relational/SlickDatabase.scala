@@ -3,7 +3,7 @@ package de.htwg.se.gladiators.database.relational
 import de.htwg.se.gladiators.model.Player
 import de.htwg.se.gladiators.database.PlayerDatabase
 
-object SlickDatabase extends PlayerDatabase {
+class SlickDatabase extends PlayerDatabase {
     private val mappings: PlayerMappings.type = PlayerMappings
 
     def createPlayer(player: Player): Option[Player] = {
