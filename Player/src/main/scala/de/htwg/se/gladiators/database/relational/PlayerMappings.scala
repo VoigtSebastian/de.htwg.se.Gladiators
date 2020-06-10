@@ -17,7 +17,7 @@ import scala.util.{ Try, Success, Failure }
 //import scala.concurrent.duration.Duration
 //import slick.driver.H2Driver.api._
 
-object Mappings {
+object PlayerMappings {
 
     // the base query for the Users table
     val players = TableQuery[Players]
