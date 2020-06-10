@@ -33,7 +33,7 @@ case class PlayerHttpServer() extends JsonSupport {
         },
         get {
             path("gladiators" / "player" / "read") {
-                complete(database.readPlayer())
+                complete(database.readPlayers())
             }
         },
         /*
@@ -43,7 +43,7 @@ case class PlayerHttpServer() extends JsonSupport {
             path("gladiators" / "player" / "create") {
                 entity(as[Player]) { player =>
                     database.createPlayer(player)
-                    complete(params)
+                    complete(player)
                 }
             }
         },
