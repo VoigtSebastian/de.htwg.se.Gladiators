@@ -1,16 +1,14 @@
 package de.htwg.se.gladiators.database
 
-import model.DeskInterface
-import model.deskComp.deskBaseImpl.PlayerInterface
+import de.htwg.se.gladiators.model.Player
+trait PlayerDatabase {
 
-trait PlayerDataBase {
+    def createPlayer(player: Player): Option[Player]
 
-    def createPlayer(): Try[Boolean]
+    def readPlayer(): Option[Player]
 
-    def readPlayer(): Unit
+    def updatePlayer(player: Player): Option[Player]
 
-    def updatePlayer(): Try[Boolean]
-
-    def deletePlayer(): Try[Boolean]
+    def deletePlayer(player: Player): Option[Player]
 
 }

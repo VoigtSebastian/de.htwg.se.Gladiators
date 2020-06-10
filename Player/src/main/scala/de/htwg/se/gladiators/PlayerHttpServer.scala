@@ -9,12 +9,15 @@ import akka.stream.ActorMaterializer
 import de.htwg.se.gladiators.util.{ UpdateNameArgumentContainer, BaseAttackedArgumentContainer }
 import scala.util.Properties.envOrElse
 
-import de.htwg.se.gladiators.model.Players
+import de.htwg.se.gladiators.model.Player
+import de.htwg.se.gladiators.database.PlayerDatabase
+import de.htwg.se.gladiators.database.relational.SlickDatabase
 import spray.json._
 import de.htwg.se.gladiators.util.JsonSupport
 
-case class PlayerHttpServer(repo: PlayerRepository) extends JsonSupport {
+case class PlayerHttpServer() extends JsonSupport {
 
+    private val database: PlayerDatabase = SlickDatabase
     implicit val system = ActorSystem("my-system")
     implicit val materializer = ActorMaterializer()
     implicit val executionContext = system.dispatcher
@@ -39,8 +42,8 @@ case class PlayerHttpServer(repo: PlayerRepository) extends JsonSupport {
             path("gladiators" / "player" / "create") {
                 entity(as[BaseAttackedArgumentContainer]) { params =>
                     //  val player = params.player.baseAttacked(params.ap).toJson
-                    repo.create(player.name)
-                    complete(player)
+                    database.createPlayer(params.player)
+                    complete(params.player)
                 }
             }
         },

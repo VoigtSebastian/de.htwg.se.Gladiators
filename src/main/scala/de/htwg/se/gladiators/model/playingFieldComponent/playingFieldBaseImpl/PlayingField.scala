@@ -11,7 +11,6 @@ import de.htwg.se.gladiators.model.{ Cell, CellType, Gladiator, GladiatorType }
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.model.Player
 
-
 import scala.util.matching.Regex
 
 case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gladiator] = List(), gladiatorPlayer2: List[Gladiator] = List(), cells: Array[Array[Cell]] = Array.ofDim[Cell](15, 15)) extends PlayingFieldInterface {

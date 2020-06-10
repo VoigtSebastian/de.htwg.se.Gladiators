@@ -1,32 +1,37 @@
 package de.htwg.se.gladiators.database.relational
 
-import model.DeskInterface
-import model.deskComp.deskBaseImpl.PlayerInterface
-import model.deskComp.deskBaseImpl.deskImpl.{ Board, Player }
+import de.htwg.se.gladiators.model.Player
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
-import slick.driver.H2Driver.api._
+import slick.jdbc.MySQLProfile.api._
+import slick.jdbc.JdbcBackend.Database
 
 import scala.collection.immutable.SortedSet
+import scala.util.{ Try, Success, Failure }
+
 //todo add when intellij changes imports
 //import scala.concurrent.Await
 //import scala.concurrent.ExecutionContext.Implicits.global
 //import scala.concurrent.duration.Duration
 //import slick.driver.H2Driver.api._
 
-object PlayerMappings {
+object Mappings {
 
     // the base query for the Users table
     val players = TableQuery[Players]
 
-    val db = Database.forConfig("h2mem1")
+    val db = Database.forURL(
+        url = "jdbc:mysql://localhost:3306",
+        driver = "com.mysql.cj.jdbc.Driver",
+        user = "root",
+        password = "root")
 
     Await.result(db.run(DBIO.seq(
-        desks.schema.create)), Duration.Inf)
+        players.schema.createIfNotExists)), Duration.Inf)
 
-    def createPlayer(player: PlayerInterface): Boolean = {
+    def createPlayer(player: Player): Boolean = {
         try {
             Await.result(db.run(DBIO.seq(
                 players += DbPlayer(player.name))), Duration.Inf)
@@ -39,12 +44,12 @@ object PlayerMappings {
         //    finally db.close
     }
 
-    def readPlayer(): Option[PlayerInterface] = {
-        var player: Option[PlayerInterface] = None
+    def readPlayer(): Option[Player] = {
+        var player: Option[Player] = None
         Await.result(db.run(DBIO.seq(
             players.result.map(pl => {
                 println(pl)
-                player = Some(Player(pl.head.name, Board(SortedSet())))
+                player = Some(Player(pl.head.name))
             }))), Duration.Inf)
         player
     }
