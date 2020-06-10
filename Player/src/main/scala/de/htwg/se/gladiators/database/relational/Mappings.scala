@@ -58,11 +58,8 @@ object Mappings {
 case class DbPlayer(name: String, credits: Int)
 
 class Players(tag: Tag) extends Table[DbPlayer](tag, "PLAYERS") {
-    // Auto Increment the id primary key column
-    //   def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
-
     // The name can't be null
-    def name = column[String]("NAME")
+    def name = column[String]("NAME", O.PrimaryKey)
 
     def credits = column[Int]("CREDITS")
     // the * projection (e.g. select * ...) auto-transforms the tupled
