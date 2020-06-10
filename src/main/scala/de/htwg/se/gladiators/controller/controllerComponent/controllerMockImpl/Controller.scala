@@ -14,7 +14,6 @@ import de.htwg.se.gladiators.util.UndoManager
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.model.Player
 
-
 import scala.swing.Publisher
 
 class Controller @Inject() () extends ControllerInterface with Publisher {

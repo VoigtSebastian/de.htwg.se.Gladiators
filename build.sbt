@@ -20,7 +20,8 @@ val commonDependencies = Seq(
   "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.12",
   "io.spray" %%  "spray-json" % "1.3.5",
   "com.typesafe.slick" %% "slick" % "3.3.2",
-  "org.slf4j" % "slf4j-nop" % "1.7.26"
+  "org.slf4j" % "slf4j-nop" % "1.7.26",
+  "mysql" % "mysql-connector-java" % "8.0.20"
 )
 
 // Show deprecation and feature warning
