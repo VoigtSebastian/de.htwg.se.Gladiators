@@ -41,9 +41,9 @@ case class PlayerHttpServer() extends JsonSupport {
         */
         put {
             path("gladiators" / "player" / "create") {
-                entity(as[BaseAttackedArgumentContainer]) { params =>
-                    database.createPlayer(params.player)
-                    complete(params.player)
+                entity(as[Player]) { player =>
+                    database.createPlayer(player)
+                    complete(params)
                 }
             }
         },
