@@ -17,7 +17,7 @@ import de.htwg.se.gladiators.util.JsonSupport
 
 case class PlayerHttpServer() extends JsonSupport {
 
-    private val database: PlayerDatabase = SlickDatabase
+    private val database: PlayerDatabase = new SlickDatabase()
     implicit val system = ActorSystem("my-system")
     implicit val materializer = ActorMaterializer()
     implicit val executionContext = system.dispatcher
