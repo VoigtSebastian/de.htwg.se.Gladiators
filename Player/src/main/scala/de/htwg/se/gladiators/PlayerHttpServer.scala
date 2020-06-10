@@ -23,9 +23,28 @@ case class PlayerHttpServer() extends JsonSupport {
     implicit val executionContext = system.dispatcher
 
     val route: Route = concat(
+        /*
+        //  GET ROUTES
+        */
         get {
             path("gladiators" / "player" / "static") {
                 complete("""{ "Gladiators": "online" }""".parseJson)
+            }
+        },
+        get {
+            path("gladiators" / "player" / "read") {
+                complete(database.readPlayer())
+            }
+        },
+        /*
+        //  PUT ROUTES
+        */
+        put {
+            path("gladiators" / "player" / "create") {
+                entity(as[BaseAttackedArgumentContainer]) { params =>
+                    database.createPlayer(params.player)
+                    complete(params.player)
+                }
             }
         },
         put {
@@ -35,15 +54,6 @@ case class PlayerHttpServer() extends JsonSupport {
                     println(params.name)
                     var player = params.player.updateName(params.name)
                     complete(player)
-                }
-            }
-        },
-        put {
-            path("gladiators" / "player" / "create") {
-                entity(as[BaseAttackedArgumentContainer]) { params =>
-                    //  val player = params.player.baseAttacked(params.ap).toJson
-                    database.createPlayer(params.player)
-                    complete(params.player)
                 }
             }
         },
