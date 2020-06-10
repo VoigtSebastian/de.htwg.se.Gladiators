@@ -5,7 +5,7 @@ import de.htwg.se.gladiators.database.PlayerDatabase
 import scala.util.{ Try, Success, Failure }
 
 object SlickDatabase extends PlayerDatabase {
-    private val mappings: Mappings.type = Mappings
+    private val mappings: PlayerMappings.type = PlayerMappings
 
     def createPlayer(player: Player): Option[Player] = {
         try {

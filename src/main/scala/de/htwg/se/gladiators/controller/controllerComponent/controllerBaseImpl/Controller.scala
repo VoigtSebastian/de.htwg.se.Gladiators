@@ -264,7 +264,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher with Js
                 players(1 - gameStatus.id) = players(1 - gameStatus.id).baseAttacked(glad.ap.toInt)
                 glad = glad.updateMoved(true)
                 if (players(1 - gameStatus.id).baseHP <= 0) {
-                    publish(new GameOver)
+                    gameOver(players(gameStatus.id))
                 }
                 (true, "Base of Player " + players(gameStatus.id).name + " has been attacked")
             case MoveType.LEGAL_MOVE => (false, "Please use the move command to move your units")
@@ -362,6 +362,16 @@ class Controller @Inject() () extends ControllerInterface with Publisher with Js
             UpdateNameArgumentContainer(players(ind), name)))
         val future = response.flatMap(r => Unmarshal[HttpEntity](r.entity.withContentType(ContentTypes.`application/json`)).to[Player])
         players(ind) = Await.result(future, Duration(1, TimeUnit.SECONDS))
+    }
+
+    def gameOver(winner: Player): Unit = {
+        val response = Http().singleRequest(Put(
+            s"http://$domain:$port/gladiators/player/create",
+            winner))
+        val future = response.flatMap(r => Unmarshal[HttpEntity](r.entity.withContentType(ContentTypes.`application/json`)).to[Player])
+        val player = Await.result(future, Duration(1, TimeUnit.SECONDS))
+        println(player)
+        publish(new GameOver)
     }
 
 }
