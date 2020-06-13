@@ -23,7 +23,8 @@ val commonDependencies = Seq(
   "org.slf4j" % "slf4j-nop" % "1.7.26",
   "mysql" % "mysql-connector-java" % "8.0.20",
   "org.scalikejdbc" %% "scalikejdbc" % "3.4.+",
-  "com.h2database" % "h2" % "1.4.+"
+  "com.h2database" % "h2" % "1.4.+",
+  "org.mongodb.scala" %% "mongo-scala-driver" % "2.9.0"
 )
 
 // Show deprecation and feature warning
