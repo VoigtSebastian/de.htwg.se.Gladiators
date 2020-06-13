@@ -5,7 +5,7 @@ trait PlayerDatabase {
 
     def createPlayer(player: Player): Option[Player]
 
-    def readPlayers(): List[Player]
+    def readPlayers(): Seq[Player]
 
     def updatePlayer(player: Player): Option[Player]
 

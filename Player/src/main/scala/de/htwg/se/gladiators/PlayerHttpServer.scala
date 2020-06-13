@@ -12,12 +12,14 @@ import scala.util.Properties.envOrElse
 import de.htwg.se.gladiators.model.Player
 import de.htwg.se.gladiators.database.PlayerDatabase
 import de.htwg.se.gladiators.database.relational.SlickDatabase
+import de.htwg.se.gladiators.database.document.MongoDb
 import spray.json._
 import de.htwg.se.gladiators.util.JsonSupport
 
 case class PlayerHttpServer() extends JsonSupport {
 
-    private val database: PlayerDatabase = new SlickDatabase()
+    // private val database: PlayerDatabase = new SlickDatabase()
+    private val database: PlayerDatabase = new MongoDb()
     implicit val system = ActorSystem("my-system")
     implicit val materializer = ActorMaterializer()
     implicit val executionContext = system.dispatcher
