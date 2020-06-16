@@ -4,6 +4,7 @@ services:
     image: gladiators-main:latest
     depends_on:
       - player
+      - mongo
     stdin_open: true
     tty: true
     environment:
