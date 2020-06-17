@@ -23,8 +23,6 @@ case class PlayerHttpServer() extends JsonSupport {
     val injector = Guice.createInjector(new PlayersModule)
     val database = injector.getInstance(classOf[PlayerDatabase])
 
-    // private val database: PlayerDatabase = new SlickDatabase()
-    //  private val database: PlayerDatabase = new MongoDb()
     implicit val system = ActorSystem("my-system")
     implicit val materializer = ActorMaterializer()
     implicit val executionContext = system.dispatcher
