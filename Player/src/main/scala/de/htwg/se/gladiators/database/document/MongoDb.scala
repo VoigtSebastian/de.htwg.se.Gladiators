@@ -28,18 +28,15 @@ class MongoDb extends PlayerDatabase {
     }
 
     def readPlayers(): Seq[Player] = {
-        try {
-            val playerFuture = Await.result(playerCollection.find().toFuture(), Duration.Inf)
-            val playerList = playerFuture
-                .map(pl => Player(pl.get("name").toString(), pl.get("credits").toString().toInt))
-            println(playerList)
-            playerList
-        } catch {
-            case _:
-                Throwable =>
-                println("Something went wrong")
-                List()
-        }
+        val playerFuture = Await.result(playerCollection.find().toFuture(), Duration.Inf)
+        val playerList: Seq[Player] = playerFuture
+            .map(pl => {
+                Player(
+                    name = pl.get("name").getOrElse(return Seq()).asString().getValue,
+                    credits = pl.get("credits").getOrElse(return Seq()).asInt32().getValue)
+            })
+        println(playerList)
+        playerList
     }
 
     def updatePlayer(player: Player): Option[Player] = ???
