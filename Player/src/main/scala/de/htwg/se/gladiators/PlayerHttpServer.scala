@@ -15,11 +15,16 @@ import de.htwg.se.gladiators.database.relational.SlickDatabase
 import de.htwg.se.gladiators.database.document.MongoDb
 import spray.json._
 import de.htwg.se.gladiators.util.JsonSupport
+import com.google.inject.{ Guice, Inject }
 
 case class PlayerHttpServer() extends JsonSupport {
 
+    // Database injection
+    val injector = Guice.createInjector(new PlayersModule)
+    val database = injector.getInstance(classOf[PlayerDatabase])
+
     // private val database: PlayerDatabase = new SlickDatabase()
-    private val database: PlayerDatabase = new MongoDb()
+    //  private val database: PlayerDatabase = new MongoDb()
     implicit val system = ActorSystem("my-system")
     implicit val materializer = ActorMaterializer()
     implicit val executionContext = system.dispatcher

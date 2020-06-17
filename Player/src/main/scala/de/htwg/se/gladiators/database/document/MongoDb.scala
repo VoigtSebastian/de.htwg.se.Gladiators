@@ -8,8 +8,9 @@ import org.mongodb.scala.bson.BsonValue
 
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 import scala.concurrent.Await
+import com.google.inject.{ Guice, Inject }
 
-class MongoDb extends PlayerDatabase {
+class MongoDb @Inject() extends PlayerDatabase {
     val DURATION: FiniteDuration = Duration.fromNanos(1000000000)
 
     val mongoClient: MongoClient = MongoClient()
