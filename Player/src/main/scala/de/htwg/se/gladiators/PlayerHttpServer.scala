@@ -16,6 +16,7 @@ import de.htwg.se.gladiators.database.document.MongoDb
 import spray.json._
 import de.htwg.se.gladiators.util.JsonSupport
 import com.google.inject.{ Guice, Inject }
+import java.util.concurrent.Future
 
 case class PlayerHttpServer() extends JsonSupport {
 
@@ -33,12 +34,16 @@ case class PlayerHttpServer() extends JsonSupport {
         */
         get {
             path("gladiators" / "player" / "static") {
-                complete("""{ "Gladiators": "online" }""".parseJson)
+                Future {
+                    complete("""{ "Gladiators": "online" }""".parseJson)
+                }
             }
         },
         get {
             path("gladiators" / "player" / "read") {
-                complete(database.readPlayers())
+                Future {
+                    complete(database.readPlayers())
+                }
             }
         },
         /*
