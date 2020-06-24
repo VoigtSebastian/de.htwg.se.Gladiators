@@ -6,9 +6,10 @@ import de.htwg.se.gladiators.controller.controllerComponent.{
 }
 import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
 
-class UndoManagerSpec extends WordSpec with Matchers {
+class UndoManagerSpec extends AnyWordSpec with Matchers {
 
   var controller = new Controller()
   controller.createRandom(15, 0)
