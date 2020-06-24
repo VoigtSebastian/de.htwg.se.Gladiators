@@ -29,6 +29,7 @@ val commonDependencies = Seq(
 
 // Show deprecation and feature warning
 scalacOptions ++= Seq("-deprecation", "-feature")
+coverageExcludedPackages := "CellPanel.scala;SwingGui.scala;Tui.scala"
 
 lazy val commonSettings = Seq(
   test in assembly := {}
