@@ -246,16 +246,16 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
         if (!checkMovementPointsBaseAttack(gladiator, startCoordinate, targetCoordinate))
             return MoveType.INSUFFICIENT_MOVEMENT_POINTS
         cellAtCoordinate(targetCoordinate).cellType match {
-            case CellType.PALM => MoveType.MOVE_TO_PALM
             case CellType.SAND => MoveType.LEGAL_MOVE
             case CellType.GOLD => MoveType.GOLD
             case CellType.BASE => checkBaseAttack(startCoordinate, targetCoordinate, gladiator, currentPlayer)
+            case _ => MoveType.ILLEGAL_MOVE
         }
     }
 
     def checkMovementPointsBaseAttack(gladiator: Gladiator, startCoordinate: Coordinate, destination: Coordinate): Boolean = {
         Await.result(
-            getValidCoordinates(startCoordinate, gladiator.movementPoints.toInt, List(CellType.BASE, CellType.SAND)),
+            getValidCoordinates(startCoordinate, gladiator.movementPoints.toInt, List(CellType.BASE, CellType.SAND, CellType.GOLD)),
             Duration(2, SECONDS))
             .contains(destination)
     }
