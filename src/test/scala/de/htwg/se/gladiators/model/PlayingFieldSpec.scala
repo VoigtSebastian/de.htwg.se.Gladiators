@@ -104,7 +104,7 @@ class PlayingFieldSpec extends AnyWordSpec with Matchers {
             "return move to palm" in {
                 val playingField = createPlayingField().resetGladiatorMoved()
                 val playerTwo = playingField.gladiatorPlayer2.head.player
-                playingField.checkMoveType(Coordinate(1, 1), Coordinate(0, 2), playerTwo) should be(MoveType.MOVE_TO_PALM)
+                playingField.checkMoveType(Coordinate(1, 1), Coordinate(0, 2), playerTwo) should be(MoveType.INSUFFICIENT_MOVEMENT_POINTS)
             }
         }
         "setting Gladiators" should {
