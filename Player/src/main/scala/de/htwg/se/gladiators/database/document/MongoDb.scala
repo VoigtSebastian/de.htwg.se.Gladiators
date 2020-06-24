@@ -28,13 +28,13 @@ class MongoDb @Inject() extends PlayerDatabase {
         }
     }
 
-    def readPlayers(): Seq[Player] = {
+    def readPlayers(): Seq[(String, Int)] = {
         val playerFuture = Await.result(playerCollection.find().toFuture(), Duration.Inf)
-        val playerList: Seq[Player] = playerFuture
+        val playerList: Seq[(String, Int)] = playerFuture
             .map(pl => {
-                Player(
-                    name = pl.get("name").getOrElse(return Seq()).asString().getValue,
-                    credits = pl.get("credits").getOrElse(return Seq()).asInt32().getValue)
+                (
+                    pl.get("name").getOrElse(return Seq()).asString().getValue,
+                    pl.get("credits").getOrElse(return Seq()).asInt32().getValue)
             })
         println(playerList)
         playerList

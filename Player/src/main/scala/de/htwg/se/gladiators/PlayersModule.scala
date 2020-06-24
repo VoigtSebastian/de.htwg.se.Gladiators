@@ -8,7 +8,7 @@ import net.codingwell.scalaguice.ScalaModule
 
 class PlayersModule extends AbstractModule with ScalaModule {
     override def configure(): Unit = {
-        bind[PlayerDatabase].to[SlickDatabase]
+        bind[PlayerDatabase].to[MongoDb]
     }
 }
 

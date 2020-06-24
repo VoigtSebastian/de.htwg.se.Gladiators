@@ -42,12 +42,12 @@ object PlayerMappings {
         }
     }
 
-    def readPlayers(): List[Player] = {
-        var playerList: List[Player] = List()
+    def readPlayers(): Seq[(String, Int)] = {
+        var playerList: Seq[(String, Int)] = Seq()
         Await.result(db.run(DBIO.seq(
             players.result.map(pl => {
                 println(pl)
-                playerList ++= Some(Player(pl.head.name, pl.head.credits))
+                playerList ++= Some(pl.head.name, pl.head.credits)
             }))), Duration.Inf)
         playerList
     }
