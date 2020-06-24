@@ -3,7 +3,7 @@ package de.htwg.se.gladiators.model
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 
-class GladiatorFactorySpec extends AnyWordSpec with Matchers  {
+class GladiatorFactorySpec extends AnyWordSpec with Matchers {
     "The GladiatorFactory called with a GladiatorType of bow " when {
         val gladBow = GladiatorFactory.createGladiator(0, 0, GladiatorType.BOW, new Player) should have
         "a string representation of " in {

@@ -4,7 +4,7 @@ import de.htwg.se.gladiators.aview.Tui
 import de.htwg.se.gladiators.controller.controllerComponent.GameStatus
 import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
-import de.htwg.se.gladiators.model.{Cell, Gladiator, GladiatorType}
+import de.htwg.se.gladiators.model.{ Cell, Gladiator, GladiatorType }
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -14,7 +14,7 @@ class TuiSpec extends AnyWordSpec with Matchers {
     val controller = new Controller()
 
     val tui = new Tui(controller)
-   // controller.createRandom(7,0)
+    // controller.createRandom(7,0)
     "do nothing on input 'q'" in {
         tui.processInputLine("q")
     }
@@ -24,7 +24,7 @@ class TuiSpec extends AnyWordSpec with Matchers {
     }
 
     "add a gladiator to the playingField" in {
-        controller.createRandom(15,0)
+        controller.createRandom(15, 0)
         controller.gameStatus = GameStatus.P1
         controller.selectedGlad = controller.shop.stock.head._1
         val input = "b,1," + (controller.playingField.size - 2).toString + "," + (controller.playingField.size / 2).toString
