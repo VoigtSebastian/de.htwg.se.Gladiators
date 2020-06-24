@@ -5,9 +5,10 @@ import de.htwg.se.gladiators.controller.controllerComponent.GameStatus
 import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.model.{Cell, Gladiator, GladiatorType}
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
 
-class TuiSpec extends WordSpec with Matchers {
+class TuiSpec extends AnyWordSpec with Matchers {
 
     //val controller = new Controller(PlayingField())
     val controller = new Controller()

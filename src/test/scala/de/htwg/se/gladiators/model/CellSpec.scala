@@ -1,8 +1,9 @@
 package de.htwg.se.gladiators.model
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
 
-class CellSpec extends WordSpec with Matchers {
+class CellSpec extends AnyWordSpec with Matchers {
     "A Cell" when {
         "new" should {
             val cell = Cell(CellType.PALM)

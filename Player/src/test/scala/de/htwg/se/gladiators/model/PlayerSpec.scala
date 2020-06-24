@@ -1,9 +1,10 @@
 package de.htwg.se.gladiators.model
 
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
 
-class PlayerSpec extends WordSpec with Matchers{
+class PlayerSpec extends AnyWordSpec with Matchers{
   "A Player" when { "created new with no parameter" should {
     val player = Player()
     "have a name"  in {

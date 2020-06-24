@@ -4,10 +4,11 @@ import de.htwg.se.gladiators.model._
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.controller.controllerComponent.MoveType
 import de.htwg.se.gladiators.controller.controllerComponent.MoveType.MoveType
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
 import de.htwg.se.gladiators.util.Coordinate
 
-class PlayingFieldSpec extends WordSpec with Matchers {
+class PlayingFieldSpec extends AnyWordSpec with Matchers {
     "The Playing Field" when {
         "new" should {
             val playingField = createPlayingField()

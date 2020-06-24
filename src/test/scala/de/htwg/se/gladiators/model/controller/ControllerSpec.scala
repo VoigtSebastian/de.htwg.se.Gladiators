@@ -4,9 +4,10 @@ import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.C
 import de.htwg.se.gladiators.controller.controllerComponent.{CommandStatus, GameStatus, MoveType}
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import de.htwg.se.gladiators.model.{Cell, CellType, GladiatorType}
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
 
-class ControllerSpec extends WordSpec with Matchers {
+class ControllerSpec extends AnyWordSpec with Matchers {
     "A controller " when {
         val controller = new Controller()
         controller.createRandom(15, 0)
