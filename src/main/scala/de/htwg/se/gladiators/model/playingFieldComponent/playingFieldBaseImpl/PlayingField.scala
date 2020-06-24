@@ -14,6 +14,8 @@ import de.htwg.se.gladiators.model.Player
 import scala.util.matching.Regex
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
+import scala.concurrent.Await
+import scala.concurrent.duration.{ Duration, SECONDS }
 
 case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gladiator] = List(), gladiatorPlayer2: List[Gladiator] = List(), cells: Array[Array[Cell]] = Array.ofDim[Cell](15, 15)) extends PlayingFieldInterface {
     implicit val ec = ExecutionContext.global
@@ -153,18 +155,6 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
         }
     }
 
-    def checkCellWalk(coord: Coordinate): Boolean = {
-        if (cells(coord.line)(coord.row).cellType == CellType.SAND
-            || cells(coord.line)(coord.row).cellType == CellType.BASE) {
-            getGladiatorOption(coord) match {
-                case None => true
-                case Some(g) => false
-            }
-        } else {
-            false
-        }
-    }
-
     def gladiatorInfo(line: Int, row: Int): String = {
         val glad = (gladiatorPlayer1 ::: gladiatorPlayer2).filter(g => g.line == line && g.row == row)
         glad.length match {
@@ -214,13 +204,9 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
         }
     }
 
-    def resetPlayingField(): PlayingField = {
-        this.copy(gladiatorPlayer1 = List(), gladiatorPlayer2 = List())
-    }
+    def resetPlayingField(): PlayingField = this.copy(gladiatorPlayer1 = List(), gladiatorPlayer2 = List())
 
-    def setCell(line: Int, row: Int, cellType: CellType): Unit = {
-        cells(line)(row) = Cell(cellType)
-    }
+    def setCell(line: Int, row: Int, cellType: CellType): Unit = cells(line)(row) = Cell(cellType)
 
     def checkMoveType(startPosition: Coordinate, destinationPosition: Coordinate, currentPlayer: Player): MoveType = {
         if (!isCoordinateLegal(startPosition) || !isCoordinateLegal(destinationPosition))
