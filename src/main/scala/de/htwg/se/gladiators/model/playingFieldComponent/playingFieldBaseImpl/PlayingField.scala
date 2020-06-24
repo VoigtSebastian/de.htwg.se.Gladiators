@@ -12,9 +12,11 @@ import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.model.Player
 
 import scala.util.matching.Regex
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
 case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gladiator] = List(), gladiatorPlayer2: List[Gladiator] = List(), cells: Array[Array[Cell]] = Array.ofDim[Cell](15, 15)) extends PlayingFieldInterface {
-
+    implicit val ec = ExecutionContext.global
     var toggleUnitStats = true
 
     val SAND_BACKGROUND = "\u001b[103m"
@@ -326,6 +328,21 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
             }
         })
         currValidCells
+    }
+
+    def getValidCoordinates(currentPosition: Coordinate, movementPoints: Int, validCellTypes: List[CellType]): Future[List[Coordinate]] = {
+        if (movementPoints <= 0 || !isCoordinateLegal(currentPosition))
+            return Future(List())
+        val thisPosition = validCellTypes.contains(cellAtCoordinate(currentPosition).cellType) match {
+            case true => List(currentPosition)
+            case false => List()
+        }
+        for (
+            right <- getValidCoordinates(currentPosition.copy(line = (currentPosition.line + 1)), movementPoints - 1, validCellTypes);
+            left <- getValidCoordinates(currentPosition.copy(line = (currentPosition.line -1)), movementPoints - 1, validCellTypes);
+            up <- getValidCoordinates(currentPosition.copy(row = (currentPosition.row + 1)), movementPoints - 1, validCellTypes);
+            down <- getValidCoordinates(currentPosition.copy(row = (currentPosition.row - 1)), movementPoints - 1, validCellTypes)
+        ) yield (right ::: left ::: up ::: down ::: thisPosition).distinct
     }
 
     def toHtml: String = {
