@@ -300,35 +300,15 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
         return getValidMoveCoordinates(g, startPosition).exists(coord => coord == destination)
     }
 
-    def getValidMoveCoordinates(g: Gladiator, startPosition: Coordinate): List[Coordinate] = {
-        var validCells: List[Coordinate] = List()
-        getValidMoveCoordinatesHelper(startPosition, 1, g.movementPoints, List()).foreach(coord =>
-            if (!validCells.exists(item => item == coord._1) && checkCellEmpty(coord._1)) {
-                validCells = coord._1 :: validCells
-            })
-        validCells
-    }
+    def getValidMoveCoordinates(g: Gladiator, startPosition: Coordinate): List[Coordinate] = Await.result(
+            getValidCoordinates(startPosition, g.movementPoints.toInt, List(CellType.SAND)),
+                Duration(1, SECONDS)).filter(
+                    getGladiatorOption(_) match {
+                        case Some(glad) => glad.player == g.player
+                        case None => true
+                    }
+                )
 
-    def getValidMoveCoordinatesHelper(curr: Coordinate, dist: Int, maxDist: Double, validCells: List[(Coordinate, Int)]): List[(Coordinate, Int)] = {
-        var currValidCells = validCells
-        var nextCoordinates: List[Coordinate] = List(
-            Coordinate(curr.line, curr.row - 1),
-            Coordinate(curr.line, curr.row + 1),
-            Coordinate(curr.line - 1, curr.row),
-            Coordinate(curr.line + 1, curr.row))
-        nextCoordinates.foreach(next => {
-            if (isCoordinateLegal(next)
-                && checkCellWalk(next)
-                && !currValidCells.exists(item => item._1 == next && item._2 <= dist)) {
-
-                currValidCells = (next, dist) :: currValidCells
-                if (dist + 1 <= maxDist) {
-                    currValidCells = currValidCells ::: getValidMoveCoordinatesHelper(next, dist + 1, maxDist, currValidCells) //recursion
-                }
-            }
-        })
-        currValidCells
-    }
 
     def getValidCoordinates(currentPosition: Coordinate, movementPoints: Int, validCellTypes: List[CellType]): Future[List[Coordinate]] = {
         if (movementPoints <= 0 || !isCoordinateLegal(currentPosition))
