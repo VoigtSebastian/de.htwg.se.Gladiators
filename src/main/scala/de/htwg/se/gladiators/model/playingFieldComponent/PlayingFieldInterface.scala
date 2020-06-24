@@ -55,8 +55,6 @@ trait PlayingFieldInterface {
 
     def checkCellEmpty(coord: Coordinate): Boolean
 
-    def checkCellWalk(coord: Coordinate): Boolean
-
     def gladiatorInfo(line: Int, row: Int): String
 
     def evalPrintLine(line: String): String
@@ -74,8 +72,6 @@ trait PlayingFieldInterface {
     def checkMovementPointsMove(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean
 
     def getValidMoveCoordinates(g: Gladiator, startPosition: Coordinate): List[Coordinate]
-
-    def getValidMoveCoordinatesHelper(curr: Coordinate, dist: Int, maxDist: Double, validCells: List[(Coordinate, Int)]): List[(Coordinate, Int)]
 
     def toHtml: String
 }
