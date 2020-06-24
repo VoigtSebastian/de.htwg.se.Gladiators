@@ -21,11 +21,11 @@ class SlickDatabase extends PlayerDatabase {
         }
     }
 
-    def readPlayers(): List[Player] = {
+    def readPlayers(): Seq[(String, Int)] = {
         try {
             mappings.readPlayers()
         } catch {
-            case _: Throwable => List()
+            case _: Throwable => Seq()
         }
     }
 
