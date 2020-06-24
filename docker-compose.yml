@@ -4,6 +4,7 @@ services:
     image: gladiators-main:latest
     depends_on:
       - player
+      - mongo
     stdin_open: true
     tty: true
     env_file:
@@ -13,5 +14,9 @@ services:
     stdin_open: true
     ports:
       - "8081:8081"
-    env_file:
-      - .env
+    environment:
+      - DOCKERENV=TRUE
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017-27019:27017-27019"
