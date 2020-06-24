@@ -58,10 +58,6 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             controller.playingField.gladiatorPlayer2.size should be(0)
         }
 
-        "can print the shop" in {
-            controller.shop.toString should contain("Units available in the shop:")
-        }
-
         "can get the info of a Gladiator" in {
             controller.gladiatorInfo(controller.playingField.size - 2, controller.playingField.size / 2).contains("is owned by") should be(true)
         }
