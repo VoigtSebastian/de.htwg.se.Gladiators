@@ -59,7 +59,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         }
 
         "can print the shop" in {
-            controller.getShop.contains("Units available in the shop:") should be(true)
+            controller.shop.toString should contain("Units available in the shop:")
         }
 
         "can get the info of a Gladiator" in {

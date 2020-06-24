@@ -12,7 +12,6 @@ class PlayingFieldSpec extends AnyWordSpec with Matchers {
     "The Playing Field" when {
         "new" should {
             val playingField = createPlayingField()
-            print(playingField.formatLine(0))
             "have a nice String representation" in {
                 playingField.formatLine(0) should be("2S1")
                 playingField.formatLine(1) should be("0S1")
