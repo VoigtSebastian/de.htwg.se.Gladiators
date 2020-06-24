@@ -14,7 +14,7 @@ import de.htwg.se.gladiators.database.PlayerDatabase
 import de.htwg.se.gladiators.database.relational.SlickDatabase
 import de.htwg.se.gladiators.database.document.MongoDb
 import spray.json._
-import de.htwg.se.gladiators.util.JsonSupport
+import de.htwg.se.gladiators.util.PlayerJsonSupport
 import com.google.inject.{ Guice, Inject }
 import java.util.concurrent.Future
 
