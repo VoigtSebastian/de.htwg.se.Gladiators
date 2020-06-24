@@ -243,7 +243,7 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
             return MoveType.ALREADY_MOVED
         if (gladiator.player != currentPlayer)
             return MoveType.UNIT_NOT_OWNED_BY_PLAYER
-        if (!checkMovementPointsMove(gladiator, startCoordinate, targetCoordinate))
+        if (!checkMovementPointsBaseAttack(gladiator, startCoordinate, targetCoordinate))
             return MoveType.INSUFFICIENT_MOVEMENT_POINTS
         cellAtCoordinate(targetCoordinate).cellType match {
             case CellType.PALM => MoveType.MOVE_TO_PALM
@@ -251,6 +251,13 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
             case CellType.GOLD => MoveType.GOLD
             case CellType.BASE => checkBaseAttack(startCoordinate, targetCoordinate, gladiator, currentPlayer)
         }
+    }
+
+    def checkMovementPointsBaseAttack(gladiator: Gladiator, startCoordinate: Coordinate, destination: Coordinate): Boolean = {
+        Await.result(
+            getValidCoordinates(startCoordinate, gladiator.movementPoints.toInt, List(CellType.BASE, CellType.SAND)),
+            Duration(2, SECONDS))
+            .contains(destination)
     }
 
     def checkBaseAttack(start: Coordinate, destination: Coordinate, gladiator: Gladiator, currentPlayer: Player): MoveType = {
@@ -283,7 +290,7 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
     }
 
     def checkMovementPointsMove(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean = {
-        return getValidMoveCoordinates(g, startPosition).exists(coord => coord == destination)
+        getValidMoveCoordinates(g, startPosition).exists(coord => coord == destination)
     }
 
     def getValidMoveCoordinates(g: Gladiator, startPosition: Coordinate): List[Coordinate] = Await.result(
