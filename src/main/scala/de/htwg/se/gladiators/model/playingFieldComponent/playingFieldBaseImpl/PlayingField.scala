@@ -294,14 +294,12 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
     }
 
     def getValidMoveCoordinates(g: Gladiator, startPosition: Coordinate): List[Coordinate] = Await.result(
-            getValidCoordinates(startPosition, g.movementPoints.toInt, List(CellType.SAND)),
-                Duration(1, SECONDS)).filter(
-                    getGladiatorOption(_) match {
-                        case Some(glad) => glad.player == g.player
-                        case None => true
-                    }
-                )
-
+        getValidCoordinates(startPosition, g.movementPoints.toInt, List(CellType.SAND)),
+        Duration(1, SECONDS)).filter(
+            getGladiatorOption(_) match {
+                case Some(glad) => glad.player == g.player
+                case None => true
+            })
 
     def getValidCoordinates(currentPosition: Coordinate, movementPoints: Int, validCellTypes: List[CellType]): Future[List[Coordinate]] = {
         if (movementPoints <= 0 || !isCoordinateLegal(currentPosition))
@@ -312,7 +310,7 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
         }
         for (
             right <- getValidCoordinates(currentPosition.copy(line = (currentPosition.line + 1)), movementPoints - 1, validCellTypes);
-            left <- getValidCoordinates(currentPosition.copy(line = (currentPosition.line -1)), movementPoints - 1, validCellTypes);
+            left <- getValidCoordinates(currentPosition.copy(line = (currentPosition.line - 1)), movementPoints - 1, validCellTypes);
             up <- getValidCoordinates(currentPosition.copy(row = (currentPosition.row + 1)), movementPoints - 1, validCellTypes);
             down <- getValidCoordinates(currentPosition.copy(row = (currentPosition.row - 1)), movementPoints - 1, validCellTypes)
         ) yield (right ::: left ::: up ::: down ::: thisPosition).distinct
