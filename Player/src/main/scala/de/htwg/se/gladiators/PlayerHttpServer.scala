@@ -34,16 +34,12 @@ case class PlayerHttpServer() extends JsonSupport {
         */
         get {
             path("gladiators" / "player" / "static") {
-                Future {
-                    complete("""{ "Gladiators": "online" }""".parseJson)
-                }
+                complete("""{ "Gladiators": "online" }""".parseJson)
             }
         },
         get {
             path("gladiators" / "player" / "read") {
-                Future {
-                    complete(database.readPlayers())
-                }
+                complete(database.readPlayers())
             }
         },
         /*
