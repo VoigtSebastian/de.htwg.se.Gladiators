@@ -29,7 +29,7 @@ class PlayingFieldSpec extends AnyWordSpec with Matchers {
                 val hpAfterAttack = (gladP2.hp - gladP1.ap).toInt
 
                 playingField = playingField.attack(gladP1, gladP2)
-                playingField.gladiatorPlayer2.head.hp.toInt should be (hpAfterAttack)
+                playingField.gladiatorPlayer2.head.hp.toInt should be(hpAfterAttack)
             }
             "use player one" in {
                 var playingField = createPlayingField()
@@ -39,53 +39,53 @@ class PlayingFieldSpec extends AnyWordSpec with Matchers {
                 val hpAfterAttack = (gladP1.hp - gladP2.ap).toInt
 
                 playingField = playingField.attack(gladP2, gladP1)
-                playingField.gladiatorPlayer1.head.hp.toInt should be (hpAfterAttack)
+                playingField.gladiatorPlayer1.head.hp.toInt should be(hpAfterAttack)
             }
         }
 
         "categorizing moves" should {
             "return already moved" in {
                 val playingField = createPlayingField()
-                playingField.checkMoveType(Coordinate(1, 1), Coordinate(0, 1), playingField.gladiatorPlayer2.head.player) should be (MoveType.ALREADY_MOVED)
+                playingField.checkMoveType(Coordinate(1, 1), Coordinate(0, 1), playingField.gladiatorPlayer2.head.player) should be(MoveType.ALREADY_MOVED)
             }
             "return move out of bounds" in {
                 val playingField = createPlayingField()
                 val playerTwo = playingField.gladiatorPlayer2.head.player
-                playingField.checkMoveType(Coordinate(1, 1), Coordinate(-1, -1), playerTwo) should be (MoveType.MOVE_OUT_OF_BOUNDS)
-                playingField.checkMoveType(Coordinate(1, 1), Coordinate(1, playingField.size), playerTwo) should be (MoveType.MOVE_OUT_OF_BOUNDS)
-                playingField.checkMoveType(Coordinate(1, 1), Coordinate(playingField.size, 1), playerTwo) should be (MoveType.MOVE_OUT_OF_BOUNDS)
+                playingField.checkMoveType(Coordinate(1, 1), Coordinate(-1, -1), playerTwo) should be(MoveType.MOVE_OUT_OF_BOUNDS)
+                playingField.checkMoveType(Coordinate(1, 1), Coordinate(1, playingField.size), playerTwo) should be(MoveType.MOVE_OUT_OF_BOUNDS)
+                playingField.checkMoveType(Coordinate(1, 1), Coordinate(playingField.size, 1), playerTwo) should be(MoveType.MOVE_OUT_OF_BOUNDS)
 
             }
             "return base attack" in {
                 val playingField = createPlayingField().resetGladiatorMoved()
                 val playerOne = playingField.gladiatorPlayer1.head.player
-                playingField.checkMoveType(Coordinate(0, 1), Coordinate(0, 0), playerOne) should be (MoveType.BASE_ATTACK)
+                playingField.checkMoveType(Coordinate(0, 1), Coordinate(0, 0), playerOne) should be(MoveType.BASE_ATTACK)
             }
             "return unit not existing" in {
                 val playingField = createPlayingField()
-                playingField.checkMoveType(Coordinate(0, 0), Coordinate(0, 1), Player()) should be (MoveType.UNIT_NOT_EXISTING)
+                playingField.checkMoveType(Coordinate(0, 0), Coordinate(0, 1), Player()) should be(MoveType.UNIT_NOT_EXISTING)
             }
             "return unit not owned by player" in {
                 val playingField = createPlayingField().resetGladiatorMoved()
                 val playerOne = playingField.gladiatorPlayer1.head.player
-                playingField.checkMoveType(Coordinate(1, 1), Coordinate(1, 0), playerOne) should be (MoveType.UNIT_NOT_OWNED_BY_PLAYER)
+                playingField.checkMoveType(Coordinate(1, 1), Coordinate(1, 0), playerOne) should be(MoveType.UNIT_NOT_OWNED_BY_PLAYER)
             }
             "return move to palm" in {
                 val playingField = createPlayingField().resetGladiatorMoved()
                 val playerTwo = playingField.gladiatorPlayer2.head.player
-                playingField.checkMoveType(Coordinate(1, 1), Coordinate(0, 2), playerTwo) should be (MoveType.MOVE_TO_PALM)
+                playingField.checkMoveType(Coordinate(1, 1), Coordinate(0, 2), playerTwo) should be(MoveType.MOVE_TO_PALM)
             }
         }
         "setting Gladiators" should {
             "return an updated playingField for player one" in {
                 val playingField = createPlayingField()
                 val updatedPlayingField = playingField.setGladiator(0, 1, GladiatorFactory.createGladiator(0, 1, GladiatorType.BOW, playingField.gladiatorPlayer1.head.player))
-                updatedPlayingField.gladiatorPlayer1.head.gladiatorType should be (GladiatorType.BOW)
+                updatedPlayingField.gladiatorPlayer1.head.gladiatorType should be(GladiatorType.BOW)
             }
             "return an updated playingField for player two" in {
                 val playingField = createPlayingField()
                 val updatedPlayingField = playingField.setGladiator(1, 1, GladiatorFactory.createGladiator(1, 1, GladiatorType.TANK, playingField.gladiatorPlayer2.head.player))
-                updatedPlayingField.gladiatorPlayer2.head.gladiatorType should be (GladiatorType.TANK)
+                updatedPlayingField.gladiatorPlayer2.head.gladiatorType should be(GladiatorType.TANK)
             }
         }
         "getting asked for Gladiator Information" should {
@@ -105,25 +105,25 @@ class PlayingFieldSpec extends AnyWordSpec with Matchers {
         "moving gladiators" should {
             "return an updated playingField for Player One" in {
                 val playingField = createPlayingField()
-                playingField.moveGladiator(0, 1, 1, 1).gladiatorPlayer1.head.line should be (1)
-                playingField.moveGladiator(0, 1, 2, 0).gladiatorPlayer1.head.row should be (0)
+                playingField.moveGladiator(0, 1, 1, 1).gladiatorPlayer1.head.line should be(1)
+                playingField.moveGladiator(0, 1, 2, 0).gladiatorPlayer1.head.row should be(0)
             }
             "return an updated playingField for Player Two" in {
                 val playingField = createPlayingField()
-                playingField.moveGladiator(1, 1, 1, 2).gladiatorPlayer2.head.row should be (2)
-                playingField.moveGladiator(1, 1, 2, 0).gladiatorPlayer2.head.line should be (2)
+                playingField.moveGladiator(1, 1, 1, 2).gladiatorPlayer2.head.row should be(2)
+                playingField.moveGladiator(1, 1, 2, 0).gladiatorPlayer2.head.line should be(2)
             }
             "determine all valid coordinates to move to" in {
                 val playingField = createPlayingField()
                 val newGladiator = GladiatorFactory.createGladiator(1, 1, GladiatorType.SWORD, playingField.gladiatorPlayer2.head.player)
                 val updatedPlayingField = playingField.setGladiator(1, 1, newGladiator)
-                playingField.getValidMoveCoordinates(newGladiator, Coordinate(1, 1)).length should be (3)
+                playingField.getValidMoveCoordinates(newGladiator, Coordinate(1, 1)).length should be(3)
             }
             "check if a destination is a valid move coordination" in {
                 val playingField = createPlayingField()
                 val newGladiator = GladiatorFactory.createGladiator(1, 1, GladiatorType.SWORD, playingField.gladiatorPlayer2.head.player)
                 val updatedPlayingField = playingField.setGladiator(1, 1, newGladiator)
-                playingField.checkMovementPointsMove(newGladiator, Coordinate(1, 1), Coordinate(2,0)) should be (true)
+                playingField.checkMovementPointsMove(newGladiator, Coordinate(1, 1), Coordinate(2, 0)) should be(true)
             }
         }
     }
@@ -153,12 +153,11 @@ class PlayingFieldSpec extends AnyWordSpec with Matchers {
         val TEXT_COLOR_BLACK = "\u001b[97m"
         val RESET_ANSI_ESCAPE = "\u001b[0m"
 
-        var playingField = PlayingField(size=3)
+        var playingField = PlayingField(size = 3)
         playingField = playingField.updateCells(cells)
 
         var glad1 = GladiatorFactory.createGladiator(0, 1, GladiatorType.SWORD, Player())
         var glad2 = GladiatorFactory.createGladiator(1, 1, GladiatorType.SWORD, Player(enemyBaseLine = playingField.size - 1))
-
 
         playingField = playingField.addGladPlayerOne(glad1)
         playingField = playingField.addGladPlayerTwo(glad2)

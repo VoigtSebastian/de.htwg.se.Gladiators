@@ -1,9 +1,9 @@
 package de.htwg.se.gladiators.model.controller
 
 import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.Controller
-import de.htwg.se.gladiators.controller.controllerComponent.{CommandStatus, GameStatus, MoveType}
+import de.htwg.se.gladiators.controller.controllerComponent.{ CommandStatus, GameStatus, MoveType }
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
-import de.htwg.se.gladiators.model.{Cell, CellType, GladiatorType}
+import de.htwg.se.gladiators.model.{ Cell, CellType, GladiatorType }
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -40,30 +40,30 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
         "add a default gladiator" in {
             controller.addGladiator(controller.playingField.size - 2, controller.playingField.size / 2)
-            controller.playingField.gladiatorPlayer1.head.line should be (controller.playingField.size - 2)
+            controller.playingField.gladiatorPlayer1.head.line should be(controller.playingField.size - 2)
         }
 
         "get the basearea of player1" in {
-            controller.baseArea(controller.players(0)).size should be (2)
+            controller.baseArea(controller.players(0)).size should be(2)
         }
 
         "get the base cell of player1 and player 2" in {
-            controller.getBase(controller.players(0)) should be (controller.playingField.size - 1, controller.playingField.size / 2)
-            controller.getBase(controller.players(1)) should be (0, controller.playingField.size / 2)
+            controller.getBase(controller.players(0)) should be(controller.playingField.size - 1, controller.playingField.size / 2)
+            controller.getBase(controller.players(1)) should be(0, controller.playingField.size / 2)
         }
 
         "can reset the game" in {
             controller.resetGame()
-            controller.playingField.gladiatorPlayer1.size should be (0)
-            controller.playingField.gladiatorPlayer2.size should be (0)
+            controller.playingField.gladiatorPlayer1.size should be(0)
+            controller.playingField.gladiatorPlayer2.size should be(0)
         }
 
         "can print the shop" in {
-            controller.getShop.contains("Units available in the shop:") should be (true)
+            controller.getShop.contains("Units available in the shop:") should be(true)
         }
 
         "can get the info of a Gladiator" in {
-            controller.gladiatorInfo(controller.playingField.size - 2, controller.playingField.size / 2).contains("is owned by") should be (true)
+            controller.gladiatorInfo(controller.playingField.size - 2, controller.playingField.size / 2).contains("is owned by") should be(true)
         }
 
         "can toggle the unitstats" in {
@@ -71,20 +71,20 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         }
 
         "can get a cell" in {
-            controller.cell(controller.playingField.size - 1, controller.playingField.size / 2).cellType should be (CellType.BASE)
+            controller.cell(controller.playingField.size - 1, controller.playingField.size / 2).cellType should be(CellType.BASE)
         }
 
         "can inform the GUI/TUI that a cell was selected" in {
-            controller.cellSelected(5,5)
+            controller.cellSelected(5, 5)
         }
 
         "can also change the commandStatus" in {
             controller.changeCommand(CommandStatus.MV)
-            controller.commandStatus should be (CommandStatus.MV)
+            controller.commandStatus should be(CommandStatus.MV)
         }
 
         "can check if gladiator is in a list" in {
-            controller.isGladiatorInList(controller.playingField.gladiatorPlayer1, controller.playingField.size - 2, controller.playingField.size / 2 )
+            controller.isGladiatorInList(controller.playingField.gladiatorPlayer1, controller.playingField.size - 2, controller.playingField.size / 2)
         }
 
     }
@@ -100,7 +100,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         controller.addGladiator(1, controller.playingField.size / 2)
 
         "can tell a gladiator to attack another gladiator" in {
-            controller.attack(controller.playingField.size - 2, controller.playingField.size / 2, 1, controller.playingField.size / 2)._1 should be (false)
+            controller.attack(controller.playingField.size - 2, controller.playingField.size / 2, 1, controller.playingField.size / 2)._1 should be(false)
         }
     }
 }
