@@ -30,6 +30,7 @@ class ShopSpec extends AnyWordSpec with Matchers {
                 shop.kickOut(5)
                 shop.stock foreach(item => item._2 should be (1))
             }
+        }
         "asking for a string representation " in {
             shop.toString should startWith("Units available in the shop:")
             shop.toString should include("AttackPoints")
