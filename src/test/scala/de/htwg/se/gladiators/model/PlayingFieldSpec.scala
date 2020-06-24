@@ -25,26 +25,26 @@ class PlayingFieldSpec extends AnyWordSpec with Matchers {
             "identify palm as invalid and allow base tiles" in {
                 val playingField = createPlayingField()
                 val attackable = Await.result(
-                        playingField.getValidCoordinates(
-                            Coordinate(0, 1),
-                            10,
-                            List(CellType.BASE, CellType.SAND)),
-                        Duration(10, SECONDS))
-                attackable should not contain(Coordinate(0, 2))
-                attackable should not contain(Coordinate(1, 2))
-                attackable should contain (Coordinate(0, 0))
-                attackable should contain (Coordinate(2, 2))
+                    playingField.getValidCoordinates(
+                        Coordinate(0, 1),
+                        10,
+                        List(CellType.BASE, CellType.SAND)),
+                    Duration(10, SECONDS))
+                attackable should not contain (Coordinate(0, 2))
+                attackable should not contain (Coordinate(1, 2))
+                attackable should contain(Coordinate(0, 0))
+                attackable should contain(Coordinate(2, 2))
             }
             "identify palm and base tiles as invalid" in {
                 val playingField = createPlayingField()
                 val attackable = Await.result(
-                        playingField.getValidCoordinates(
-                            Coordinate(0, 1),
-                            10,
-                            List(CellType.SAND)),
-                        Duration(10, SECONDS))
-                attackable should not contain(Coordinate(0, 2))
-                attackable should not contain(Coordinate(1, 2))
+                    playingField.getValidCoordinates(
+                        Coordinate(0, 1),
+                        10,
+                        List(CellType.SAND)),
+                    Duration(10, SECONDS))
+                attackable should not contain (Coordinate(0, 2))
+                attackable should not contain (Coordinate(1, 2))
                 attackable should not contain (Coordinate(0, 0))
                 attackable should not contain (Coordinate(2, 2))
             }
