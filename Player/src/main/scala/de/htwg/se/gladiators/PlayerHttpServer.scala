@@ -10,18 +10,47 @@ import de.htwg.se.gladiators.util.{ UpdateNameArgumentContainer, BaseAttackedArg
 import scala.util.Properties.envOrElse
 
 import de.htwg.se.gladiators.model.Player
+import de.htwg.se.gladiators.database.PlayerDatabase
+import de.htwg.se.gladiators.database.relational.SlickDatabase
+import de.htwg.se.gladiators.database.document.MongoDb
 import spray.json._
+import de.htwg.se.gladiators.util.JsonSupport
+import com.google.inject.{ Guice, Inject }
+import java.util.concurrent.Future
 
 case class PlayerHttpServer() extends PlayerJsonSupport {
+
+    // Database injection
+    val injector = Guice.createInjector(new PlayersModule)
+    val database = injector.getInstance(classOf[PlayerDatabase])
 
     implicit val system = ActorSystem("my-system")
     implicit val materializer = ActorMaterializer()
     implicit val executionContext = system.dispatcher
 
     val route: Route = concat(
+        /*
+        //  GET ROUTES
+        */
         get {
             path("gladiators" / "player" / "static") {
                 complete("""{ "Gladiators": "online" }""".parseJson)
+            }
+        },
+        get {
+            path("gladiators" / "player" / "read") {
+                complete(database.readPlayers())
+            }
+        },
+        /*
+        //  PUT ROUTES
+        */
+        put {
+            path("gladiators" / "player" / "create") {
+                entity(as[Player]) { player =>
+                    database.createPlayer(player)
+                    complete(player)
+                }
             }
         },
         put {

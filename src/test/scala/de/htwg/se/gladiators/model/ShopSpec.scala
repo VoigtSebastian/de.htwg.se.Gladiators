@@ -1,12 +1,13 @@
 package de.htwg.se.gladiators.model
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
 
-class ShopSpec extends WordSpec with Matchers {
-    "A de.htwg.se.gladiators.model.Shop when " when {
+class ShopSpec extends AnyWordSpec with Matchers {
+    "A de.htwg.se.gladiators.model.Shop " when {
         val shop = new Shop(10)
         "initialized with 10 Gladiators" in {
-            shop.stock.size should be (10)
+            shop.stock.size should be(10)
         }
         "used to buy gladiators" should {
             "return None" in {
@@ -29,6 +30,12 @@ class ShopSpec extends WordSpec with Matchers {
                 shop.kickOut(5)
                 shop.stock foreach(item => item._2 should be (1))
             }
+        "asking for a string representation " in {
+            shop.toString should startWith("Units available in the shop:")
+            shop.toString should include("AttackPoints")
+            shop.toString should include("MovementPoints")
+            shop.toString should include("Health Points")
+            shop.toString should include("Cost")
         }
     }
 }
