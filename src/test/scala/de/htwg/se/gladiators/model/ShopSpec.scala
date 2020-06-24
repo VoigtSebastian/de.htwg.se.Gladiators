@@ -32,7 +32,7 @@ class ShopSpec extends AnyWordSpec with Matchers {
             }
         }
         "asking for a string representation " in {
-            shop.toString should startWith("Units available in the shop:")
+            shop.toString should startWith("Units available in the shop")
             shop.toString should include("AttackPoints")
             shop.toString should include("MovementPoints")
             shop.toString should include("Health Points")
