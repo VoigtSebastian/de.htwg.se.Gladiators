@@ -31,7 +31,4 @@ class TuiSpec extends AnyWordSpec with Matchers {
         tui.processInputLine(input)
         controller.playingField.gladiatorPlayer1.head.line should be(controller.playingField.size - 2)
     }
-    "show a help message" in {
-        tui.processInputLine("h")
-    }
 }
