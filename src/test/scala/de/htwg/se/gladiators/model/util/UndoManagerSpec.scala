@@ -8,31 +8,34 @@ import de.htwg.se.gladiators.controller.controllerComponent.controllerBaseImpl.C
 import de.htwg.se.gladiators.model.playingFieldComponent.playingFieldBaseImpl.PlayingField
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+import de.htwg.se.gladiators.model.GladiatorFactory
+import de.htwg.se.gladiators.model.GladiatorType
 
 class UndoManagerSpec extends AnyWordSpec with Matchers {
-
-    var controller = new Controller()
-    controller.createRandom(15, 0)
-    controller.addGladiator(13, 7)
-
-    val command = new MoveGladiatorCommand(5, 3, 5, 4, controller)
     "A MoveGladiatorcommand" when {
-        "creating a move command" in {
+        var controller = new Controller()
+        controller.createRandom(15, 0)
+        controller.playingField = controller.playingField.addGladPlayerOne(GladiatorFactory.createGladiator(14, 6, GladiatorType.SWORD, controller.players(0)))
 
+        "creating a move command" in {
+            controller.playingField.gladiatorPlayer1 should not be empty
+
+            controller.endTurn()
+            controller.endTurn()
             controller.gameStatus = GameStatus.P1
             controller.undoManager.doStep(
-                new MoveGladiatorCommand(13, 7, 13, 8, controller))
-            controller.playingField.gladiatorPlayer1.head.row should be(8)
+                new MoveGladiatorCommand(14, 6, 13, 6, controller))
+            controller.playingField.gladiatorPlayer1.head.line should be(13)
         }
         "undoing that step " in {
             controller.gameStatus = GameStatus.P1
             controller.undoGladiator()
-            controller.playingField.gladiatorPlayer1.head.row should be(7)
+            controller.playingField.gladiatorPlayer1.head.line should be(14)
         }
         "redoing that step again " in {
             controller.gameStatus = GameStatus.P1
             controller.redoGladiator()
-            controller.playingField.gladiatorPlayer1.head.row should be(8)
+            controller.playingField.gladiatorPlayer1.head.line should be(13)
         }
     }
 }
