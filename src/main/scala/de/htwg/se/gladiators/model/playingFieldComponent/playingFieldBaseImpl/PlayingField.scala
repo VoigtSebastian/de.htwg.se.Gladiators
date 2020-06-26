@@ -261,7 +261,7 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
     }
 
     def checkBaseAttack(start: Coordinate, destination: Coordinate, gladiator: Gladiator, currentPlayer: Player): MoveType = {
-        ((destination.line == currentPlayer.enemyBaseLine) && checkMovementPointsAttack(gladiator, start).contains(destination)) match {
+        (destination.line == currentPlayer.enemyBaseLine) match {
             case true => MoveType.BASE_ATTACK
             case false => MoveType.OWN_BASE
         }
