@@ -295,7 +295,7 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
             getGladiatorOption(_) match {
                 case Some(glad) => glad.player == g.player
                 case None => true
-            })
+            }).filter(_ != startPosition)
 
     def getValidCoordinates(currentPosition: Coordinate, movementPoints: Int, validCellTypes: List[CellType]): Future[List[Coordinate]] = {
         if (movementPoints < 0 || !isCoordinateLegal(currentPosition) || ! validCellTypes.contains(cellAtCoordinate(currentPosition).cellType))
