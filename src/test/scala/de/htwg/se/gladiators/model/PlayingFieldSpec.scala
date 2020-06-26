@@ -57,6 +57,17 @@ class PlayingFieldSpec extends AnyWordSpec with Matchers {
                         List(CellType.SAND)),
                     Duration(10, SECONDS)) should be(empty)
             }
+            "return one tile when movementPoints are 0" in {
+                val playingField = createPlayingField()
+                val results = Await.result(
+                    playingField.getValidCoordinates(
+                        Coordinate(0, 1),
+                        0,
+                        List(CellType.SAND)),
+                    Duration(10, SECONDS))
+                results.length should be(1)
+                results.head should be(Coordinate(0, 1))
+            }
         }
 
         "told to perform an attack" should {
