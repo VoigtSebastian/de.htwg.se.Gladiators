@@ -44,13 +44,8 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
     }
 
     def formatLine(line: Int): String = {
-        var ret = ""
-        for (i <- cells(line).indices) { //iterate of cells in line
-            ret += cells(line)(i).cellType.id
-        }
-        for (gladiator <- gladiatorPlayer1)
-            ret = formatLineAddGladiators(gladiator, ret, line)
-        for (gladiator <- gladiatorPlayer2)
+        var ret = cells(line).mkString
+        for (gladiator <- gladiatorPlayer1 ::: gladiatorPlayer2)
             ret = formatLineAddGladiators(gladiator, ret, line)
         ret
     }
@@ -98,21 +93,23 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
 
     def createRandomCells(length: Int, palmRate: Int = 17): PlayingField = {
         var cellsNew = Array.ofDim[Cell](length, length)
-        for (i <- cellsNew.indices) {
-            for (j <- cellsNew(i).indices) {
-                //cells(i)(j) = Cell(scala.util.Random.nextInt(CellType.maxId - 1));
-                val randInt = scala.util.Random.nextInt(100)
-                if (randInt >= palmRate) {
-                    cellsNew(i)(j) = Cell(CellType.SAND)
-                } else {
-                    cellsNew(i)(j) = Cell(CellType.PALM)
-                }
+        val goldInd = scala.util.Random.nextInt(length)
+        val goldF = (row: Int, column: Int) => (row == length / 2 && column == goldInd)
+        val topBase = (row: Int, column: Int) => (row == 0 && column == length / 2)
+        val bottomBase = (row: Int, column: Int) => (row == length - 1 && column == length / 2)
+
+        for (
+            row <- cellsNew.indices;
+            column <- cellsNew(row).indices
+        ) yield cellsNew(row)(column) = (row, column) match {
+            case (row, column) if goldF(row, column) => Cell(CellType.GOLD)
+            case (row, column) if topBase(row, column) || bottomBase(row, column) => Cell(CellType.BASE)
+            case _ => scala.util.Random.nextInt(100) match {
+                case n if n >= palmRate => Cell(CellType.SAND)
+                case _ => Cell(CellType.PALM)
             }
         }
-        val goldInd = scala.util.Random.nextInt(length)
-        cellsNew(length / 2)(goldInd) = Cell(CellType.GOLD)
-        cellsNew(0)(length / 2) = Cell(CellType.BASE)
-        cellsNew(length - 1)(length / 2) = Cell(CellType.BASE)
+
         this.copy(cells = cellsNew)
     }
 
