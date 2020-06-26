@@ -232,7 +232,7 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
             return MoveType.UNIT_NOT_OWNED_BY_PLAYER
         if (target.player == currentPlayer)
             return MoveType.BLOCKED
-        if (checkMovementPointsAttack(attackingGladiator, attackingPosition, targetPosition).contains(targetPosition))
+        if (checkMovementPointsAttack(attackingGladiator, attackingPosition).contains(targetPosition))
             MoveType.ATTACK
         else
             MoveType.INSUFFICIENT_MOVEMENT_POINTS
@@ -261,7 +261,7 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
     }
 
     def checkBaseAttack(start: Coordinate, destination: Coordinate, gladiator: Gladiator, currentPlayer: Player): MoveType = {
-        ((destination.line == currentPlayer.enemyBaseLine) && checkMovementPointsAttack(gladiator, start, destination).contains(destination)) match {
+        ((destination.line == currentPlayer.enemyBaseLine) && checkMovementPointsAttack(gladiator, start).contains(destination)) match {
             case true => MoveType.BASE_ATTACK
             case false => MoveType.OWN_BASE
         }
@@ -276,7 +276,7 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
         None
     }
 
-    def checkMovementPointsAttack(g: Gladiator, startPosition: Coordinate, destination: Coordinate): List[Coordinate] = {
+    def checkMovementPointsAttack(g: Gladiator, startPosition: Coordinate): List[Coordinate] = {
         if (g.row == startPosition.row && g.line == startPosition.line)
             g.gladiatorType match {
                 case GladiatorType.SWORD | GladiatorType.TANK =>

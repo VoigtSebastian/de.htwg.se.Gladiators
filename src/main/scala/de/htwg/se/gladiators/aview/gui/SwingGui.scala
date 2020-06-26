@@ -273,7 +273,7 @@ class SwingGui(controller: ControllerInterface) extends MainFrame {
                             j <- 0 until controller.playingField.size
                         } {
                             for (
-                                coordinate <- controller.checkMovementPointsAttack(g, g.line, g.row, i, j)
+                                coordinate <- controller.checkMovementPointsAttack(g, g.line, g.row)
                             ) yield cells(coordinate.line)(coordinate.row).cell.border = LineBorder(java.awt.Color.RED.darker(), 4)
 
                         }

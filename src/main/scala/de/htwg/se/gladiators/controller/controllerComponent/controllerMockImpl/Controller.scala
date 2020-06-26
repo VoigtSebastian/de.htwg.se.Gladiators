@@ -78,7 +78,7 @@ class Controller @Inject() () extends ControllerInterface with Publisher {
 
     def isGladiatorInList(list: List[Gladiator], line: Int, row: Int): Boolean = false
 
-    def checkMovementPointsAttack(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): List[Coordinate] = List()
+    def checkMovementPointsAttack(g: Gladiator, lineStart: Int, rowStart: Int): List[Coordinate] = List()
 
     def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int): String = ""
 
