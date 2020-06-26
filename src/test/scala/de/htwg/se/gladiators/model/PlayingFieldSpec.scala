@@ -166,9 +166,10 @@ class PlayingFieldSpec extends AnyWordSpec with Matchers {
             }
             "determine all valid coordinates to move to" in {
                 val playingField = createPlayingField()
-                val newGladiator = GladiatorFactory.createGladiator(1, 1, GladiatorType.SWORD, playingField.gladiatorPlayer2.head.player)
-                val updatedPlayingField = playingField.setGladiator(1, 1, newGladiator)
-                playingField.getValidMoveCoordinates(newGladiator, Coordinate(1, 1)).length should be(4)
+                val unit = playingField.gladiatorPlayer2.head
+                playingField.getValidMoveCoordinates(unit, Coordinate(1, 1)).length should be(3)
+                // 3 because the unit can not move to its own coordinate
+                // and (0, 1) is occupied by another unit
             }
 
         }
