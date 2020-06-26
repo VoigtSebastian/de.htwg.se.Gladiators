@@ -272,12 +272,9 @@ class SwingGui(controller: ControllerInterface) extends MainFrame {
                             i <- 0 until controller.playingField.size
                             j <- 0 until controller.playingField.size
                         } {
-                            if (controller.checkMovementPointsAttack(g, g.line, g.row, i, j)) {
-                                if //(cells(i)(j).myCell.cellType != CellType.PALM &&
-                                (!(i == g.line && j == g.row)) {
-                                    cells(i)(j).cell.border = LineBorder(java.awt.Color.RED.darker(), 4)
-                                }
-                            }
+                            for (
+                                coordinate <- controller.checkMovementPointsAttack(g, g.line, g.row, i, j)
+                            ) yield cells(coordinate.line)(coordinate.row).cell.border = LineBorder(java.awt.Color.RED.darker(), 4)
 
                         }
                         val validMoveCoordinates = controller.playingField.getValidMoveCoordinates(g, Coordinate(g.line, g.row))
