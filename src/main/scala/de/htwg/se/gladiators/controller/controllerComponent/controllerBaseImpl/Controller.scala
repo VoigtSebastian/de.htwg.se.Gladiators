@@ -321,8 +321,8 @@ class Controller @Inject() () extends ControllerInterface with Publisher with Pl
         false
     }
 
-    def checkMovementPointsAttack(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): List[Coordinate] = {
-        playingField.checkMovementPointsAttack(g, Coordinate(lineStart, rowStart), Coordinate(lineDest, rowDest))
+    def checkMovementPointsAttack(g: Gladiator, lineStart: Int, rowStart: Int): List[Coordinate] = {
+        playingField.checkMovementPointsAttack(g, Coordinate(lineStart, rowStart))
     }
 
     def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int): String = {
