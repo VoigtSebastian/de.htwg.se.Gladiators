@@ -69,8 +69,6 @@ trait PlayingFieldInterface {
 
     def checkMovementPointsAttack(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean
 
-    def checkMovementPointsMove(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean
-
     def getValidMoveCoordinates(g: Gladiator, startPosition: Coordinate): List[Coordinate]
 
     def toHtml: String
