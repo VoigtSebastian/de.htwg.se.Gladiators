@@ -93,7 +93,7 @@ trait ControllerInterface extends Publisher {
 
     def isGladiatorInList(list: List[Gladiator], line: Int, row: Int): Boolean
 
-    def checkMovementPointsAttack(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): Boolean
+    def checkMovementPointsAttack(g: Gladiator, lineStart: Int, rowStart: Int, lineDest: Int, rowDest: Int): List[Coordinate]
 
     def mineGold(gladiatorAttack: Gladiator, line: Int, row: Int): String
 

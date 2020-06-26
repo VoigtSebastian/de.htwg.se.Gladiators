@@ -232,7 +232,7 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
             return MoveType.UNIT_NOT_OWNED_BY_PLAYER
         if (target.player == currentPlayer)
             return MoveType.BLOCKED
-        if (checkMovementPointsAttack(attackingGladiator, attackingPosition, targetPosition))
+        if (checkMovementPointsAttack(attackingGladiator, attackingPosition, targetPosition).contains(targetPosition))
             MoveType.ATTACK
         else
             MoveType.INSUFFICIENT_MOVEMENT_POINTS
@@ -261,7 +261,7 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
     }
 
     def checkBaseAttack(start: Coordinate, destination: Coordinate, gladiator: Gladiator, currentPlayer: Player): MoveType = {
-        ((destination.line == currentPlayer.enemyBaseLine) && checkMovementPointsAttack(gladiator, start, destination)) match {
+        ((destination.line == currentPlayer.enemyBaseLine) && checkMovementPointsAttack(gladiator, start, destination).contains(destination)) match {
             case true => MoveType.BASE_ATTACK
             case false => MoveType.OWN_BASE
         }
@@ -276,17 +276,19 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
         None
     }
 
-    def checkMovementPointsAttack(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean = {
+    def checkMovementPointsAttack(g: Gladiator, startPosition: Coordinate, destination: Coordinate): List[Coordinate] = {
         if (g.row == startPosition.row && g.line == startPosition.line)
             g.gladiatorType match {
                 case GladiatorType.SWORD | GladiatorType.TANK =>
-                    if (1 >= (Math.abs(destination.line - startPosition.line) + Math.abs(destination.row - startPosition.row)))
-                        return true
+                    return Await.result(
+                        getValidCoordinates(startPosition, 1, List(CellType.SAND, CellType.BASE)),
+                        Duration(1, SECONDS))
                 case GladiatorType.BOW =>
-                    if (2 >= (Math.abs(destination.line - startPosition.line) + Math.abs(destination.row - startPosition.row)))
-                        return true
+                    return Await.result(
+                        getValidCoordinates(startPosition, 2, List(CellType.SAND, CellType.BASE)),
+                        Duration(1, SECONDS))
             }
-        false
+        List()
     }
 
     def getValidMoveCoordinates(g: Gladiator, startPosition: Coordinate): List[Coordinate] = Await.result(
@@ -298,7 +300,7 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
             }).filter(_ != startPosition)
 
     def getValidCoordinates(currentPosition: Coordinate, movementPoints: Int, validCellTypes: List[CellType]): Future[List[Coordinate]] = {
-        if (movementPoints < 0 || !isCoordinateLegal(currentPosition) || ! validCellTypes.contains(cellAtCoordinate(currentPosition).cellType))
+        if (movementPoints < 0 || !isCoordinateLegal(currentPosition) || !validCellTypes.contains(cellAtCoordinate(currentPosition).cellType))
             return Future(List())
 
         val thisPosition = List(currentPosition)
