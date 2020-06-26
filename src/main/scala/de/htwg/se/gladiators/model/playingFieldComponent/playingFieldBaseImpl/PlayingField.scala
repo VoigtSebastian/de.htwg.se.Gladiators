@@ -289,10 +289,6 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
         false
     }
 
-    def checkMovementPointsMove(g: Gladiator, startPosition: Coordinate, destination: Coordinate): Boolean = {
-        getValidMoveCoordinates(g, startPosition).exists(coord => coord == destination)
-    }
-
     def getValidMoveCoordinates(g: Gladiator, startPosition: Coordinate): List[Coordinate] = Await.result(
         getValidCoordinates(startPosition, g.movementPoints.toInt, List(CellType.SAND)),
         Duration(1, SECONDS)).filter(
