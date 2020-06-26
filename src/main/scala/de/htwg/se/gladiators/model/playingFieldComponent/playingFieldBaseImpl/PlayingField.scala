@@ -302,7 +302,7 @@ case class PlayingField @Inject() (size: Integer = 15, gladiatorPlayer1: List[Gl
             })
 
     def getValidCoordinates(currentPosition: Coordinate, movementPoints: Int, validCellTypes: List[CellType]): Future[List[Coordinate]] = {
-        if (movementPoints <= 0 || !isCoordinateLegal(currentPosition) || ! validCellTypes.contains(cellAtCoordinate(currentPosition).cellType))
+        if (movementPoints < 0 || !isCoordinateLegal(currentPosition) || ! validCellTypes.contains(cellAtCoordinate(currentPosition).cellType))
             return Future(List())
 
         val thisPosition = List(currentPosition)
