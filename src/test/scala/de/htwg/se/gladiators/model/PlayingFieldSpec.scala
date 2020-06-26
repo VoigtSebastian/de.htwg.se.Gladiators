@@ -48,6 +48,15 @@ class PlayingFieldSpec extends AnyWordSpec with Matchers {
                 attackable should not contain (Coordinate(0, 0))
                 attackable should not contain (Coordinate(2, 2))
             }
+            "return nothing when starting of on an illegal tile" in {
+                val playingField = createPlayingField()
+                Await.result(
+                    playingField.getValidCoordinates(
+                        Coordinate(0, 2),
+                        10,
+                        List(CellType.SAND)),
+                    Duration(10, SECONDS)) should be(empty)
+            }
         }
 
         "told to perform an attack" should {
