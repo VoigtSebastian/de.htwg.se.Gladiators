@@ -1,7 +1,6 @@
 package de.htwg.se.gladiators.aview
 
 import kaleidoscope._
-import scala.util.{ Try, Failure, Success }
 import de.htwg.se.gladiators.controller.ControllerInterface
 import de.htwg.se.gladiators.util.Command._
 import de.htwg.se.gladiators.util.Coordinate

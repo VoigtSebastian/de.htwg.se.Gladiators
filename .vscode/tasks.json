@@ -45,6 +45,18 @@
             "presentation": {
                 "focus": true
             }
+        },
+        {
+            "label": "sbt: clean up imports",
+            "type": "shell",
+            "command": "sbt",
+            "args": [
+                "\"scalafixAll RemoveUnused ProcedureSyntax\""
+            ],
+            "group": "test",
+            "presentation": {
+                "focus": true
+            }
         }
     ]
 }

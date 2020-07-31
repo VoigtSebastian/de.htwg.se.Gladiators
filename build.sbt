@@ -1,9 +1,12 @@
 //name := "de.htwg.se.Gladiators"
 import sbt.Keys.libraryDependencies
 
+addCompilerPlugin(scalafixSemanticdb)
+
 ThisBuild / version := "0.1"
 ThisBuild / scalaVersion := "2.12.8"
 ThisBuild / trapExit := false
+ThisBuild / scalacOptions ++= Seq("-deprecation", "-feature", "-Yrangepos", "-Ywarn-unused")
 
 val commonDependencies = Seq(
   "org.scalactic" %% "scalactic" % "3.1.1",
@@ -12,9 +15,5 @@ val commonDependencies = Seq(
   "com.propensive" %% "kaleidoscope" % "0.1.0",
   "com.beachape" %% "enumeratum" % "1.6.1"
 )
-
-// Show deprecation and feature warning
-scalacOptions ++= Seq("-deprecation", "-feature")
-coverageExcludedPackages := "CellPanel.scala;SwingGui.scala;Tui.scala"
 
 libraryDependencies ++= commonDependencies

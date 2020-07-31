@@ -9,5 +9,4 @@ case class TestingController() extends ControllerInterface {
 
     override def inputCommand(command: Command) = commandQueue.enqueue(command)
 
-
 }
