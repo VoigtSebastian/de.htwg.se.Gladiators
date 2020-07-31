@@ -6,6 +6,7 @@ import de.htwg.se.gladiators.controller.TestImplementation.TestingController
 import de.htwg.se.gladiators.util.Command.Quit
 import de.htwg.se.gladiators.util.Command.Move
 import de.htwg.se.gladiators.util.Coordinate
+import de.htwg.se.gladiators.controller.GameState
 
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A Tui" when {
@@ -23,6 +24,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             }
             "return false" in {
                 val controller = TestingController()
+                controller.gameState = GameState.TurnPlayerOne
                 val tui = Tui(controller)
                 tui.processInputLine("ThisIsNotACommand") should be(true)
                 tui.processInputLine("move 1 1 4 4") should be(true)
