@@ -1,11 +1,15 @@
 package de.htwg.se.gladiators.util
 
-trait Command {
+import enumeratum._
 
-    def doStep: Unit
+sealed trait Command extends EnumEntry
 
-    def undoStep: Unit
+object Command extends Enum[Command] {
+    val values = findValues
 
-    def redoStep: Unit
+    case class Move(from: Coordinate, to: Coordinate) extends Command
+    case class Attack(from: Coordinate, to: Coordinate) extends Command
+    case class BuyUnit(number: Int) extends Command
+    case object Quit extends Command
 
 }
