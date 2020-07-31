@@ -8,7 +8,9 @@ ThisBuild / trapExit := false
 val commonDependencies = Seq(
   "org.scalactic" %% "scalactic" % "3.1.1",
   "org.scalatest" %% "scalatest" % "3.1.1" % Test,
-  "org.scalamock" %% "scalamock" % "4.4.0" % Test
+  "org.scalamock" %% "scalamock" % "4.4.0" % Test,
+  "com.propensive" %% "kaleidoscope" % "0.1.0",
+  "com.beachape" %% "enumeratum" % "1.6.1"
 )
 
 // Show deprecation and feature warning
