@@ -5,7 +5,7 @@ import de.htwg.se.gladiators.controller.BaseImplementation.Controller
 import de.htwg.se.gladiators.util.Events.Init
 
 object Main extends App {
-    val controller = Controller()
+    val controller = Controller(15)
     val tui = Tui(controller)
 
     controller.publish(Init)
