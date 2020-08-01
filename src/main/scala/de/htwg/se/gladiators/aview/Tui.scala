@@ -1,15 +1,25 @@
 package de.htwg.se.gladiators.aview
 
 import kaleidoscope._
+import scala.swing.Reactor
+
+import de.htwg.se.gladiators.util.Events.{ Init, PlayerOneNamed, PlayerTwoNamed, Turn }
 import de.htwg.se.gladiators.controller.ControllerInterface
 import de.htwg.se.gladiators.util.Command._
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.controller.GameState
 
-case class Tui(controller: ControllerInterface) {
-    // todo: On event init and on event player one name
+case class Tui(controller: ControllerInterface) extends Reactor {
+    listenTo(controller)
     val namePlayerOneMessage = "Name Player One: "
     val namePlayerTwoMessage = "Name Player Two: "
+
+    reactions += {
+        case Init => print(namePlayerOneMessage)
+        case PlayerOneNamed(_) => print(namePlayerTwoMessage)
+        case PlayerTwoNamed(_) => println("Game start")
+        case Turn(player) => println(s"Turn of ${player.name}")
+    }
 
     def processInputLine(line: String): Boolean = {
         line.toLowerCase match {

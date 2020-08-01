@@ -13,7 +13,8 @@ val commonDependencies = Seq(
   "org.scalatest" %% "scalatest" % "3.1.1" % Test,
   "org.scalamock" %% "scalamock" % "4.4.0" % Test,
   "com.propensive" %% "kaleidoscope" % "0.1.0",
-  "com.beachape" %% "enumeratum" % "1.6.1"
+  "com.beachape" %% "enumeratum" % "1.6.1",
+  "org.scala-lang.modules" %% "scala-swing" % "2.1.1"
 )
 
 libraryDependencies ++= commonDependencies
