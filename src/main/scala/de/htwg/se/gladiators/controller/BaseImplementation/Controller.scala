@@ -10,13 +10,14 @@ import de.htwg.se.gladiators.model.Player
 case class Controller() extends ControllerInterface {
 
     override def inputCommand(command: Command): Unit = {
-        println(command)
         command match {
             case NamePlayerOne(name) => {
+                // todo: Player API lookup to set score
                 gameState = NamingPlayerTwo
                 publish(PlayerOneNamed(name))
             }
             case NamePlayerTwo(name) => {
+                // todo: Player API lookup to set score
                 gameState = TurnPlayerOne
                 publish(PlayerTwoNamed(name))
             }
