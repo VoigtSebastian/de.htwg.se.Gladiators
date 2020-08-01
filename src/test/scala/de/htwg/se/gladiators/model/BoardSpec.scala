@@ -13,8 +13,7 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
                     .getValidCoordinates(
                         Coordinate(0, 0),
                         6,
-                        Vector(CellType.Sand)
-                    )
+                        Vector(CellType.Sand))
 
                 for ((x, y) <- (0 to 2).map(i => (i, i))) {
                     result should contain(Coordinate(y, x))
@@ -27,8 +26,7 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
         val cells = Vector(
             Vector(CellType.Sand, CellType.Sand, CellType.Sand),
             Vector(CellType.Sand, CellType.Sand, CellType.Sand),
-            Vector(CellType.Sand, CellType.Sand, CellType.Sand)
-        )
+            Vector(CellType.Sand, CellType.Sand, CellType.Sand))
         Board(cells)
     }
 }
