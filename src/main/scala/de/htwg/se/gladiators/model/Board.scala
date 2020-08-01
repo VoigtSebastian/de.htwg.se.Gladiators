@@ -12,11 +12,9 @@ case class Board(cells: Vector[Vector[CellType]]) {
 
     def cellAtCoordinate(coordinate: Coordinate) = cells(coordinate.y)(coordinate.x)
 
-
-    def getValidCoordinates (currentPosition: Coordinate, movementPoints: Int, validCellTypes: Vector[CellType]) = Await.result(
+    def getValidCoordinates(currentPosition: Coordinate, movementPoints: Int, validCellTypes: Vector[CellType]) = Await.result(
         getValidCoordinatesFuture(currentPosition, movementPoints, validCellTypes),
-        Duration(5, SECONDS)
-    )
+        Duration(5, SECONDS))
 
     def getValidCoordinatesFuture(currentPosition: Coordinate, movementPoints: Int, validCellTypes: Vector[CellType]): Future[List[Coordinate]] = {
         if (movementPoints < 0 || !isCoordinateLegal(currentPosition) || !validCellTypes.contains(cellAtCoordinate(currentPosition)))
