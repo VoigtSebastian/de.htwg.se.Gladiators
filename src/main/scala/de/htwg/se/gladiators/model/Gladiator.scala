@@ -6,4 +6,5 @@ case class Gladiator(
     gladiatorType: GladiatorType,
     position: Coordinate,
     healthPoints: Int,
-    movementPoints: Int)
+    movementPoints: Int,
+    attackPoints: Int)

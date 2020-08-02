@@ -12,27 +12,27 @@ class MovesSpec extends AnyWordSpec with Matchers {
             val enemyPlayer = Player("", 2, Vector())
             val board = createNormalBoard
             "categorize legal moves" in {
-                val currentPlayer = Player("", 0, Vector(Gladiator(Knight, Coordinate(0, 0), 100, 4)))
+                val currentPlayer = Player("", 0, Vector(Gladiator(Knight, Coordinate(0, 0), 100, 4, 0)))
 
                 for ((x, y) <- (0 to 2).map((_, 1)) ++ Vector((2, 2))) {
                     Moves.movementType(Coordinate(0, 0), Coordinate(x, y), board, currentPlayer, enemyPlayer) should be(Move)
                 }
             }
             "categorize illegal moves" in {
-                val currentPlayer = Player("", 0, Vector(Gladiator(Knight, Coordinate(0, 0), 100, 0)))
+                val currentPlayer = Player("", 0, Vector(Gladiator(Knight, Coordinate(0, 0), 100, 0, 0)))
 
                 for ((x, y) <- (0 to 2).map((_, 1)) ++ Vector((2, 2))) {
                     Moves.movementType(Coordinate(0, 0), Coordinate(x, y), board, currentPlayer, enemyPlayer) should be(IllegalMove)
                 }
             }
             "categorize a tile as blocked" in {
-                val currentPlayer = Player("", 0, Vector(Gladiator(Knight, Coordinate(0, 0), 100, 1), Gladiator(Knight, Coordinate(0, 1), 100, 1)))
+                val currentPlayer = Player("", 0, Vector(Gladiator(Knight, Coordinate(0, 0), 100, 1, 0), Gladiator(Knight, Coordinate(0, 1), 100, 1, 0)))
                 Moves.movementType(Coordinate(0, 0), Coordinate(0, 0), board, currentPlayer, enemyPlayer) should be(TileBlocked)
                 Moves.movementType(Coordinate(0, 0), Coordinate(0, 1), board, currentPlayer, enemyPlayer) should be(TileBlocked)
 
             }
             "categorize a unit as not owned by this Player" in {
-                val currentPlayer = Player("", 0, Vector(Gladiator(Knight, Coordinate(0, 0), 100, 0)))
+                val currentPlayer = Player("", 0, Vector(Gladiator(Knight, Coordinate(0, 0), 100, 0, 0)))
                 Moves.movementType(Coordinate(0, 0), Coordinate(0, 0), board, enemyPlayer, currentPlayer) should be(NotOwnedByPlayer)
             }
             "categorize a free tile as no unit at this Tile" in {
