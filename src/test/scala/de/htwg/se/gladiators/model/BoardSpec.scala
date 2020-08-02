@@ -13,7 +13,7 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
                     .getValidCoordinates(
                         Coordinate(0, 0),
                         6,
-                        Vector(CellType.Sand))
+                        Vector(TileType.Sand))
 
                 for ((x, y) <- (0 to 2).map(i => (i, i))) {
                     result should contain(Coordinate(y, x))
@@ -24,7 +24,7 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
                     .getValidCoordinates(
                         Coordinate(0, 0),
                         6,
-                        Vector(CellType.Palm))
+                        Vector(TileType.Palm))
 
                 result should be(empty)
             }
@@ -33,7 +33,7 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
                     .getValidCoordinates(
                         Coordinate(1, 1),
                         6,
-                        Vector(CellType.Sand))
+                        Vector(TileType.Sand))
 
                 for (x <- (0 to 2)) {
                     result should contain(Coordinate(x, 1))
@@ -46,7 +46,7 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
                     .getValidCoordinates(
                         Coordinate(1, 1),
                         6,
-                        Vector(CellType.Sand, CellType.Base))
+                        Vector(TileType.Sand, TileType.Base))
 
                 for (x <- (0 to 2)) {
                     result should contain(Coordinate(x, 1))
@@ -71,29 +71,29 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
                 }
             }
         }
-        "being asked for a Cell" should {
+        "being asked for a Tile" should {
             "return Sand" in {
                 val board = createSandBoard
                 for ((x, y) <- (0 to 2).map(i => (i, i))) {
-                    board.cellAtCoordinate(Coordinate(0, 2)) should be(CellType.Sand)
+                    board.tileAtCoordinate(Coordinate(0, 2)) should be(TileType.Sand)
                 }
             }
         }
     }
 
     def createSandBoard: Board = {
-        val cells = Vector(
-            Vector(CellType.Sand, CellType.Sand, CellType.Sand),
-            Vector(CellType.Sand, CellType.Sand, CellType.Sand),
-            Vector(CellType.Sand, CellType.Sand, CellType.Sand))
-        Board(cells)
+        val tiles = Vector(
+            Vector(TileType.Sand, TileType.Sand, TileType.Sand),
+            Vector(TileType.Sand, TileType.Sand, TileType.Sand),
+            Vector(TileType.Sand, TileType.Sand, TileType.Sand))
+        Board(tiles)
     }
 
     def createNormalBoard: Board = {
-        val cells = Vector(
-            Vector(CellType.Sand, CellType.Base, CellType.Palm),
-            Vector(CellType.Sand, CellType.Sand, CellType.Sand),
-            Vector(CellType.Palm, CellType.Base, CellType.Sand))
-        Board(cells)
+        val tiles = Vector(
+            Vector(TileType.Sand, TileType.Base, TileType.Palm),
+            Vector(TileType.Sand, TileType.Sand, TileType.Sand),
+            Vector(TileType.Palm, TileType.Base, TileType.Sand))
+        Board(tiles)
     }
 }

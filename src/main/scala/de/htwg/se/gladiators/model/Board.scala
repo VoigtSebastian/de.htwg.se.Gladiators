@@ -5,28 +5,28 @@ import scala.concurrent.{ Future, ExecutionContext }
 import scala.concurrent.Await
 import scala.concurrent.duration.{ Duration, SECONDS }
 
-case class Board(cells: Vector[Vector[CellType]]) {
+case class Board(tile: Vector[Vector[TileType]]) {
     implicit val ec = ExecutionContext.global
 
-    def isCoordinateLegal(coordinate: Coordinate) = (coordinate.x >= 0 && coordinate.x < cells.length && coordinate.y >= 0 && coordinate.y < cells.length)
+    def isCoordinateLegal(coordinate: Coordinate) = (coordinate.x >= 0 && coordinate.x < tile.length && coordinate.y >= 0 && coordinate.y < tile.length)
 
-    def cellAtCoordinate(coordinate: Coordinate) = cells(coordinate.y)(coordinate.x)
+    def tileAtCoordinate(coordinate: Coordinate) = tile(coordinate.y)(coordinate.x)
 
-    def getValidCoordinates(currentPosition: Coordinate, movementPoints: Int, validCellTypes: Vector[CellType]) = Await.result(
-        getValidCoordinatesFuture(currentPosition, movementPoints, validCellTypes),
+    def getValidCoordinates(currentPosition: Coordinate, movementPoints: Int, validTileTypes: Vector[TileType]) = Await.result(
+        getValidCoordinatesFuture(currentPosition, movementPoints, validTileTypes),
         Duration(5, SECONDS))
 
-    def getValidCoordinatesFuture(currentPosition: Coordinate, movementPoints: Int, validCellTypes: Vector[CellType]): Future[List[Coordinate]] = {
-        if (movementPoints < 0 || !isCoordinateLegal(currentPosition) || !validCellTypes.contains(cellAtCoordinate(currentPosition)))
+    def getValidCoordinatesFuture(currentPosition: Coordinate, movementPoints: Int, validTileTypes: Vector[TileType]): Future[List[Coordinate]] = {
+        if (movementPoints < 0 || !isCoordinateLegal(currentPosition) || !validTileTypes.contains(tileAtCoordinate(currentPosition)))
             return Future(List())
 
         val thisPosition = List(currentPosition)
 
         for (
-            right <- getValidCoordinatesFuture(currentPosition.copy(x = (currentPosition.x + 1)), movementPoints - 1, validCellTypes);
-            left <- getValidCoordinatesFuture(currentPosition.copy(x = (currentPosition.x - 1)), movementPoints - 1, validCellTypes);
-            up <- getValidCoordinatesFuture(currentPosition.copy(y = (currentPosition.y + 1)), movementPoints - 1, validCellTypes);
-            down <- getValidCoordinatesFuture(currentPosition.copy(y = (currentPosition.y - 1)), movementPoints - 1, validCellTypes)
+            right <- getValidCoordinatesFuture(currentPosition.copy(x = (currentPosition.x + 1)), movementPoints - 1, validTileTypes);
+            left <- getValidCoordinatesFuture(currentPosition.copy(x = (currentPosition.x - 1)), movementPoints - 1, validTileTypes);
+            up <- getValidCoordinatesFuture(currentPosition.copy(y = (currentPosition.y + 1)), movementPoints - 1, validTileTypes);
+            down <- getValidCoordinatesFuture(currentPosition.copy(y = (currentPosition.y - 1)), movementPoints - 1, validTileTypes)
         ) yield (right ::: left ::: up ::: down ::: thisPosition).distinct
     }
 }
