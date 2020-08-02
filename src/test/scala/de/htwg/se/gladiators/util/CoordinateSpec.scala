@@ -21,7 +21,15 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
             "be different" in {
                 val c1 = Coordinate(0, 0)
                 val c2 = Coordinate(0, 1)
-                (c1 == c2) should be(false)
+                (c1.equals(c2)) should be(false)
+            }
+        }
+        "checked for legality" should {
+            "return true" in {
+                Coordinate(0, 0).isLegal(1) should be(true)
+            }
+            "return false" in {
+                Coordinate(1, 0).isLegal(1) should be(false)
             }
         }
     }
