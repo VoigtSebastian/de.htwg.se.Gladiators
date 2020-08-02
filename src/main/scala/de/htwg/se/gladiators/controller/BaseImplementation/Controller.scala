@@ -10,7 +10,7 @@ import de.htwg.se.gladiators.model.{ Player, Board }
 case class Controller(playingFieldSize: Int) extends ControllerInterface {
     var playerOne: Option[Player] = None
     var playerTwo: Option[Player] = None
-    var Board: Option[Board] = None
+    var board: Option[Board] = None
 
     override def inputCommand(command: Command): Unit = {
         command match {
