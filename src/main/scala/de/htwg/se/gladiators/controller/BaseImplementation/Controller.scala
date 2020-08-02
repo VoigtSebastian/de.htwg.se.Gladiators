@@ -15,18 +15,14 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
     override def inputCommand(command: Command): Unit = {
         command match {
             case NamePlayerOne(name) => {
-                // todo: Player API lookup to set score
-                namePlayerOne(name)
+                if (gameState == NamingPlayerOne) namePlayerOne(name)
+                else publish(ErrorMessage(s"Player one can not be named anymore"))
             }
             case NamePlayerTwo(name) => {
-                // todo: Player API lookup to set score
-                namePlayerTwo(name)
+                if (gameState == NamingPlayerTwo) namePlayerTwo(name)
+                else publish(ErrorMessage(s"Player two can not be named anymore"))
             }
-            case EndTurn => gameState match {
-                case TurnPlayerOne => publish(Turn(playerOne.get))
-                case TurnPlayerTwo => publish(Turn(playerTwo.get))
-                case _ => publish(ErrorMessage(s"You can not end a turn in gameState $gameState"))
-            }
+            case EndTurn => endTurn
             case Attack(from, to) => println(s"Attacking from $from to $to")
             case BuyUnit(number) => println(s"Buying unit $number")
             case Move(from, to) => println(s"Moving from $from to $to")
@@ -34,13 +30,29 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
         }
     }
 
+    def endTurn = {
+        gameState match {
+            case TurnPlayerOne => {
+                gameState = TurnPlayerTwo
+                publish(Turn(playerTwo.get))
+            }
+            case TurnPlayerTwo => {
+                gameState = TurnPlayerOne
+                publish(Turn(playerOne.get))
+            }
+            case _ => publish(ErrorMessage(s"You can not end a turn in gameState $gameState"))
+        }
+    }
+
     def namePlayerOne(name: String) = {
+        // todo: Player API lookup to set score
         gameState = NamingPlayerTwo
         playerOne = Some(Player(name, playingFieldSize - 1))
         publish(PlayerOneNamed(name))
     }
 
     def namePlayerTwo(name: String) = {
+        // todo: Player API lookup to set sc
         gameState = TurnPlayerOne
         playerTwo = Some(Player(name, 0))
         publish(PlayerTwoNamed(name))
