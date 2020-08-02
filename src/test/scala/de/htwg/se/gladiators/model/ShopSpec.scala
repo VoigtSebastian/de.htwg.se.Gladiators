@@ -9,9 +9,9 @@ class ShopSpec extends AnyWordSpec with Matchers {
     "A Shop" when {
         "buying items" should {
             "return None" in {
-                shop.buy(11) should be (None)
-                shop.buy(0) should be (None)
-                shop.buy(-1) should be (None)
+                shop.buy(11) should be(None)
+                shop.buy(0) should be(None)
+                shop.buy(-1) should be(None)
             }
             "return a new Shop" in {
                 shop.buy(2).isInstanceOf[Some[Shop]]
@@ -20,7 +20,7 @@ class ShopSpec extends AnyWordSpec with Matchers {
             }
             "replace the correct Gladiator" in {
                 val glad = shop.stock(0)
-                shop.buy(1).get.stock(0) should not be(glad)
+                shop.buy(1).get.stock(0) should not be (glad)
             }
         }
     }
