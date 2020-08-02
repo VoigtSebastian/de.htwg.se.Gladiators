@@ -6,11 +6,13 @@ import de.htwg.se.gladiators.util.Command._
 import de.htwg.se.gladiators.util.Events._
 import de.htwg.se.gladiators.controller.GameState._
 import de.htwg.se.gladiators.model.{ Player, Board }
+import de.htwg.se.gladiators.util.Factories.ShopFactory
 
 case class Controller(playingFieldSize: Int) extends ControllerInterface {
     var playerOne: Option[Player] = None
     var playerTwo: Option[Player] = None
     var board: Option[Board] = None
+    var shop = ShopFactory.initRandomShop()
 
     override def inputCommand(command: Command): Unit = {
         command match {
@@ -24,9 +26,25 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
             }
             case EndTurn => endTurn
             case Attack(from, to) => println(s"Attacking from $from to $to")
-            case BuyUnit(number) => println(s"Buying unit $number")
+            case BuyUnit(number) => buyUnit(number)
             case Move(from, to) => println(s"Moving from $from to $to")
             case Quit => println("Goodbye")
+        }
+    }
+
+    def buyUnit(number: Int): Unit = {
+        shop.buy(number) match {
+            // todo: Check and reduce credits
+            case Some(newShop) => {
+                val gladiator = shop.stock(number - 1)
+                shop = newShop
+                gameState match {
+                    case TurnPlayerOne => publish(SuccessfullyBoughtGladiator(playerOne.get, gladiator))
+                    case TurnPlayerTwo => publish(SuccessfullyBoughtGladiator(playerTwo.get, gladiator))
+                    case _ => publish(ErrorMessage("You can not buy from the shop currently"))
+                }
+            }
+            case None => publish(ErrorMessage("Error buying from the shop"))
         }
     }
 
