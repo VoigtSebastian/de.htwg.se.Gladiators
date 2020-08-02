@@ -15,4 +15,5 @@ object MovementType extends Enum[MovementType] {
     case object NoUnitAtCoordinate extends MovementType
     case object TileBlocked extends MovementType
     case object MoveToPalm extends MovementType
+    case object IllegalMove extends MovementType
 }

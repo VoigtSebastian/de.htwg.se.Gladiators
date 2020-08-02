@@ -1,5 +1,61 @@
 package de.htwg.se.gladiators.model
 
+import de.htwg.se.gladiators.util.Coordinate
+import de.htwg.se.gladiators.util.MovementType
+import de.htwg.se.gladiators.util.MovementType._
+import de.htwg.se.gladiators.model.TileType._
+
 object Moves {
-    def movementType(board: Board, players: Tuple2[Player, Player]): Any = ???
+    def movementType(from: Coordinate, to: Coordinate, board: Board, currentPlayer: Player, enemyPlayer: Player): MovementType = {
+        checkGladiatorOwnership(from, to, currentPlayer, enemyPlayer) match {
+            case Some(value) => return value
+            case None => ()
+        }
+        (board.tileAtCoordinate(from), board.tileAtCoordinate(to)) match {
+            case (_, Palm) => MoveToPalm
+            case (_, Base) => return checkBaseAttack(from, currentPlayer, board) match {
+                    case true => BaseAttack
+                    case false => IllegalMove
+                }
+            case (_, Sand) => return checkLegalMove(from, to, currentPlayer, board) match {
+                case true => Move
+                case false => IllegalMove
+            }
+            case _ => ???
+        }
+    }
+
+    def checkGladiatorOwnership(from: Coordinate, to: Coordinate, currentPlayer: Player, enemyPlayer: Player): Option[MovementType] = {
+        if (! (enemyPlayer.gladiators ++ currentPlayer.gladiators).map(_.position).contains(from)) {
+            return Some(NoUnitAtCoordinate)
+        }
+        if (currentPlayer.gladiators.map(_.position).contains(to)) {
+            return Some(TileBlocked)
+        }
+        if (enemyPlayer.gladiators.map(_.position).contains(from)) {
+            return Some(NotOwnedByPlayer)
+        }
+        None
+    }
+
+    def checkBaseAttack(from: Coordinate, currentPlayer: Player, board: Board): Boolean = {
+        (board.getValidCoordinates(from,
+            currentPlayer
+                .gladiators
+                .filter(_.position == from)(0)
+                .movementPoints,
+            Vector(Sand, Base))
+            .filter(coordinate => (coordinate.x == board.tiles.length / 2) && (coordinate.y == currentPlayer.enemyBaseLine))
+            .length >= 1)
+    }
+
+    def checkLegalMove(from: Coordinate, to: Coordinate, currentPlayer: Player, board: Board): Boolean = {
+        (board.getValidCoordinates(from,
+            currentPlayer
+                .gladiators
+                .filter(_.position == from)(0)
+                .movementPoints,
+            Vector(Sand))
+            .contains(to))
+    }
 }
