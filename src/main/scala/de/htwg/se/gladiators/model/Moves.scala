@@ -14,9 +14,9 @@ object Moves {
         (board.tileAtCoordinate(from), board.tileAtCoordinate(to)) match {
             case (_, Palm) => MoveToPalm
             case (_, Base) => return checkBaseAttack(from, currentPlayer, board) match {
-                    case true => BaseAttack
-                    case false => IllegalMove
-                }
+                case true => BaseAttack
+                case false => IllegalMove
+            }
             case (_, Sand) => return checkLegalMove(from, to, currentPlayer, board) match {
                 case true => Move
                 case false => IllegalMove
@@ -26,7 +26,7 @@ object Moves {
     }
 
     def checkGladiatorOwnership(from: Coordinate, to: Coordinate, currentPlayer: Player, enemyPlayer: Player): Option[MovementType] = {
-        if (! (enemyPlayer.gladiators ++ currentPlayer.gladiators).map(_.position).contains(from)) {
+        if (!(enemyPlayer.gladiators ++ currentPlayer.gladiators).map(_.position).contains(from)) {
             return Some(NoUnitAtCoordinate)
         }
         if (currentPlayer.gladiators.map(_.position).contains(to)) {
@@ -39,7 +39,8 @@ object Moves {
     }
 
     def checkBaseAttack(from: Coordinate, currentPlayer: Player, board: Board): Boolean = {
-        (board.getValidCoordinates(from,
+        (board.getValidCoordinates(
+            from,
             currentPlayer
                 .gladiators
                 .filter(_.position == from)(0)
@@ -50,7 +51,8 @@ object Moves {
     }
 
     def checkLegalMove(from: Coordinate, to: Coordinate, currentPlayer: Player, board: Board): Boolean = {
-        (board.getValidCoordinates(from,
+        (board.getValidCoordinates(
+            from,
             currentPlayer
                 .gladiators
                 .filter(_.position == from)(0)
