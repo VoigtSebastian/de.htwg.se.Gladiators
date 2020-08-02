@@ -5,12 +5,12 @@ import scala.concurrent.{ Future, ExecutionContext }
 import scala.concurrent.Await
 import scala.concurrent.duration.{ Duration, SECONDS }
 
-case class Board(tile: Vector[Vector[TileType]]) {
+case class Board(tiles: Vector[Vector[TileType]]) {
     implicit val ec = ExecutionContext.global
 
-    def isCoordinateLegal(coordinate: Coordinate) = (coordinate.x >= 0 && coordinate.x < tile.length && coordinate.y >= 0 && coordinate.y < tile.length)
+    def isCoordinateLegal(coordinate: Coordinate) = (coordinate.x >= 0 && coordinate.x < tiles.length && coordinate.y >= 0 && coordinate.y < tiles.length)
 
-    def tileAtCoordinate(coordinate: Coordinate) = tile(coordinate.y)(coordinate.x)
+    def tileAtCoordinate(coordinate: Coordinate) = tiles(coordinate.y)(coordinate.x)
 
     def getValidCoordinates(currentPosition: Coordinate, movementPoints: Int, validTileTypes: Vector[TileType]) = Await.result(
         getValidCoordinatesFuture(currentPosition, movementPoints, validTileTypes),
