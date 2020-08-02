@@ -47,14 +47,14 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
     def namePlayerOne(name: String) = {
         // todo: Player API lookup to set score
         gameState = NamingPlayerTwo
-        playerOne = Some(Player(name, playingFieldSize - 1))
+        playerOne = Some(Player(name, 100, playingFieldSize - 1))
         publish(PlayerOneNamed(name))
     }
 
     def namePlayerTwo(name: String) = {
         // todo: Player API lookup to set sc
         gameState = TurnPlayerOne
-        playerTwo = Some(Player(name, 0))
+        playerTwo = Some(Player(name, 100, 0))
         publish(PlayerTwoNamed(name))
     }
 }
