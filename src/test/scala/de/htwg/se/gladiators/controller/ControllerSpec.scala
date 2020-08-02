@@ -15,7 +15,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.gameState should be(GameState.NamingPlayerOne)
             }
         }
-        "receiving commands" should {
+        "receiving commands in init state" should {
             val controller = Controller(15)
             val eventQueue = EventQueue(controller)
             "send out an init Event" in {
@@ -25,6 +25,31 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             "send out an Error message" in {
                 controller.inputCommand(EndTurn)
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
+            }
+        }
+        "receiving commands to switch through states" should {
+            val controller = Controller(15)
+            val eventQueue = EventQueue(controller)
+            "send out player named events" in {
+                controller.inputCommand(NamePlayerOne("helmut"))
+                eventQueue.events.dequeue() should be(PlayerOneNamed("helmut"))
+
+                controller.inputCommand(NamePlayerTwo("herman"))
+                eventQueue.events.dequeue() should be(PlayerTwoNamed("herman"))
+            }
+            "send out error messages" in {
+                controller.inputCommand(NamePlayerOne("helmut"))
+
+                controller.inputCommand(NamePlayerTwo("herman"))
+                eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
+                eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
+            }
+            "end the current turn" in {
+                controller.inputCommand(EndTurn)
+                controller.inputCommand(EndTurn)
+
+                eventQueue.events.dequeue() should be(Turn(controller.playerTwo.get))
+                eventQueue.events.dequeue() should be(Turn(controller.playerOne.get))
             }
         }
     }
