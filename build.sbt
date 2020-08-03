@@ -6,7 +6,12 @@ addCompilerPlugin(scalafixSemanticdb)
 ThisBuild / version := "0.1"
 ThisBuild / scalaVersion := "2.12.12"
 ThisBuild / trapExit := false
-ThisBuild / scalacOptions ++= Seq("-deprecation", "-feature", "-Yrangepos", "-Ywarn-unused")
+ThisBuild / scalacOptions ++= Seq(
+    "-deprecation",
+    "-feature",
+    "-Yrangepos",
+    "-Ywarn-unused",
+    "evicted")
 
 val commonDependencies = Seq(
     "org.scalactic" %% "scalactic" % "3.1.1",
