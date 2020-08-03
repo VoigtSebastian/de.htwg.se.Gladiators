@@ -1,45 +1,34 @@
 package de.htwg.se.gladiators.aview.FxGui
 
-import scalafx.geometry.Insets
 import scalafx.scene.Scene
-import scalafx.scene.effect.DropShadow
-import scalafx.scene.layout.HBox
 import scalafx.scene.paint.Color._
-import scalafx.scene.paint.{ Stops, LinearGradient }
-import scalafx.scene.text.Text
 import de.htwg.se.gladiators.controller.ControllerInterface
 import scalafx.stage.StageStyle
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.application.JFXApp
+import scalafx.scene.control.Button
+import scalafx.scene.layout.{ HBox, VBox }
 
 case class Gui(controller: ControllerInterface) extends JFXApp {
     stage = new PrimaryStage {
-        title = "ScalaFX Hello World"
+        title = "Gladiators"
         initStyle(StageStyle.Decorated)
+        fullScreen_=(true)
         scene = new Scene {
             fill = Black
-            content = new HBox {
-                padding = Insets(20)
-                children = Seq(
-                    new Text {
-                        text = "Hello "
-                        style = "-fx-font-size: 48pt"
-                        fill = new LinearGradient(
-                            endX = 0,
-                            stops = Stops(PaleGreen, SeaGreen))
-                    },
-                    new Text {
-                        text = "World!!!"
-                        style = "-fx-font-size: 48pt"
-                        fill = new LinearGradient(
-                            endX = 0,
-                            stops = Stops(Cyan, DodgerBlue))
-                        effect = new DropShadow {
-                            color = DodgerBlue
-                            radius = 25
-                            spread = 0.25
-                        }
-                    })
+            content = new VBox {
+                fillWidth = true
+                children = (1 to 15)
+                    .map(y => new HBox {
+                        fillWidth = true
+                        children = (1 to 15)
+                            .map(x => new Button {
+                                text = s"$y $x"
+                                onMousePressed = (_) => {
+                                    println(s"$y $x")
+                                }
+                            }).seq
+                    }).seq
             }
         }
     }
