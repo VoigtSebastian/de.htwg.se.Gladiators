@@ -7,7 +7,8 @@ import scalafx.stage.StageStyle
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.application.JFXApp
 import scalafx.scene.control.Button
-import scalafx.scene.layout.{ HBox, VBox }
+import scalafx.scene.layout.GridPane
+import scalafx.geometry.Insets
 
 case class Gui(controller: ControllerInterface) extends JFXApp {
     stage = new PrimaryStage {
@@ -15,21 +16,20 @@ case class Gui(controller: ControllerInterface) extends JFXApp {
         initStyle(StageStyle.Decorated)
         fullScreen_=(true)
         scene = new Scene {
-            fill = Black
-            content = new VBox {
-                fillWidth = true
-                children = (1 to 15)
-                    .map(y => new HBox {
-                        fillWidth = true
-                        children = (1 to 15)
-                            .map(x => new Button {
-                                text = s"$y $x"
-                                onMousePressed = (_) => {
-                                    println(s"$y $x")
-                                }
-                            }).seq
-                    }).seq
+            val pane = new GridPane {
+                padding = Insets(10)
+                margin = Insets(10)
             }
+            (1 to 15).map(x => (1 to 15).map(y =>
+                pane.add(
+                    new Button {
+                        text = s"x$x,y$y"
+                        onMousePressed = (_) => { println(s"x$x,y$y") }
+                        padding = Insets(5)
+                        margin = Insets(5)
+                    },
+                    x, y)))
+            content = pane
         }
     }
 }
