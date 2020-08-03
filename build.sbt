@@ -8,8 +8,6 @@ ThisBuild / scalaVersion := "2.12.12"
 ThisBuild / trapExit := false
 ThisBuild / scalacOptions ++= Seq("-unchecked", "-deprecation", "-Xcheckinit", "-encoding", "utf8", "-feature", "-Yrangepos", "-Ywarn-unused")
 
-resolvers += Resolver.sonatypeRepo("snapshots")
-
 val commonDependencies = Seq(
     "org.scalactic" %% "scalactic" % "3.1.1",
     "org.scalatest" %% "scalatest" % "3.1.1" % Test,
