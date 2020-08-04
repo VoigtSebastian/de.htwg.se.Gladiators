@@ -18,7 +18,7 @@ case class Tui(controller: ControllerInterface) extends Reactor {
         case Init => print(namePlayerOneMessage)
         case PlayerOneNamed(_) => print(namePlayerTwoMessage)
         case PlayerTwoNamed(_) => println("Game start")
-        case Turn(player) => println(s"Turn of ${player.name}")
+        case Turn(player) => println(s"It's ${player.name}s turn!\n${controller.boardToString}")
     }
 
     def processInputLine(line: String): Boolean = {
