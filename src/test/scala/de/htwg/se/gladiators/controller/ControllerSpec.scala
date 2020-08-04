@@ -36,6 +36,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
                 controller.inputCommand(NamePlayerTwo("herman"))
                 eventQueue.events.dequeue() should be(PlayerTwoNamed("herman"))
+                eventQueue.events.dequeue() should be(Turn(controller.playerOne.get))
             }
             "send out error messages" in {
                 controller.inputCommand(NamePlayerOne("helmut"))
