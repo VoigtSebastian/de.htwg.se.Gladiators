@@ -75,5 +75,14 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
         gameState = TurnPlayerOne
         playerTwo = Some(Player(name, 100, 0))
         publish(PlayerTwoNamed(name))
+        publish(Turn(playerOne.get))
+    }
+
+    override def boardToString = board match {
+        case None => {
+            publish(ErrorMessage("No board initialized"))
+            ""
+        }
+        case Some(board) => board.coloredString(playerOne.get.gladiators ++ playerTwo.get.gladiators)
     }
 }

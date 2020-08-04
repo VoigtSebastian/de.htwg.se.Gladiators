@@ -6,4 +6,5 @@ import scala.swing.Publisher
 trait ControllerInterface extends Publisher {
     var gameState: GameState = GameState.NamingPlayerOne
     def inputCommand(command: Command): Unit
+    def boardToString: String
 }
