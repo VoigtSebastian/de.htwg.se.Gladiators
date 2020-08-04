@@ -6,7 +6,7 @@ import scala.util.Random
 
 object BoardFactory {
     def initRandomBoard(dimensions: Int = 15) = Board(
-        addGold(
+        addMine(
             addBase(
                 (1 to dimensions)
                     .map(_ => (1 to dimensions).map(_ =>
@@ -23,7 +23,7 @@ object BoardFactory {
             .updated(0, vector(0).updated(dimensions / 2, TileType.Base))
             .updated(dimensions - 1, vector(dimensions - 1).updated(dimensions / 2, TileType.Base))
 
-    def addGold(vector: Vector[Vector[TileType]], dimensions: Int): Vector[Vector[TileType]] =
+    def addMine(vector: Vector[Vector[TileType]], dimensions: Int): Vector[Vector[TileType]] =
         vector
             .updated(dimensions / 2, vector(dimensions / 2).updated(Random.nextInt(dimensions), TileType.Mine(Random.nextInt(50))))
 }
