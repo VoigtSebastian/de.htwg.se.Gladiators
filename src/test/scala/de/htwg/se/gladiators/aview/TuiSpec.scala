@@ -3,10 +3,12 @@ package de.htwg.se.gladiators.aview
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import de.htwg.se.gladiators.controller.TestImplementation.TestingController
-import de.htwg.se.gladiators.util.Command.Quit
-import de.htwg.se.gladiators.util.Command.Move
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.controller.GameState
+import de.htwg.se.gladiators.util.Command._
+import de.htwg.se.gladiators.controller.GameState._
+import de.htwg.se.gladiators.util.Events._
+import de.htwg.se.gladiators.model.Player
 
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A Tui" when {
@@ -32,6 +34,30 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 tui.processInputLine("move 2") should be(true)
 
                 controller.commandQueue.dequeue should be(Move(Coordinate(1, 1), Coordinate(4, 4)))
+            }
+            "send out naming commands" in {
+                val controller = TestingController()
+                val tui = Tui(controller)
+                controller.gameState = NamingPlayerOne
+                tui.processInputLine(tui.namePlayerOneMessage + "helmut")
+
+                controller.gameState = NamingPlayerTwo
+                tui.processInputLine(tui.namePlayerTwoMessage + "torsten")
+
+                controller.commandQueue.dequeue() should be(NamePlayerOne("helmut"))
+                controller.commandQueue.dequeue() should be(NamePlayerTwo("torsten"))
+            }
+
+            "print messages " in {
+                val controller = TestingController()
+                Tui(controller)
+                val stream = new java.io.ByteArrayOutputStream()
+                Console.withOut(stream) {
+                    controller.publish(Init)
+                    controller.publish(PlayerOneNamed("torsten"))
+                    controller.publish(PlayerTwoNamed("torsten"))
+                    controller.publish(Turn(Player("", 0, 0, Vector())))
+                }
             }
         }
     }
