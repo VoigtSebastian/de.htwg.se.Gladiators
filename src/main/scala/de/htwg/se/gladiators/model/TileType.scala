@@ -15,8 +15,8 @@ sealed trait TileType extends EnumEntry {
             call(x, y)
         }
         graphic = new ImageView(new File("textures/sand_60.png").toURI.toString)
-        prefHeight = 60
-        prefWidth = 60
+        prefHeight = 61
+        prefWidth = 61
         padding = Insets(0)
         margin = Insets(0)
     }
