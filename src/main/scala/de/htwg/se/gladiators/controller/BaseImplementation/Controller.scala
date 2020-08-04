@@ -7,11 +7,12 @@ import de.htwg.se.gladiators.util.Events._
 import de.htwg.se.gladiators.controller.GameState._
 import de.htwg.se.gladiators.model.{ Player, Board }
 import de.htwg.se.gladiators.util.Factories.ShopFactory
+import de.htwg.se.gladiators.util.Factories.BoardFactory.initRandomBoard
 
 case class Controller(playingFieldSize: Int) extends ControllerInterface {
     var playerOne: Option[Player] = None
     var playerTwo: Option[Player] = None
-    var board: Option[Board] = None
+    var board: Option[Board] = Some(initRandomBoard())
     var shop = ShopFactory.initRandomShop()
 
     override def inputCommand(command: Command): Unit = {
