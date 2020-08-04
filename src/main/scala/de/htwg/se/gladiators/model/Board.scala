@@ -29,4 +29,23 @@ case class Board(tiles: Vector[Vector[TileType]]) {
             down <- getValidCoordinatesFuture(currentPosition.copy(y = (currentPosition.y - 1)), movementPoints - 1, validTileTypes)
         ) yield (right ::: left ::: up ::: down ::: thisPosition).distinct
     }
+
+    def coloredString(gladiators: Vector[Gladiator]): String = {
+        tiles
+            .zipWithIndex
+            .map({
+                case (rowV, row) => rowV.zipWithIndex.map({
+                    case (tile, line) =>
+                        tile.coloredStringRepresentation(gladiatorAtPosition(gladiators, Coordinate(row, line)))
+                }).mkString + "\n"
+            }).mkString
+
+    }
+
+    def gladiatorAtPosition(gladiators: Vector[Gladiator], coordinate: Coordinate): Option[GladiatorType] =
+        gladiators
+            .find(_.position == coordinate) match {
+                case Some(value) => Some(value.gladiatorType)
+                case None => None
+            }
 }

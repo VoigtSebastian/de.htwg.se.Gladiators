@@ -4,12 +4,24 @@ import enumeratum._
 
 sealed trait GladiatorType extends EnumEntry {
     def movementPointsAttack(): Int
+    def toString(): String
 }
 
 object GladiatorType extends Enum[GladiatorType] {
     val values = findValues
 
-    case object Tank extends GladiatorType { def movementPointsAttack(): Int = 1 }
-    case object Knight extends GladiatorType { def movementPointsAttack(): Int = 2 }
-    case object Archer extends GladiatorType { def movementPointsAttack(): Int = 3 }
+    case object Tank extends GladiatorType {
+        override def movementPointsAttack(): Int = 1
+        override def toString = coloredString(21, "A")
+    }
+    case object Knight extends GladiatorType {
+        override def movementPointsAttack(): Int = 2
+        override def toString = coloredString(196, "A")
+    }
+    case object Archer extends GladiatorType {
+        override def movementPointsAttack(): Int = 3
+        override def toString = coloredString(210, "A")
+    }
+
+    def coloredString(color: Int, letter: String) = s"\u001b[38;5;${color}m ${letter} \u001b[0m"
 }
