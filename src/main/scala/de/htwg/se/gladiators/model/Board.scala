@@ -31,10 +31,10 @@ case class Board(tiles: Vector[Vector[TileType]]) {
     }
 
     def coloredString(gladiators: Vector[Gladiator]): String = {
-        tiles
+        "   " + (0 to (tiles.length - 1)).map(n => f"${n}%2d ").mkString + "\n" + tiles
             .zipWithIndex
             .map({
-                case (rowV, row) => rowV.zipWithIndex.map({
+                case (rowV, row) => f"$row%2d " + rowV.zipWithIndex.map({
                     case (tile, line) =>
                         tile.coloredStringRepresentation(gladiatorAtPosition(gladiators, Coordinate(row, line)))
                 }).mkString + "\n"
