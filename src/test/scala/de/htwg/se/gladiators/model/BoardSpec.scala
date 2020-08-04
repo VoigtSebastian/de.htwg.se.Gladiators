@@ -4,6 +4,8 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 
 import de.htwg.se.gladiators.util.Coordinate
+import de.htwg.se.gladiators.util.Factories.BoardFactory
+import de.htwg.se.gladiators.util.Factories.GladiatorFactory
 
 class CoordinateSpec extends AnyWordSpec with Matchers {
     "A Board" when {
@@ -77,6 +79,19 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
                 for ((x, y) <- (0 to 2).map(i => (i, i))) {
                     board.tileAtCoordinate(Coordinate(0, 2)) should be(TileType.Sand)
                 }
+            }
+        }
+        "working on a string representation" should {
+            val board = BoardFactory.initRandomBoard()
+            "return None" in {
+                board.gladiatorAtPosition(Vector(), Coordinate(1, 1)) should be(None)
+            }
+            "return Some" in {
+                val gladiator = GladiatorFactory.createGladiator(position = Some(Coordinate(0, 0)))
+                board.gladiatorAtPosition(Vector(gladiator), Coordinate(0, 0)) should be(Some(gladiator.gladiatorType))
+            }
+            "return a string" in {
+                board.coloredString(Vector()).isInstanceOf[String] should be(true)
             }
         }
     }
