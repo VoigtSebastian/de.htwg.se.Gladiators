@@ -8,5 +8,5 @@ case class TestingController() extends ControllerInterface {
     var commandQueue: Queue[Command] = Queue()
 
     override def inputCommand(command: Command) = commandQueue.enqueue(command)
-    override def boardToString = ???
+    override def boardToString = "???"
 }
