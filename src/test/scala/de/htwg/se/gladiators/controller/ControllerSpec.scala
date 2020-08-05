@@ -6,6 +6,10 @@ import de.htwg.se.gladiators.controller.BaseImplementation.Controller
 import de.htwg.se.gladiators.aview.TestImplementation.EventQueue
 import de.htwg.se.gladiators.util.Events._
 import de.htwg.se.gladiators.util.Command._
+import de.htwg.se.gladiators.util.Factories.ShopFactory
+import de.htwg.se.gladiators.controller.GameState.TurnPlayerOne
+import de.htwg.se.gladiators.controller.GameState.NamingPlayerOne
+import de.htwg.se.gladiators.model.Player
 
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A controller" when {
@@ -51,6 +55,25 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
                 eventQueue.events.dequeue() should be(Turn(controller.playerTwo.get))
                 eventQueue.events.dequeue() should be(Turn(controller.playerOne.get))
+            }
+        }
+        "receiving buy commands" should {
+            val controller = Controller(15)
+            val eventQueue = EventQueue(controller)
+            controller.shop = ShopFactory.initRandomShop(5)
+            "send out error messages" in {
+                controller.gameState = NamingPlayerOne
+                controller.inputCommand(BuyUnit(0))
+                eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
+
+                controller.gameState = TurnPlayerOne
+                controller.inputCommand(BuyUnit(10))
+                eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
+            }
+            "send out successful messages" in {
+                controller.playerOne = Some(Player("", 0, 0, Vector()))
+                controller.gameState = TurnPlayerOne
+                controller.inputCommand(BuyUnit(1))
             }
         }
     }
