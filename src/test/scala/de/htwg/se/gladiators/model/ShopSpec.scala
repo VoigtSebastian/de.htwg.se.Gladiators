@@ -23,5 +23,11 @@ class ShopSpec extends AnyWordSpec with Matchers {
                 shop.buy(1).get.stock(0) should not be (glad)
             }
         }
+        "giving out information about stock" should {
+            "return a nice string" in {
+                println(shop.toString)
+                shop.toString.isInstanceOf[String] should be(true)
+            }
+        }
     }
 }
