@@ -12,11 +12,11 @@ object GladiatorType extends Enum[GladiatorType] {
 
     case object Tank extends GladiatorType {
         override def movementPointsAttack(): Int = 1
-        override def toString = coloredString(21, "A")
+        override def toString = coloredString(21, "T")
     }
     case object Knight extends GladiatorType {
         override def movementPointsAttack(): Int = 2
-        override def toString = coloredString(196, "A")
+        override def toString = coloredString(196, "K")
     }
     case object Archer extends GladiatorType {
         override def movementPointsAttack(): Int = 3
