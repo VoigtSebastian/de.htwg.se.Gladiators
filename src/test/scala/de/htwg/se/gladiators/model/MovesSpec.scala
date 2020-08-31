@@ -50,6 +50,10 @@ class MovesSpec extends AnyWordSpec with Matchers {
                 val currentPlayer = Player("", 0, 0, Vector(GladiatorFactory.createGladiator(position = Some(Coordinate(2, 2)))))
                 Moves.movementType(Coordinate(2, 2), Coordinate(1, 2), board, currentPlayer, enemyPlayer) should be(IllegalMove)
             }
+            "categorize a base-attack" in {
+                val currentPlayer = Player("", 0, 0, Vector(GladiatorFactory.createGladiator(position = Some(Coordinate(0, 0)))))
+                Moves.movementType(Coordinate(0, 0), Coordinate(1, 0), board, currentPlayer, enemyPlayer) should be(BaseAttack)
+            }
         }
     }
 
