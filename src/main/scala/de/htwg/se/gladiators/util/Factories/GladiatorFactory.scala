@@ -29,21 +29,21 @@ object GladiatorFactory {
             Archer,
             Coordinate(-1, -1),
             randomNumberInterval(40, 70).toInt,
-            randomNumberInterval(40, 70).toInt,
+            randomNumberInterval(1, 3).toInt,
             randomNumberInterval(40, 70).toInt)
 
         case Knight => Gladiator(
             Knight,
             Coordinate(-1, -1),
             randomNumberInterval(40, 70).toInt,
-            randomNumberInterval(40, 70).toInt,
+            randomNumberInterval(2, 3).toInt,
             randomNumberInterval(40, 70).toInt)
 
         case Tank => Gladiator(
             Tank,
             Coordinate(-1, -1),
             randomNumberInterval(40, 70).toInt,
-            randomNumberInterval(40, 70).toInt,
+            randomNumberInterval(1, 2).toInt,
             randomNumberInterval(40, 70).toInt)
     }
 

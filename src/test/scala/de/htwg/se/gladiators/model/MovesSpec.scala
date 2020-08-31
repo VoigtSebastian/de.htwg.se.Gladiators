@@ -5,6 +5,7 @@ import org.scalatest.matchers.should.Matchers
 import de.htwg.se.gladiators.model.GladiatorType._
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.util.MovementType._
+import de.htwg.se.gladiators.util.Factories.GladiatorFactory
 
 class MovesSpec extends AnyWordSpec with Matchers {
     "A Move" when {
@@ -40,6 +41,14 @@ class MovesSpec extends AnyWordSpec with Matchers {
                 for ((x, y) <- (0 to 2).map((_, 1)) ++ Vector((0, 0))) {
                     Moves.movementType(Coordinate(x, y), Coordinate(0, 0), board, currentPlayer, enemyPlayer) should be(NoUnitAtCoordinate)
                 }
+            }
+            "categorize a move to palm" in {
+                val currentPlayer = Player("", 0, 0, Vector(GladiatorFactory.createGladiator(position = Some(Coordinate(0, 1)))))
+                Moves.movementType(Coordinate(0, 1), Coordinate(0, 2), board, currentPlayer, enemyPlayer) should be(MoveToPalm)
+            }
+            "categorize an illegal move when moving onto the own Base" in {
+                val currentPlayer = Player("", 0, 0, Vector(GladiatorFactory.createGladiator(position = Some(Coordinate(2, 2)))))
+                Moves.movementType(Coordinate(2, 2), Coordinate(1, 2), board, currentPlayer, enemyPlayer) should be(IllegalMove)
             }
         }
     }

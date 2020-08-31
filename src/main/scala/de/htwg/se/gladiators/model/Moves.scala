@@ -13,11 +13,11 @@ object Moves {
         }
         (board.tileAtCoordinate(from), board.tileAtCoordinate(to)) match {
             case (_, Palm) => MoveToPalm
-            case (_, Base) => return checkBaseAttack(from, currentPlayer, board) match {
+            case (_, Base) => checkBaseAttack(from, currentPlayer, board) match {
                 case true => BaseAttack
                 case false => IllegalMove
             }
-            case (_, Sand) => return checkLegalMove(from, to, currentPlayer, board) match {
+            case (_, Sand) => checkLegalMove(from, to, currentPlayer, board) match {
                 case true => Move
                 case false => IllegalMove
             }
