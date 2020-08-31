@@ -25,7 +25,6 @@ class ShopSpec extends AnyWordSpec with Matchers {
         }
         "giving out information about stock" should {
             "return a nice string" in {
-                println(shop.toString)
                 shop.toString.isInstanceOf[String] should be(true)
             }
         }
