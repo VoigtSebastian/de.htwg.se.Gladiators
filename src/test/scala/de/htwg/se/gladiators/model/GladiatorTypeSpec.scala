@@ -14,9 +14,9 @@ class GladiatorTypeSpec extends AnyWordSpec with Matchers {
                 GladiatorType.Tank.movementPointsAttack should be > 0
             }
             "have a string representation" in {
-                GladiatorType.Archer.toString should contain('A')
-                GladiatorType.Knight.toString should contain('K')
-                GladiatorType.Tank.toString should contain('T')
+                GladiatorType.Archer.coloredString should contain('A')
+                GladiatorType.Knight.coloredString should contain('K')
+                GladiatorType.Tank.coloredString should contain('T')
             }
         }
     }
