@@ -9,16 +9,29 @@ import de.htwg.se.gladiators.util.Command._
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.controller.GameState
 
-case class Tui(controller: ControllerInterface) extends Reactor {
+case class Tui(initialController: ControllerInterface) extends Reactor {
+    var controller = initialController
     listenTo(controller)
     val namePlayerOneMessage = "Name Player One: "
     val namePlayerTwoMessage = "Name Player Two: "
 
     reactions += {
         case Init => print(namePlayerOneMessage)
-        case PlayerOneNamed(_) => print(namePlayerTwoMessage)
-        case PlayerTwoNamed(_) => println("Game start")
+        case PlayerOneNamed(newController, _) => {
+            listenToNewController(newController)
+            print(namePlayerTwoMessage)
+        }
+        case PlayerTwoNamed(newController, _) => {
+            listenToNewController(newController)
+            println("Game start")
+        }
         case Turn(player) => println(s"It's ${player.name}s turn!\n${controller.boardToString}")
+    }
+
+    def listenToNewController(newController: ControllerInterface) = {
+        deafTo(controller)
+        controller = newController
+        listenTo(controller)
     }
 
     def processInputLine(line: String): Boolean = {
@@ -41,6 +54,10 @@ case class Tui(controller: ControllerInterface) extends Reactor {
                     Move(
                         Coordinate(args(0), args(1)),
                         Coordinate(args(2), args(3))))
+                true
+            }
+            case r"(end|e)" => {
+                controller.inputCommand(EndTurn)
                 true
             }
             case _ => {

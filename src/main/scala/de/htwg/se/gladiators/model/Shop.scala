@@ -7,5 +7,5 @@ case class Shop(stock: Vector[Gladiator], itemsInStock: Int) {
         if (number < 1 || number > stock.length) return None
         Some(this.copy(stock = stock.updated(number - 1, GladiatorFactory.initRandomGladiator)))
     }
-    override def toString: String = ???
+    override def toString: String = "???"
 }

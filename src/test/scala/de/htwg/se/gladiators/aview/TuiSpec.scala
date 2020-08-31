@@ -54,8 +54,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 val stream = new java.io.ByteArrayOutputStream()
                 Console.withOut(stream) {
                     controller.publish(Init)
-                    controller.publish(PlayerOneNamed("torsten"))
-                    controller.publish(PlayerTwoNamed("torsten"))
+                    controller.publish(PlayerOneNamed(controller, "torsten"))
+                    controller.publish(PlayerTwoNamed(controller, "torsten"))
                     controller.publish(Turn(Player("", 0, 0, Vector())))
                 }
             }

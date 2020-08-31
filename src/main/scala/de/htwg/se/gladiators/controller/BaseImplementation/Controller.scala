@@ -5,15 +5,14 @@ import de.htwg.se.gladiators.util.Command
 import de.htwg.se.gladiators.util.Command._
 import de.htwg.se.gladiators.util.Events._
 import de.htwg.se.gladiators.controller.GameState._
-import de.htwg.se.gladiators.model.{ Player, Board }
-import de.htwg.se.gladiators.util.Factories.ShopFactory
-import de.htwg.se.gladiators.util.Factories.BoardFactory.initRandomBoard
+import de.htwg.se.gladiators.model.{ Player, Board, Shop }
 
-case class Controller(playingFieldSize: Int) extends ControllerInterface {
-    var playerOne: Option[Player] = None
-    var playerTwo: Option[Player] = None
-    var board: Option[Board] = Some(initRandomBoard())
-    var shop = ShopFactory.initRandomShop()
+case class Controller(
+    playingFieldSize: Int,
+    playerOne: Option[Player],
+    playerTwo: Option[Player],
+    board: Option[Board],
+    shop: Shop) extends ControllerInterface {
 
     override def inputCommand(command: Command): Unit = {
         command match {
@@ -38,10 +37,10 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
             // todo: Check and reduce credits
             case Some(newShop) => {
                 val gladiator = shop.stock(number - 1)
-                shop = newShop
+                val controller = this.copy(shop = newShop)
                 gameState match {
-                    case TurnPlayerOne => publish(SuccessfullyBoughtGladiator(playerOne.get, gladiator))
-                    case TurnPlayerTwo => publish(SuccessfullyBoughtGladiator(playerTwo.get, gladiator))
+                    case TurnPlayerOne => publish(SuccessfullyBoughtGladiator(controller, playerOne.get, gladiator))
+                    case TurnPlayerTwo => publish(SuccessfullyBoughtGladiator(controller, playerTwo.get, gladiator))
                     case _ => publish(ErrorMessage("You can not buy from the shop currently"))
                 }
             }
@@ -52,6 +51,7 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
     def endTurn = {
         gameState match {
             case TurnPlayerOne => {
+                println("Ending turn")
                 gameState = TurnPlayerTwo
                 publish(Turn(playerTwo.get))
             }
@@ -65,17 +65,17 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
 
     def namePlayerOne(name: String) = {
         // todo: Player API lookup to set score
-        gameState = NamingPlayerTwo
-        playerOne = Some(Player(name, 100, playingFieldSize - 1))
-        publish(PlayerOneNamed(name))
+        val controller = this.copy(playerOne = Some(Player(name, 100, playingFieldSize - 1)))
+        controller.gameState = NamingPlayerTwo
+        publish(PlayerOneNamed(controller, name))
     }
 
     def namePlayerTwo(name: String) = {
         // todo: Player API lookup to set sc
-        gameState = TurnPlayerOne
-        playerTwo = Some(Player(name, 100, 0))
-        publish(PlayerTwoNamed(name))
-        publish(Turn(playerOne.get))
+        val controller = this.copy(playerTwo = Some(Player(name, 100, 0)))
+        controller.gameState = TurnPlayerOne
+        publish(PlayerTwoNamed(controller, name))
+        controller.publish(Turn(playerOne.get))
     }
 
     override def boardToString = board match {
