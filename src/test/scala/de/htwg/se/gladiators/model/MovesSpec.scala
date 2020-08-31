@@ -47,7 +47,7 @@ class MovesSpec extends AnyWordSpec with Matchers {
                 Moves.movementType(Coordinate(0, 1), Coordinate(0, 2), board, currentPlayer, enemyPlayer) should be(MoveToPalm)
             }
             "categorize an illegal move when moving onto the own Base" in {
-                val currentPlayer = Player("", 0, 0, Vector(GladiatorFactory.createGladiator(position = Some(Coordinate(2, 2)))))
+                val currentPlayer = Player("", 0, 0, Vector(GladiatorFactory.createGladiator(position = Some(Coordinate(2, 2)), movementPoints = Some(1))))
                 Moves.movementType(Coordinate(2, 2), Coordinate(1, 2), board, currentPlayer, enemyPlayer) should be(IllegalMove)
             }
             "categorize a base-attack" in {
