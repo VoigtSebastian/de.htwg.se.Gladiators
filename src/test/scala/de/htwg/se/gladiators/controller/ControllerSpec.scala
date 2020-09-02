@@ -93,14 +93,6 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
             }
 
-            "fail because of an uninitialized Player" in {
-                val (controller, eventQueue) = createControllerEventQueue(None, shopStockSize = Some(5))
-
-                controller.gameState = TurnPlayerTwo
-                controller.inputCommand(BuyUnit(1))
-                eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
-            }
-
             "send out successful messages" in {
                 val (controller, eventQueue) = createControllerEventQueue(None, shopStockSize = Some(5))
 
