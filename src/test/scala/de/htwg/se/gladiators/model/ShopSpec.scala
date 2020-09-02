@@ -20,7 +20,9 @@ class ShopSpec extends AnyWordSpec with Matchers {
             }
             "replace the correct Gladiator" in {
                 val glad = shop.stock(0)
-                shop.buy(1).get._1.stock(0) should not be (glad)
+                shop.buy(1).get._1.stock.foreach(_ should not be (glad))
+                val newShop = shop.buy(1).get._1
+                shop.stock.zip(newShop.stock).drop(1).foreach(gladiators => gladiators._1 should be(gladiators._2))
             }
         }
         "giving out information about stock" should {
