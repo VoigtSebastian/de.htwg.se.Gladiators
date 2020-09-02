@@ -35,9 +35,10 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
     def buyUnit(number: Int): Unit = {
         shop.buy(number) match {
             case Some((newShop, gladiator)) if (gameState == TurnPlayerOne || gameState == TurnPlayerTwo) => {
-                (currentPlayer, (currentPlayer.get.credits - gladiator.calculateCost)) match {
-                    case (Some(player), credits) if credits >= 0 => {
+                currentPlayer match {
+                    case Some(player) if (currentPlayer.get.credits - gladiator.calculateCost) >= 0 => {
                         shop = newShop
+                        val credits = (currentPlayer.get.credits - gladiator.calculateCost)
                         gameState match {
                             case TurnPlayerOne => {
                                 playerOne = Some(player.copy(gladiators = player.gladiators :+ gladiator, credits = credits))
@@ -49,8 +50,8 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
                             }
                         }
                     }
-                    case (Some(_), credits) => publish(ErrorMessage(f"You are ${credits * (-1)} credits short."))
-                    case (None, _) => publish(ErrorMessage("Error buying from the shop"))
+                    case Some(_) => publish(ErrorMessage(f"You are ${(currentPlayer.get.credits - gladiator.calculateCost) * (-1)} credits short."))
+                    case None => publish(ErrorMessage("Error buying from the shop"))
                 }
             }
             case Some((_, _)) => publish(ErrorMessage(f"Cannot buy units in state $gameState"))
