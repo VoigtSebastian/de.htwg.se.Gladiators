@@ -8,7 +8,7 @@ import de.htwg.se.gladiators.util.Events._
 import de.htwg.se.gladiators.util.Command._
 import de.htwg.se.gladiators.util.Factories.ShopFactory
 import de.htwg.se.gladiators.controller.GameState._
-import de.htwg.se.gladiators.model.Player
+import de.htwg.se.gladiators.model.{ Player, Board }
 
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A controller" when {
@@ -16,6 +16,17 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             val controller = Controller(15)
             "be in the NamingPlayerOne state" in {
                 controller.gameState should be(GameState.NamingPlayerOne)
+            }
+            "have an initialized board" in {
+                controller.board.isInstanceOf[Some[Board]] should be(true)
+            }
+            "return nice string values" in {
+                controller.playerTwo = Some(Player("", 0, 0, Vector()))
+                controller.playerOne = Some(Player("", 0, 0, Vector()))
+
+                controller.boardToString should not be (empty)
+                controller.board = None
+                controller.boardToString should be(empty)
             }
         }
         "receiving commands in init state" should {
