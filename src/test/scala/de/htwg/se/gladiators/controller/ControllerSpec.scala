@@ -57,23 +57,41 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             }
         }
         "receiving buy commands" should {
-            "send out error messages" in {
-                val controller = Controller(15)
-                val eventQueue = EventQueue(controller)
-                controller.shop = ShopFactory.initRandomShop(5)
+            "fail because of the wrong controller-state" in {
+                val (controller, eventQueue) = createControllerEventQueue(None, shopStockSize = Some(5))
 
                 controller.gameState = NamingPlayerOne
                 controller.inputCommand(BuyUnit(0))
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
+            }
+
+            "fail because the requested Unit does not exist" in {
+                val (controller, eventQueue) = createControllerEventQueue(None, shopStockSize = Some(5))
 
                 controller.gameState = TurnPlayerOne
                 controller.inputCommand(BuyUnit(10))
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
             }
+
+            "fail because of insufficient credits" in {
+                val (controller, eventQueue) = createControllerEventQueue(None, shopStockSize = Some(5))
+
+                controller.gameState = TurnPlayerOne
+                controller.playerOne = Some(Player("", 0, 0, Vector()))
+                controller.inputCommand(BuyUnit(1))
+                eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
+            }
+
+            "fail because of an uninitialized Player" in {
+                val (controller, eventQueue) = createControllerEventQueue(None, shopStockSize = Some(5))
+
+                controller.gameState = TurnPlayerTwo
+                controller.inputCommand(BuyUnit(1))
+                eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
+            }
+
             "send out successful messages" in {
-                val controller = Controller(15)
-                val eventQueue = EventQueue(controller)
-                controller.shop = ShopFactory.initRandomShop(5)
+                val (controller, eventQueue) = createControllerEventQueue(None, shopStockSize = Some(5))
 
                 controller.playerOne = Some(Player("", 0, 10000, Vector()))
                 controller.gameState = TurnPlayerOne
@@ -89,5 +107,11 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.playerTwo.get.credits should be >= 0
             }
         }
+    }
+    def createControllerEventQueue(playingFieldSize: Option[Int], shopStockSize: Option[Int]) = {
+        val controller = Controller(playingFieldSize.getOrElse(15))
+        val eventQueue = EventQueue(controller)
+        controller.shop = ShopFactory.initRandomShop(shopStockSize.getOrElse(controller.shop.stock.length))
+        (controller, eventQueue)
     }
 }
