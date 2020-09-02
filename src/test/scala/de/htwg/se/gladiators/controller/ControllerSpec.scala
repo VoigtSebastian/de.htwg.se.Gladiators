@@ -7,8 +7,7 @@ import de.htwg.se.gladiators.aview.TestImplementation.EventQueue
 import de.htwg.se.gladiators.util.Events._
 import de.htwg.se.gladiators.util.Command._
 import de.htwg.se.gladiators.util.Factories.ShopFactory
-import de.htwg.se.gladiators.controller.GameState.TurnPlayerOne
-import de.htwg.se.gladiators.controller.GameState.NamingPlayerOne
+import de.htwg.se.gladiators.controller.GameState._
 import de.htwg.se.gladiators.model.Player
 
 class ControllerSpec extends AnyWordSpec with Matchers {
@@ -58,10 +57,11 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             }
         }
         "receiving buy commands" should {
-            val controller = Controller(15)
-            val eventQueue = EventQueue(controller)
-            controller.shop = ShopFactory.initRandomShop(5)
             "send out error messages" in {
+                val controller = Controller(15)
+                val eventQueue = EventQueue(controller)
+                controller.shop = ShopFactory.initRandomShop(5)
+
                 controller.gameState = NamingPlayerOne
                 controller.inputCommand(BuyUnit(0))
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
@@ -71,9 +71,22 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
             }
             "send out successful messages" in {
-                controller.playerOne = Some(Player("", 0, 0, Vector()))
+                val controller = Controller(15)
+                val eventQueue = EventQueue(controller)
+                controller.shop = ShopFactory.initRandomShop(5)
+
+                controller.playerOne = Some(Player("", 0, 10000, Vector()))
                 controller.gameState = TurnPlayerOne
                 controller.inputCommand(BuyUnit(1))
+                eventQueue.events.dequeue().isInstanceOf[SuccessfullyBoughtGladiator] should be(true)
+
+                controller.playerTwo = Some(Player("", 0, 10000, Vector()))
+                controller.gameState = TurnPlayerTwo
+                controller.inputCommand(BuyUnit(1))
+                eventQueue.events.dequeue().isInstanceOf[SuccessfullyBoughtGladiator] should be(true)
+
+                controller.playerOne.get.credits should be >= 0
+                controller.playerTwo.get.credits should be >= 0
             }
         }
     }
