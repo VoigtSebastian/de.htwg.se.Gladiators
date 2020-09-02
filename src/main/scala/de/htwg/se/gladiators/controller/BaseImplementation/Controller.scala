@@ -37,21 +37,26 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
         shop.buy(number) match {
             // todo: Check and reduce credits
             case Some((newShop, gladiator)) => {
-                shop = newShop
-                gameState match {
-                    case TurnPlayerOne => {
-                        playerOne = Some(playerOne.get.copy(gladiators = (playerOne.get.gladiators :+ gladiator)))
-                        publish(SuccessfullyBoughtGladiator(playerOne.get, gladiator))
+                (currentPlayer, (currentPlayer.get.credits - gladiator.calculateCost)) match {
+                    case (Some(player), credits) if credits >= 0 => {
+                        shop = newShop
+                        gameState match {
+                            case TurnPlayerOne => playerOne = Some(player.copy(gladiators = player.gladiators :+ gladiator, credits = credits))
+                            case _ => playerTwo = Some(player.copy(gladiators = player.gladiators :+ gladiator, credits = credits))
+                        }
                     }
-                    case TurnPlayerTwo => {
-                        playerTwo = Some(playerOne.get.copy(gladiators = (playerTwo.get.gladiators :+ gladiator)))
-                        publish(SuccessfullyBoughtGladiator(playerTwo.get, gladiator))
-                    }
-                    case _ => publish(ErrorMessage("You can not buy from the shop currently"))
+                    case (Some(_), credits) => publish(ErrorMessage(f"You are ${credits * (-1)} credits short."))
+                    case (None, _) => publish(ErrorMessage("Error buying from the shop"))
                 }
             }
             case None => publish(ErrorMessage("Error buying from the shop"))
         }
+    }
+
+    def currentPlayer = gameState match {
+        case TurnPlayerOne => playerOne
+        case TurnPlayerTwo => playerTwo
+        case _ => None
     }
 
     def endTurn = {
