@@ -43,6 +43,10 @@ case class Tui(controller: ControllerInterface) extends Reactor {
                         Coordinate(args(2), args(3))))
                 true
             }
+            case r"(end|e)" => {
+                controller.inputCommand(EndTurn)
+                true
+            }
             case _ => {
                 errorMessage(line)
                 true
