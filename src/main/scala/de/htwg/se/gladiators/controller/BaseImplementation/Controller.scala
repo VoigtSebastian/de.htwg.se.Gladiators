@@ -8,6 +8,7 @@ import de.htwg.se.gladiators.controller.GameState._
 import de.htwg.se.gladiators.model.{ Player, Board }
 import de.htwg.se.gladiators.util.Factories.ShopFactory
 import de.htwg.se.gladiators.util.Factories.BoardFactory.initRandomBoard
+import de.htwg.se.gladiators.model.{ Gladiator, Shop }
 
 case class Controller(playingFieldSize: Int) extends ControllerInterface {
     var playerOne: Option[Player] = None
@@ -33,35 +34,32 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
     }
 
     def buyUnit(number: Int): Unit = {
-        shop.buy(number) match {
-            case Some((newShop, gladiator)) if (gameState == TurnPlayerOne || gameState == TurnPlayerTwo) => {
-                currentPlayer match {
-                    case Some(player) if (currentPlayer.get.credits - gladiator.calculateCost) >= 0 => {
-                        shop = newShop
-                        val credits = (currentPlayer.get.credits - gladiator.calculateCost)
-                        gameState match {
-                            case TurnPlayerOne => {
-                                playerOne = Some(player.copy(gladiators = player.gladiators :+ gladiator, credits = credits))
-                                publish(SuccessfullyBoughtGladiator(playerOne.get, gladiator))
-                            }
-                            case _ => {
-                                playerTwo = Some(player.copy(gladiators = player.gladiators :+ gladiator, credits = credits))
-                                publish(SuccessfullyBoughtGladiator(playerTwo.get, gladiator))
-                            }
-                        }
-                    }
-                    case Some(_) => publish(ErrorMessage(f"You are ${(currentPlayer.get.credits - gladiator.calculateCost) * (-1)} credits short."))
-                    case None => publish(ErrorMessage("Error buying from the shop"))
-                }
+        (shop.buy(number), gameState) match {
+            case (Some((newShop, gladiator)), TurnPlayerOne) => playerOne = Some(checkoutFromShop(playerOne.get, newShop, gladiator))
+            case (Some((newShop, gladiator)), TurnPlayerTwo) => playerTwo = Some(checkoutFromShop(playerTwo.get, newShop, gladiator))
+            case (Some(_), _) => publish(ErrorMessage(f"Cannot buy units in state $gameState"))
+            case (None, _) => publish(ErrorMessage(f"Error buying from shop"))
+        }
+    }
+
+    def checkoutFromShop(player: Player, newShop: Shop, gladiator: Gladiator): Player = {
+        (player.credits - gladiator.calculateCost) match {
+            case balance if balance >= 0 => {
+                shop = newShop
+                val newPlayer = player.copy(gladiators = player.gladiators :+ gladiator, credits = balance)
+                publish(SuccessfullyBoughtGladiator(newPlayer, gladiator))
+                newPlayer
             }
-            case Some((_, _)) => publish(ErrorMessage(f"Cannot buy units in state $gameState"))
-            case None => publish(ErrorMessage(f"Error buying from shop"))
+            case balance => {
+                publish(ErrorMessage(f"You are ${balance * (-1)} credits short."))
+                player
+            }
         }
     }
 
     def currentPlayer = gameState match {
-        case TurnPlayerOne => playerOne
-        case TurnPlayerTwo => playerTwo
+        case TurnPlayerOne => playerOne.get
+        case TurnPlayerTwo => playerTwo.get
         case _ => None
     }
 
