@@ -33,9 +33,8 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
     }
 
     def buyUnit(number: Int): Unit = {
-        shop.buy(number) match {
-            // todo: Check and reduce credits
-            case Some((newShop, gladiator)) => {
+        (gameState, shop.buy(number)) match {
+            case (state, Some((newShop, gladiator))) if (state == TurnPlayerOne || state == TurnPlayerTwo) => {
                 (currentPlayer, (currentPlayer.get.credits - gladiator.calculateCost)) match {
                     case (Some(player), credits) if credits >= 0 => {
                         shop = newShop
@@ -48,7 +47,8 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
                     case (None, _) => publish(ErrorMessage("Error buying from the shop"))
                 }
             }
-            case None => publish(ErrorMessage("Error buying from the shop"))
+            case ((state, Some((_, _)))) => publish(ErrorMessage(f"Cannot buy units in state $state"))
+            case ((_, None)) => publish(ErrorMessage("Error buying from shop"))
         }
     }
 
