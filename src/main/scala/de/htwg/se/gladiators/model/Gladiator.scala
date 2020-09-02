@@ -7,6 +7,7 @@ case class Gladiator(
     position: Coordinate,
     healthPoints: Int,
     movementPoints: Int,
-    attackPoints: Int) {
+    attackPoints: Int,
+    moved: Boolean) {
     def calculateCost = ((healthPoints * 2) + (movementPoints * 3) + (attackPoints * 2))
 }
