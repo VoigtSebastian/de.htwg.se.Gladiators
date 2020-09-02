@@ -13,7 +13,7 @@ object Events extends Enum[Events] {
     case object Init extends Events
     case class PlayerOneNamed(name: String) extends Events
     case class PlayerTwoNamed(name: String) extends Events
-    case class SuccessfullyBoughtGladiator(player: Player, gladiator: Gladiator) extends Event
+    case class SuccessfullyBoughtGladiator(player: Player, gladiator: Gladiator) extends Events
     case class Turn(player: Player) extends Events
     case class ErrorMessage(message: String) extends Events
 }

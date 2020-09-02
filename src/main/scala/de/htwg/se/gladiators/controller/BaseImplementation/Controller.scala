@@ -33,22 +33,28 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
     }
 
     def buyUnit(number: Int): Unit = {
-        (gameState, shop.buy(number)) match {
-            case (state, Some((newShop, gladiator))) if (state == TurnPlayerOne || state == TurnPlayerTwo) => {
+        shop.buy(number) match {
+            case Some((newShop, gladiator)) if (gameState == TurnPlayerOne || gameState == TurnPlayerTwo) => {
                 (currentPlayer, (currentPlayer.get.credits - gladiator.calculateCost)) match {
                     case (Some(player), credits) if credits >= 0 => {
                         shop = newShop
                         gameState match {
-                            case TurnPlayerOne => playerOne = Some(player.copy(gladiators = player.gladiators :+ gladiator, credits = credits))
-                            case _ => playerTwo = Some(player.copy(gladiators = player.gladiators :+ gladiator, credits = credits))
+                            case TurnPlayerOne => {
+                                playerOne = Some(player.copy(gladiators = player.gladiators :+ gladiator, credits = credits))
+                                publish(SuccessfullyBoughtGladiator(playerOne.get, gladiator))
+                            }
+                            case _ => {
+                                playerTwo = Some(player.copy(gladiators = player.gladiators :+ gladiator, credits = credits))
+                                publish(SuccessfullyBoughtGladiator(playerTwo.get, gladiator))
+                            }
                         }
                     }
                     case (Some(_), credits) => publish(ErrorMessage(f"You are ${credits * (-1)} credits short."))
                     case (None, _) => publish(ErrorMessage("Error buying from the shop"))
                 }
             }
-            case ((state, Some((_, _)))) => publish(ErrorMessage(f"Cannot buy units in state $state"))
-            case ((_, None)) => publish(ErrorMessage("Error buying from shop"))
+            case Some((_, _)) => publish(ErrorMessage(f"Cannot buy units in state $gameState"))
+            case None => publish(ErrorMessage(f"Error buying from shop"))
         }
     }
 

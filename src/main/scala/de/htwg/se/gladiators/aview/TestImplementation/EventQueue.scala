@@ -16,5 +16,6 @@ case class EventQueue(controller: Controller) extends Reactor {
         case PlayerTwoNamed(name) => events.enqueue(PlayerTwoNamed(name))
         case Turn(player) => events.enqueue(Turn(player))
         case ErrorMessage(message) => events.enqueue(ErrorMessage(message))
+        case SuccessfullyBoughtGladiator(player, gladiator) => events.enqueue(SuccessfullyBoughtGladiator(player, gladiator))
     }
 }
