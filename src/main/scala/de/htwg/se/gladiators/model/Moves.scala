@@ -35,6 +35,9 @@ object Moves {
         if (enemyPlayer.gladiators.map(_.position).contains(from)) {
             return Some(NotOwnedByPlayer)
         }
+        if (currentPlayer.gladiators.filter(_.position == from).head.moved)  {
+            return Some(AlreadyMoved)
+        }
         None
     }
 
