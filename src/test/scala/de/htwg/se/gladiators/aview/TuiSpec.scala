@@ -48,6 +48,18 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.commandQueue.dequeue() should be(NamePlayerTwo("torsten"))
             }
 
+            "end the current turn" in {
+                val controller = TestingController()
+                controller.gameState = GameState.TurnPlayerOne
+
+                val tui = Tui(controller)
+
+                tui.processInputLine("end")
+                tui.processInputLine("e")
+                controller.commandQueue.dequeue() should be(EndTurn)
+                controller.commandQueue.dequeue() should be(EndTurn)
+            }
+
             "print messages " in {
                 val controller = TestingController()
                 Tui(controller)
