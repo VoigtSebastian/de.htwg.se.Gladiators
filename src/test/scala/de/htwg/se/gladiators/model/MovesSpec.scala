@@ -53,6 +53,10 @@ class MovesSpec extends AnyWordSpec with Matchers {
                 val currentPlayer = Player("", 0, 0, Vector(createGladiator(position = Some(Coordinate(0, 0)), moved = Some(false))))
                 Moves.movementType(Coordinate(0, 0), Coordinate(1, 0), board, currentPlayer, enemyPlayer) should be(BaseAttack)
             }
+            "categorize that the Gladiator already moved" in {
+                val currentPlayer = Player("", 0, 0, Vector(createGladiator(position = Some(Coordinate(0, 0)), movementPoints = Some(2))))
+                Moves.movementType(Coordinate(0, 0), Coordinate(1, 0), board, currentPlayer, enemyPlayer) should be(AlreadyMoved)
+            }
         }
     }
 
