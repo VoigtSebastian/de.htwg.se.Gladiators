@@ -78,12 +78,12 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.playerOne = Some(Player("", 0, 10000, Vector()))
                 controller.gameState = TurnPlayerOne
                 controller.inputCommand(BuyUnit(1))
-                eventQueue.events.dequeue().isInstanceOf[SuccessfullyBoughtGladiator] should be(true)
+                eventQueue.events.dequeue().asInstanceOf[SuccessfullyBoughtGladiator].player should be(controller.playerOne.get)
 
                 controller.playerTwo = Some(Player("", 0, 10000, Vector()))
                 controller.gameState = TurnPlayerTwo
                 controller.inputCommand(BuyUnit(1))
-                eventQueue.events.dequeue().isInstanceOf[SuccessfullyBoughtGladiator] should be(true)
+                eventQueue.events.dequeue().asInstanceOf[SuccessfullyBoughtGladiator].player should be(controller.playerTwo.get)
 
                 controller.playerOne.get.credits should be >= 0
                 controller.playerTwo.get.credits should be >= 0
