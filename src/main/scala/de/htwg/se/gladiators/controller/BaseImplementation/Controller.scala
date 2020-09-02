@@ -26,7 +26,6 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
                 else publish(ErrorMessage(s"Player two can not be named anymore"))
             }
             case EndTurn => endTurn
-            case Attack(from, to) => println(s"Attacking from $from to $to")
             case BuyUnit(number) => buyUnit(number)
             case Move(from, to) => println(s"Moving from $from to $to")
             case Quit => println("Goodbye")
