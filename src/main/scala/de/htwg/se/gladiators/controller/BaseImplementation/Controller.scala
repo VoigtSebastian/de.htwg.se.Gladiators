@@ -36,12 +36,17 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
     def buyUnit(number: Int): Unit = {
         shop.buy(number) match {
             // todo: Check and reduce credits
-            case Some(newShop) => {
-                val gladiator = shop.stock(number - 1)
+            case Some((newShop, gladiator)) => {
                 shop = newShop
                 gameState match {
-                    case TurnPlayerOne => publish(SuccessfullyBoughtGladiator(playerOne.get, gladiator))
-                    case TurnPlayerTwo => publish(SuccessfullyBoughtGladiator(playerTwo.get, gladiator))
+                    case TurnPlayerOne => {
+                        playerOne = Some(playerOne.get.copy(gladiators = (playerOne.get.gladiators :+ gladiator)))
+                        publish(SuccessfullyBoughtGladiator(playerOne.get, gladiator))
+                    }
+                    case TurnPlayerTwo => {
+                        playerTwo = Some(playerOne.get.copy(gladiators = (playerTwo.get.gladiators :+ gladiator)))
+                        publish(SuccessfullyBoughtGladiator(playerTwo.get, gladiator))
+                    }
                     case _ => publish(ErrorMessage("You can not buy from the shop currently"))
                 }
             }
