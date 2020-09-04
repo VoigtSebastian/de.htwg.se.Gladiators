@@ -29,6 +29,27 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.boardToString should be(empty)
             }
         }
+        "returning the current player" should {
+            "return Player One" in {
+                val controller = Controller(15)
+                controller.playerOne = Some(Player("", 0, 0, Vector()))
+                controller.gameState = TurnPlayerOne
+                controller.currentPlayer should be(controller.playerOne.get)
+            }
+            "return Player Two" in {
+                val controller = Controller(15)
+                controller.playerTwo = Some(Player("", 0, 0, Vector()))
+                controller.gameState = TurnPlayerTwo
+                controller.currentPlayer should be(controller.playerTwo.get)
+            }
+            "return None" in {
+                val controller = Controller(15)
+                controller.gameState = NamingPlayerOne
+                controller.currentPlayer should be(None)
+                controller.gameState = NamingPlayerTwo
+                controller.currentPlayer should be(None)
+            }
+        }
         "receiving commands in init state" should {
             val controller = Controller(15)
             val eventQueue = EventQueue(controller)
