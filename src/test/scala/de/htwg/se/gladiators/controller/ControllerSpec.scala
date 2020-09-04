@@ -93,7 +93,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 val (controller, eventQueue) = createControllerEventQueue(None, shopStockSize = Some(5))
 
                 controller.gameState = NamingPlayerOne
-                controller.inputCommand(BuyUnit(0))
+                controller.inputCommand(BuyUnit(1))
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
             }
 
