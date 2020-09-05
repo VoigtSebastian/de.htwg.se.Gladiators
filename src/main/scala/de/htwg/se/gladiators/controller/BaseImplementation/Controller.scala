@@ -10,10 +10,10 @@ import de.htwg.se.gladiators.util.Factories.ShopFactory
 import de.htwg.se.gladiators.util.Factories.BoardFactory.initRandomBoard
 import de.htwg.se.gladiators.model.{ Gladiator, Shop }
 
-case class Controller(playingFieldSize: Int) extends ControllerInterface {
+case class Controller() extends ControllerInterface {
     var playerOne: Option[Player] = None
     var playerTwo: Option[Player] = None
-    var board: Option[Board] = Some(initRandomBoard())
+    var board: Board = initRandomBoard()
     var shop = ShopFactory.initRandomShop()
 
     override def inputCommand(command: Command): Unit = {
@@ -80,7 +80,7 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
     def namePlayerOne(name: String) = {
         // todo: Player API lookup to set score
         gameState = NamingPlayerTwo
-        playerOne = Some(Player(name, 100, playingFieldSize - 1))
+        playerOne = Some(Player(name, 100, board.tiles.size - 1))
         publish(PlayerOneNamed(name))
     }
 
@@ -92,11 +92,5 @@ case class Controller(playingFieldSize: Int) extends ControllerInterface {
         publish(Turn(playerOne.get))
     }
 
-    override def boardToString = board match {
-        case None => {
-            publish(ErrorMessage("No board initialized"))
-            ""
-        }
-        case Some(board) => board.coloredString(playerOne.get.gladiators ++ playerTwo.get.gladiators)
-    }
+    override def boardToString = board.coloredString(playerOne.get.gladiators ++ playerTwo.get.gladiators)
 }

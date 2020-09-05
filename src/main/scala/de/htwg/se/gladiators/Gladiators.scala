@@ -3,10 +3,11 @@ package de.htwg.se.gladiators
 import de.htwg.se.gladiators.aview.Tui
 import de.htwg.se.gladiators.controller.BaseImplementation.Controller
 import de.htwg.se.gladiators.util.Events.Init
+import com.softwaremill.macwire._
 
 object Main extends App {
-    val controller = Controller(15)
-    val tui = Tui(controller)
+    val controller = wire[Controller]
+    val tui = wire[Tui]
 
     controller.publish(Init)
     while (tui.processInputLine(scala.io.StdIn.readLine())) {}
