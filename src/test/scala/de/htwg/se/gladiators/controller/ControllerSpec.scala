@@ -13,37 +13,35 @@ import de.htwg.se.gladiators.model.{ Player, Board }
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A controller" when {
         "created" should {
-            val controller = Controller(15)
+            val controller = Controller()
             "be in the NamingPlayerOne state" in {
                 controller.gameState should be(GameState.NamingPlayerOne)
             }
             "have an initialized board" in {
-                controller.board.isInstanceOf[Some[Board]] should be(true)
+                controller.board.isInstanceOf[Board] should be(true)
             }
             "return nice string values" in {
                 controller.playerTwo = Some(Player("", 0, 0, Vector()))
                 controller.playerOne = Some(Player("", 0, 0, Vector()))
 
                 controller.boardToString should not be (empty)
-                controller.board = None
-                controller.boardToString should be(empty)
             }
         }
         "returning the current player" should {
             "return Player One" in {
-                val controller = Controller(15)
+                val controller = Controller()
                 controller.playerOne = Some(Player("", 0, 0, Vector()))
                 controller.gameState = TurnPlayerOne
                 controller.currentPlayer should be(controller.playerOne.get)
             }
             "return Player Two" in {
-                val controller = Controller(15)
+                val controller = Controller()
                 controller.playerTwo = Some(Player("", 0, 0, Vector()))
                 controller.gameState = TurnPlayerTwo
                 controller.currentPlayer should be(controller.playerTwo.get)
             }
             "return None" in {
-                val controller = Controller(15)
+                val controller = Controller()
                 controller.gameState = NamingPlayerOne
                 controller.currentPlayer should be(None)
                 controller.gameState = NamingPlayerTwo
@@ -51,7 +49,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             }
         }
         "receiving commands in init state" should {
-            val controller = Controller(15)
+            val controller = Controller()
             val eventQueue = EventQueue(controller)
             "send out an init Event" in {
                 controller.publish(Init)
@@ -63,7 +61,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             }
         }
         "receiving commands to switch through states" should {
-            val controller = Controller(15)
+            val controller = Controller()
             val eventQueue = EventQueue(controller)
             "send out player named events" in {
                 controller.inputCommand(NamePlayerOne("helmut"))
@@ -90,7 +88,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         }
         "receiving buy commands" should {
             "fail because of the wrong controller-state" in {
-                val (controller, eventQueue) = createControllerEventQueue(None, shopStockSize = Some(5))
+                val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
 
                 controller.gameState = NamingPlayerOne
                 controller.inputCommand(BuyUnit(1))
@@ -98,7 +96,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             }
 
             "fail because the requested Unit does not exist" in {
-                val (controller, eventQueue) = createControllerEventQueue(None, shopStockSize = Some(5))
+                val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
 
                 controller.gameState = TurnPlayerOne
                 controller.inputCommand(BuyUnit(10))
@@ -106,7 +104,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             }
 
             "fail because of insufficient credits" in {
-                val (controller, eventQueue) = createControllerEventQueue(None, shopStockSize = Some(5))
+                val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
 
                 controller.gameState = TurnPlayerOne
                 controller.playerOne = Some(Player("", 0, 0, Vector()))
@@ -115,7 +113,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             }
 
             "send out successful messages" in {
-                val (controller, eventQueue) = createControllerEventQueue(None, shopStockSize = Some(5))
+                val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
 
                 controller.playerOne = Some(Player("", 0, 10000, Vector()))
                 controller.gameState = TurnPlayerOne
@@ -132,8 +130,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             }
         }
     }
-    def createControllerEventQueue(playingFieldSize: Option[Int], shopStockSize: Option[Int]) = {
-        val controller = Controller(playingFieldSize.getOrElse(15))
+    def createControllerEventQueue(shopStockSize: Option[Int]) = {
+        val controller = Controller()
         val eventQueue = EventQueue(controller)
         controller.shop = ShopFactory.initRandomShop(shopStockSize.getOrElse(controller.shop.stock.length))
         (controller, eventQueue)
