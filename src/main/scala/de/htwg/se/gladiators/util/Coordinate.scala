@@ -11,4 +11,6 @@ case class Coordinate(
             case that: Coordinate => that.canEqual(this) && this.x == that.x && this.y == that.y
             case _ => false
         }
+
+    override def toString = f"($x, $y)"
 }
