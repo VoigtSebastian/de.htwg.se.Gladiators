@@ -5,12 +5,12 @@ import de.htwg.se.gladiators.model.TileType
 import scala.util.Random
 
 object BoardFactory {
-    def initRandomBoard(dimensions: Int = 15) = Board(
+    def initRandomBoard(dimensions: Int = 15, percentageSand: Int = 80) = Board(
         addMine(
             addBase(
                 (1 to dimensions)
                     .map(_ => (1 to dimensions).map(_ =>
-                        if (Random.nextInt(100) < 80)
+                        if (Random.nextInt(100) < percentageSand)
                             TileType.Sand
                         else
                             TileType.Palm)
