@@ -38,8 +38,6 @@ case class Controller() extends ControllerInterface {
         }
     }
 
-
-
     def buyUnit(number: Int, position: Coordinate): Unit = {
         (shop.buy(number), gameState, board.isCoordinateLegal(position)) match {
             case (Some((newShop, gladiator)), TurnPlayerOne, true) => playerOne = Some(checkoutFromShop(playerOne.get, newShop, gladiator))
