@@ -3,12 +3,14 @@ package de.htwg.se.gladiators.controller.BaseImplementation
 import de.htwg.se.gladiators.controller.ControllerInterface
 import de.htwg.se.gladiators.util.Command
 import de.htwg.se.gladiators.util.Command._
+import de.htwg.se.gladiators.util.Events
 import de.htwg.se.gladiators.util.Events._
 import de.htwg.se.gladiators.controller.GameState._
 import de.htwg.se.gladiators.model.{ Player, Board }
 import de.htwg.se.gladiators.util.Factories.ShopFactory
 import de.htwg.se.gladiators.util.Factories.BoardFactory.initRandomBoard
 import de.htwg.se.gladiators.model.{ Gladiator, Shop }
+import de.htwg.se.gladiators.util.Coordinate
 
 case class Controller() extends ControllerInterface {
     var playerOne: Option[Player] = None
@@ -16,29 +18,35 @@ case class Controller() extends ControllerInterface {
     var board: Board = initRandomBoard()
     var shop = ShopFactory.initRandomShop()
 
+    implicit class Publish(notification: Events) {
+        def broadcast = publish(notification)
+    }
+
     override def inputCommand(command: Command): Unit = {
         command match {
             case NamePlayerOne(name) => {
                 if (gameState == NamingPlayerOne) namePlayerOne(name)
-                else publish(ErrorMessage(s"Player one can not be named anymore"))
+                else ErrorMessage(s"Player one can not be named anymore").broadcast
             }
             case NamePlayerTwo(name) => {
                 if (gameState == NamingPlayerTwo) namePlayerTwo(name)
-                else publish(ErrorMessage(s"Player two can not be named anymore"))
+                else ErrorMessage(s"Player two can not be named anymore").broadcast
             }
             case EndTurn => endTurn
-            case BuyUnit(number) => buyUnit(number)
-            case Move(from, to) => println(s"Moving from $from to $to")
+            case BuyUnit(number, position) => buyUnit(number, position)
             case Quit => println("Goodbye")
         }
     }
 
-    def buyUnit(number: Int): Unit = {
-        (shop.buy(number), gameState) match {
-            case (Some((newShop, gladiator)), TurnPlayerOne) => playerOne = Some(checkoutFromShop(playerOne.get, newShop, gladiator))
-            case (Some((newShop, gladiator)), TurnPlayerTwo) => playerTwo = Some(checkoutFromShop(playerTwo.get, newShop, gladiator))
-            case (Some(_), _) => publish(ErrorMessage(f"Cannot buy units in state $gameState"))
-            case (None, _) => publish(ErrorMessage(f"Error buying from shop"))
+
+
+    def buyUnit(number: Int, position: Coordinate): Unit = {
+        (shop.buy(number), gameState, board.isCoordinateLegal(position)) match {
+            case (Some((newShop, gladiator)), TurnPlayerOne, true) => playerOne = Some(checkoutFromShop(playerOne.get, newShop, gladiator))
+            case (Some((newShop, gladiator)), TurnPlayerTwo, true) => playerTwo = Some(checkoutFromShop(playerTwo.get, newShop, gladiator))
+            case (_, _, false) => ErrorMessage(f"You can not place a unit at $position")
+            case (Some(_), _, _) => ErrorMessage(f"Cannot buy units in state $gameState").broadcast
+            case (None, _, _) => ErrorMessage(f"Error buying from shop").broadcast
         }
     }
 
@@ -47,19 +55,25 @@ case class Controller() extends ControllerInterface {
             case balance if balance >= 0 => {
                 shop = newShop
                 val newPlayer = player.copy(gladiators = player.gladiators :+ gladiator, credits = balance)
-                publish(SuccessfullyBoughtGladiator(newPlayer, gladiator))
+                SuccessfullyBoughtGladiator(newPlayer, gladiator).broadcast
                 newPlayer
             }
             case balance => {
-                publish(ErrorMessage(f"You are ${balance * (-1)} credits short."))
+                ErrorMessage(f"You are ${balance * (-1)} credits short.").broadcast
                 player
             }
         }
     }
 
     def currentPlayer = gameState match {
-        case TurnPlayerOne => playerOne.get
-        case TurnPlayerTwo => playerTwo.get
+        case TurnPlayerOne => playerOne
+        case TurnPlayerTwo => playerTwo
+        case _ => None
+    }
+
+    def enemyPlayer = gameState match {
+        case TurnPlayerOne => playerTwo
+        case TurnPlayerTwo => playerOne
         case _ => None
     }
 
@@ -67,13 +81,13 @@ case class Controller() extends ControllerInterface {
         gameState match {
             case TurnPlayerOne => {
                 gameState = TurnPlayerTwo
-                publish(Turn(playerTwo.get))
+                Turn(playerTwo.get).broadcast
             }
             case TurnPlayerTwo => {
                 gameState = TurnPlayerOne
-                publish(Turn(playerOne.get))
+                Turn(playerOne.get).broadcast
             }
-            case _ => publish(ErrorMessage(s"You can not end a turn in gameState $gameState"))
+            case _ => ErrorMessage(s"You can not end a turn in gameState $gameState").broadcast
         }
     }
 
@@ -81,15 +95,15 @@ case class Controller() extends ControllerInterface {
         // todo: Player API lookup to set score
         gameState = NamingPlayerTwo
         playerOne = Some(Player(name, 100, board.tiles.size - 1))
-        publish(PlayerOneNamed(name))
+        PlayerOneNamed(name).broadcast
     }
 
     def namePlayerTwo(name: String) = {
         // todo: Player API lookup to set sc
         gameState = TurnPlayerOne
         playerTwo = Some(Player(name, 100, 0))
-        publish(PlayerTwoNamed(name))
-        publish(Turn(playerOne.get))
+        PlayerTwoNamed(name).broadcast
+        Turn(playerOne.get).broadcast
     }
 
     override def boardToString = board.coloredString(playerOne.get.gladiators ++ playerTwo.get.gladiators)

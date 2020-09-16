@@ -9,6 +9,7 @@ import de.htwg.se.gladiators.util.Command._
 import de.htwg.se.gladiators.util.Factories.ShopFactory
 import de.htwg.se.gladiators.controller.GameState._
 import de.htwg.se.gladiators.model.{ Player, Board }
+import de.htwg.se.gladiators.util.Coordinate
 
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A controller" when {
@@ -32,13 +33,13 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 val controller = Controller()
                 controller.playerOne = Some(Player("", 0, 0, Vector()))
                 controller.gameState = TurnPlayerOne
-                controller.currentPlayer should be(controller.playerOne.get)
+                controller.currentPlayer should be(controller.playerOne)
             }
             "return Player Two" in {
                 val controller = Controller()
                 controller.playerTwo = Some(Player("", 0, 0, Vector()))
                 controller.gameState = TurnPlayerTwo
-                controller.currentPlayer should be(controller.playerTwo.get)
+                controller.currentPlayer should be(controller.playerTwo)
             }
             "return None" in {
                 val controller = Controller()
@@ -46,6 +47,27 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.currentPlayer should be(None)
                 controller.gameState = NamingPlayerTwo
                 controller.currentPlayer should be(None)
+            }
+        }
+        "returning the enemy player" should {
+            "return Player One" in {
+                val controller = Controller()
+                controller.playerTwo = Some(Player("", 0, 0, Vector()))
+                controller.gameState = TurnPlayerOne
+                controller.enemyPlayer should be(controller.playerTwo)
+            }
+            "return Player Two" in {
+                val controller = Controller()
+                controller.playerOne = Some(Player("", 0, 0, Vector()))
+                controller.gameState = TurnPlayerTwo
+                controller.enemyPlayer should be(controller.playerOne)
+            }
+            "return None" in {
+                val controller = Controller()
+                controller.gameState = NamingPlayerOne
+                controller.enemyPlayer should be(None)
+                controller.gameState = NamingPlayerTwo
+                controller.enemyPlayer should be(None)
             }
         }
         "receiving commands in init state" should {
@@ -91,7 +113,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
 
                 controller.gameState = NamingPlayerOne
-                controller.inputCommand(BuyUnit(1))
+                controller.inputCommand(BuyUnit(1, Coordinate(0, 0)))
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
             }
 
@@ -99,7 +121,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
 
                 controller.gameState = TurnPlayerOne
-                controller.inputCommand(BuyUnit(10))
+                controller.inputCommand(BuyUnit(10, Coordinate(0, 0)))
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
             }
 
@@ -108,7 +130,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
                 controller.gameState = TurnPlayerOne
                 controller.playerOne = Some(Player("", 0, 0, Vector()))
-                controller.inputCommand(BuyUnit(1))
+                controller.inputCommand(BuyUnit(1, Coordinate(0, 0)))
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
             }
 
@@ -117,12 +139,12 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
                 controller.playerOne = Some(Player("", 0, 10000, Vector()))
                 controller.gameState = TurnPlayerOne
-                controller.inputCommand(BuyUnit(1))
+                controller.inputCommand(BuyUnit(1, Coordinate(controller.board.tiles.size / 2, controller.board.tiles.size - 2)))
                 eventQueue.events.dequeue().asInstanceOf[SuccessfullyBoughtGladiator].player should be(controller.playerOne.get)
 
                 controller.playerTwo = Some(Player("", 0, 10000, Vector()))
                 controller.gameState = TurnPlayerTwo
-                controller.inputCommand(BuyUnit(1))
+                controller.inputCommand(BuyUnit(1, Coordinate(controller.board.tiles.size / 2, 1)))
                 eventQueue.events.dequeue().asInstanceOf[SuccessfullyBoughtGladiator].player should be(controller.playerTwo.get)
 
                 controller.playerOne.get.credits should be >= 0
