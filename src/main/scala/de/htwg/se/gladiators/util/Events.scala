@@ -15,5 +15,6 @@ object Events extends Enum[Events] {
     case class PlayerTwoNamed(name: String) extends Events
     case class SuccessfullyBoughtGladiator(player: Player, gladiator: Gladiator) extends Events
     case class Turn(player: Player) extends Events
+    case class Moved(player: Player, from: Coordinate, to: Coordinate, gladiator: Gladiator) extends Events
     case class ErrorMessage(message: String) extends Events
 }
