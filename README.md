@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/VoigtSebastian/de.htwg.se.Gladiators.svg?branch=master)](https://travis-ci.org/VoigtSebastian/de.htwg.se.Gladiators) [![Coverage Status](https://coveralls.io/repos/github/VoigtSebastian/de.htwg.se.Gladiators/badge.svg?branch=master)](https://coveralls.io/github/VoigtSebastian/de.htwg.se.Gladiators?branch=master)
+[![Build Status](https://travis-ci.org/VoigtSebastian/de.htwg.se.Gladiators.svg?branch=remaster)](https://travis-ci.org/VoigtSebastian/de.htwg.se.Gladiators) [![Coverage Status](https://coveralls.io/repos/github/VoigtSebastian/de.htwg.se.Gladiators/badge.svg?branch=master)](https://coveralls.io/github/VoigtSebastian/de.htwg.se.Gladiators?branch=remaster)
+
+# Currently getting remastered on the [remaster branch](https://github.com/VoigtSebastian/de.htwg.se.Gladiators/tree/remaster)
 
 # Gladiators
 ## A turn-based game developed by Sascha Villing and Sebastian Voigt
