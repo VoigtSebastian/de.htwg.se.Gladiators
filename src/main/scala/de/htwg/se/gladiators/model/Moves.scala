@@ -11,6 +11,8 @@ object Moves {
             case Some(value) => return value
             case None => ()
         }
+        if (!board.isCoordinateLegal(from) || !board.isCoordinateLegal(to))
+            return MoveOutOfBounds
         (board.tileAtCoordinate(from), board.tileAtCoordinate(to)) match {
             case (_, Palm) => MoveToPalm
             case (_, Base) => checkBaseAttack(from, currentPlayer, board) match {

@@ -11,6 +11,7 @@ import de.htwg.se.gladiators.controller.GameState._
 import de.htwg.se.gladiators.model.{ Player, Board }
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.util.Factories.BoardFactory
+import de.htwg.se.gladiators.util.Factories.GladiatorFactory
 
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A controller" when {
@@ -125,8 +126,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.gameState = TurnPlayerTwo
                 controller.inputCommand(BuyUnit(1, Coordinate((controller.board.tiles.size / 2), controller.board.tiles.size - 2)))
 
-                eventQueue.events.dequeue.isInstanceOf[ErrorMessage] should be (true)
-                eventQueue.events.dequeue.isInstanceOf[ErrorMessage] should be (true)
+                eventQueue.events.dequeue.isInstanceOf[ErrorMessage] should be(true)
+                eventQueue.events.dequeue.isInstanceOf[ErrorMessage] should be(true)
             }
             "fail because of the wrong controller-state" in {
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
@@ -192,9 +193,17 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         }
         "moving a unit" should {
             val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
-            "publish an error message" in {
+            "publish an error because of the wrong gameState" in {
                 controller.gameState = NamingPlayerOne
                 controller.inputCommand(Move(Coordinate(0, 0), Coordinate(1, 1)))
+                eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
+            }
+            "publish an error because the move is out of bounds" in {
+                controller.gameState = TurnPlayerOne
+                controller.playerOne = Some(Player("", 0, 0, Vector(GladiatorFactory.createGladiator(position = Some(Coordinate(0, 0)), moved = Some(false)))))
+                controller.playerTwo = Some(Player("", 0, 0, Vector()))
+
+                controller.inputCommand(Move(Coordinate(0, 0), Coordinate(-1, -1)))
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
             }
         }
