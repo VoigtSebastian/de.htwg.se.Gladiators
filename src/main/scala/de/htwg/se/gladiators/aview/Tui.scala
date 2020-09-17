@@ -50,6 +50,12 @@ case class Tui(controller: ControllerInterface) extends Reactor {
                         Coordinate(args(0), args(1)),
                         Coordinate(args(2), args(3))))
             }
+            case r"(buy|b) \d+ \d+ \d+" => {
+                val args = commandBuilder(line)
+                controller.inputCommand(
+                    BuyUnit(
+                        args(0),
+                        Coordinate(args(1), args(2))))
             }
             case r"(end|e)" => controller.inputCommand(EndTurn)
             case r"(shop|s)" => println(controller.shopToString)
