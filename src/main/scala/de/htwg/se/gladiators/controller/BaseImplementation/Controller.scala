@@ -22,6 +22,13 @@ case class Controller() extends ControllerInterface {
         def broadcast = publish(notification)
     }
 
+    implicit class MoveGladiator(gladiators: Vector[Gladiator]) {
+        def move(from: Coordinate, to: Coordinate) = gladiators.map(gladiator => gladiator.position == from match {
+            case true => gladiator.move(to)
+            case false => gladiator
+        })
+    }
+
     override def inputCommand(command: Command): Unit = {
         command match {
             case NamePlayerOne(name) => {
