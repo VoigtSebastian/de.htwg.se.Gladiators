@@ -11,6 +11,9 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
                 coordinate.x should be(0)
                 coordinate.y should be(0)
             }
+            "should have a String representation" in {
+                Coordinate(0, 0).toString should not be (empty)
+            }
         }
         "compared" should {
             "be the same " in {
@@ -22,6 +25,10 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
                 val c1 = Coordinate(0, 0)
                 val c2 = Coordinate(0, 1)
                 (c1.equals(c2)) should be(false)
+            }
+            "be false because they are different classes" in {
+                val c = Coordinate(0, 0)
+                c.equals(1) should be(false)
             }
         }
         "checked for legality" should {
