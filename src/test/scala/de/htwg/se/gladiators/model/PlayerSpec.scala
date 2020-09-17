@@ -37,8 +37,7 @@ class PlayerSpec extends AnyWordSpec with Matchers {
                 .copy(gladiators = Vector(
                     GladiatorFactory.createGladiator(position = Some(Coordinate(2, 0))),
                     GladiatorFactory.createGladiator(position = Some(Coordinate(4, 0))),
-                    GladiatorFactory.createGladiator(position = Some(Coordinate(3, 1)))
-                ))
+                    GladiatorFactory.createGladiator(position = Some(Coordinate(3, 1)))))
                 .placementTilesNewUnit(7, board.tiles) should be(empty)
         }
     }
