@@ -115,4 +115,6 @@ case class Controller() extends ControllerInterface {
     }
 
     override def boardToString = board.coloredString(playerOne.get.gladiators ++ playerTwo.get.gladiators)
+
+    override def shopToString = shop.toString
 }

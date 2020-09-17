@@ -42,11 +42,13 @@ case class Tui(controller: ControllerInterface) extends Reactor {
             }
             }
             case r"(end|e)" => controller.inputCommand(EndTurn)
+            case r"(shop|s)" => println(controller.shopToString)
             case _ => couldNotParseCommand(line)
         }
         true
     }
 
+    def printBoard = println(controller.boardToString)
     def errorMessage(line: String) = println(s"Error: ($line)")
     def couldNotParseCommand(line: String) = errorMessage(f"Could not parse command: ($line)")
 
