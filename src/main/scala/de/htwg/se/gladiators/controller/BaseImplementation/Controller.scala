@@ -45,7 +45,7 @@ case class Controller() extends ControllerInterface {
             case BuyUnit(number, position) => buyUnit(number, position)
             case Move(from, to) if gameState == TurnPlayerOne || gameState == TurnPlayerTwo => move(from, to)
             case Move(_, _) => ErrorMessage(f"Cannot move in gameState $gameState").broadcast
-            case Quit => println("Goodbye")
+            case Quit => Shutdown.broadcast
         }
     }
 

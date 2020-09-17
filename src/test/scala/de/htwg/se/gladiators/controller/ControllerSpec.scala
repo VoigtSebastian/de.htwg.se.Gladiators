@@ -166,8 +166,15 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
             }
         }
+        "receiving commands" should {
+            "publish a Shutdown event" in {
+                val (controller, eventQueue) = createControllerEventQueue()
+                controller.inputCommand(Quit)
+                eventQueue.events.dequeue() == Shutdown
+            }
+        }
     }
-    def createControllerEventQueue(shopStockSize: Option[Int]) = {
+    def createControllerEventQueue(shopStockSize: Option[Int] = None) = {
         val controller = Controller()
         val eventQueue = EventQueue(controller)
         controller.shop = ShopFactory.initRandomShop(shopStockSize.getOrElse(controller.shop.stock.length))
