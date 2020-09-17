@@ -76,6 +76,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                     controller.publish(ErrorMessage("error"))
                     controller.publish(SuccessfullyBoughtGladiator(Player("", 0, 0, Vector()), GladiatorFactory.createGladiator()))
                     controller.publish(Moved(Player("", 0, 0, Vector()), Coordinate(0, 0), Coordinate(0, 0), GladiatorFactory.createGladiator()))
+                    controller.publish(Shutdown)
 
                     controller.gameState = TurnPlayerOne
 
