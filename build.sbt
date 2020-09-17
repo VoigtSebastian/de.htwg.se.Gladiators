@@ -3,10 +3,10 @@ import sbt.Keys.libraryDependencies
 
 addCompilerPlugin(scalafixSemanticdb)
 
-ThisBuild / version := "0.1"
-ThisBuild / scalaVersion := "2.12.12"
-ThisBuild / trapExit := false
-ThisBuild / scalacOptions ++= Seq(
+version := "0.1"
+scalaVersion := "2.12.12"
+trapExit := false
+scalacOptions ++= Seq(
     "-deprecation",
     "-feature",
     "-Yrangepos",
