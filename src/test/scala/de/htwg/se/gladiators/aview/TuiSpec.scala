@@ -9,6 +9,7 @@ import de.htwg.se.gladiators.util.Command._
 import de.htwg.se.gladiators.controller.GameState._
 import de.htwg.se.gladiators.util.Events._
 import de.htwg.se.gladiators.model.Player
+import de.htwg.se.gladiators.util.Factories.GladiatorFactory
 
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A Tui" when {
@@ -72,12 +73,27 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                     controller.publish(PlayerOneNamed("torsten"))
                     controller.publish(PlayerTwoNamed("torsten"))
                     controller.publish(Turn(Player("", 0, 0, Vector())))
+                    controller.publish(ErrorMessage("error"))
+                    controller.publish(SuccessfullyBoughtGladiator(Player("", 0, 0, Vector()), GladiatorFactory.createGladiator()))
+                    controller.publish(Moved(Player("", 0, 0, Vector()), Coordinate(0, 0), Coordinate(0, 0), GladiatorFactory.createGladiator()))
+
+                    controller.gameState = TurnPlayerOne
 
                     tui.processInputLine("shop")
                     tui.processInputLine("s")
                     tui.errorMessage("message")
                     tui.couldNotParseCommand("command")
                 }
+            }
+            "send out buy commands" in {
+                val controller = TestingController()
+                controller.gameState = TurnPlayerOne
+                val tui = Tui(controller)
+                tui.processInputLine("buy 1 10 10")
+                tui.processInputLine("b 1 10 10")
+
+                controller.commandQueue.dequeue().isInstanceOf[BuyUnit] should be(true)
+                controller.commandQueue.dequeue().isInstanceOf[BuyUnit] should be(true)
             }
         }
     }
