@@ -40,8 +40,18 @@ case class Controller() extends ControllerInterface {
 
     def buyUnit(number: Int, position: Coordinate): Unit = {
         (shop.buy(number), gameState, board.isCoordinateLegal(position)) match {
-            case (Some((newShop, gladiator)), TurnPlayerOne, true) => playerOne = Some(checkoutFromShop(playerOne.get, newShop, gladiator))
-            case (Some((newShop, gladiator)), TurnPlayerTwo, true) => playerTwo = Some(checkoutFromShop(playerTwo.get, newShop, gladiator))
+            case (Some((newShop, gladiator)), TurnPlayerOne, true) => {
+                if (playerOne.get.placementTilesNewUnit(board.tiles.size, board.tiles).contains(position))
+                    playerOne = Some(checkoutFromShop(playerOne.get, newShop, gladiator))
+                else
+                    ErrorMessage(f"You can not place a unit at this position").broadcast
+            }
+            case (Some((newShop, gladiator)), TurnPlayerTwo, true) => {
+                if (playerTwo.get.placementTilesNewUnit(board.tiles.size, board.tiles).contains(position))
+                    playerTwo = Some(checkoutFromShop(playerTwo.get, newShop, gladiator))
+                else
+                    ErrorMessage(f"You can not place a unit at this position").broadcast
+            }
             case (_, _, false) => ErrorMessage(f"You can not place a unit at $position")
             case (Some(_), _, _) => ErrorMessage(f"Cannot buy units in state $gameState").broadcast
             case (None, _, _) => ErrorMessage(f"Error buying from shop").broadcast
