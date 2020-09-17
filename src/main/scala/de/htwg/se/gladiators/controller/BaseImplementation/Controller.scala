@@ -49,13 +49,13 @@ case class Controller() extends ControllerInterface {
         (shop.buy(number), gameState, board.isCoordinateLegal(position)) match {
             case (Some((newShop, gladiator)), TurnPlayerOne, true) => {
                 if (playerOne.get.placementTilesNewUnit(board.tiles.size, board.tiles).contains(position))
-                    playerOne = Some(checkoutFromShop(playerOne.get, newShop, gladiator))
+                    playerOne = Some(checkoutFromShop(playerOne.get, newShop, gladiator.copy(position = position)))
                 else
                     ErrorMessage(f"You can not place a unit at this position").broadcast
             }
             case (Some((newShop, gladiator)), TurnPlayerTwo, true) => {
                 if (playerTwo.get.placementTilesNewUnit(board.tiles.size, board.tiles).contains(position))
-                    playerTwo = Some(checkoutFromShop(playerTwo.get, newShop, gladiator))
+                    playerTwo = Some(checkoutFromShop(playerTwo.get, newShop, gladiator.copy(position = position)))
                 else
                     ErrorMessage(f"You can not place a unit at this position").broadcast
             }
