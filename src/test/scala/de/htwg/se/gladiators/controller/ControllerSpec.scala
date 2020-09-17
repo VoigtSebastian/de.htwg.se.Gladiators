@@ -137,6 +137,21 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
             }
 
+            "fail because the coordinate is out of bounds" in {
+                val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
+
+                controller.gameState = TurnPlayerOne
+                controller.playerOne = Some(Player("", 1000, controller.board.tiles.size, Vector()))
+
+                controller.inputCommand(BuyUnit(1, Coordinate(-1, -1)))
+                controller.inputCommand(BuyUnit(1, Coordinate(0, controller.board.tiles.size)))
+                controller.inputCommand(BuyUnit(1, Coordinate(controller.board.tiles.size, 0)))
+
+                eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
+                eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
+                eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
+            }
+
             "send out successful messages" in {
                 val initialCredits = 1000
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
