@@ -84,7 +84,7 @@ case class Controller() extends ControllerInterface {
                 else
                     ErrorMessage(f"You can not place a unit at this position").broadcast
             }
-            case (_, _, false) => ErrorMessage(f"You can not place a unit at $position")
+            case (_, _, false) => ErrorMessage(f"You can not place a unit at $position").broadcast
             case (Some(_), _, _) => ErrorMessage(f"Cannot buy units in state $gameState").broadcast
             case (None, _, _) => ErrorMessage(f"Error buying from shop").broadcast
         }
