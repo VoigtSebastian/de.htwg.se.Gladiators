@@ -43,7 +43,7 @@ case class Controller() extends ControllerInterface {
             }
             case EndTurn => endTurn
             case BuyUnit(number, position) => buyUnit(number, position)
-            case Move(from, to) if gameState == TurnPlayerOne || gameState == TurnPlayerTwo => println(s"Moving from $from to $to")
+            case Move(from, to) if gameState == TurnPlayerOne || gameState == TurnPlayerTwo => move(from, to)
             case Move(_, _) => ErrorMessage(f"Cannot move in gameState $gameState").broadcast
             case Quit => println("Goodbye")
         }
@@ -51,11 +51,23 @@ case class Controller() extends ControllerInterface {
 
     def move(from: Coordinate, to: Coordinate): Unit = {
         movementType(from, to, board, currentPlayer.get, enemyPlayer.get) match {
-            case MovementType.Move => ???
+            case MovementType.Move => {
+                gameState match {
+                    case TurnPlayerOne => playerOne = Some(updatePlayerMove(playerOne.get, from, to))
+                    case TurnPlayerTwo => playerTwo = Some(updatePlayerMove(playerTwo.get, from, to))
+                    case _ => ErrorMessage("Internal Controller error").broadcast
+                }
+            }
             case MovementType.Attack => ???
             case MovementType.AlreadyMoved => ???
             case movementType: MovementType => ErrorMessage(movementType.message).broadcast
         }
+    }
+
+    def updatePlayerMove(player: Player, from: Coordinate, to: Coordinate): Player = {
+        val updatedPlayer = player.copy(gladiators = player.gladiators.move(from, to))
+        Moved(player, from, to, updatedPlayer.gladiators.filter(_.position == to).head).broadcast
+        updatedPlayer
     }
 
     def buyUnit(number: Int, position: Coordinate): Unit = {
@@ -105,14 +117,18 @@ case class Controller() extends ControllerInterface {
         case _ => None
     }
 
+    def resetGladiatorsMoved(player: Player) = Some(player.copy(gladiators = player.gladiators.map(_.copy(moved = false))))
+
     def endTurn = {
         gameState match {
             case TurnPlayerOne => {
                 gameState = TurnPlayerTwo
+                playerTwo = resetGladiatorsMoved(playerTwo.get)
                 Turn(playerTwo.get).broadcast
             }
             case TurnPlayerTwo => {
                 gameState = TurnPlayerOne
+                playerOne = resetGladiatorsMoved(playerOne.get)
                 Turn(playerOne.get).broadcast
             }
             case _ => ErrorMessage(s"You can not end a turn in gameState $gameState").broadcast
