@@ -10,6 +10,7 @@ import de.htwg.se.gladiators.util.Factories.ShopFactory
 import de.htwg.se.gladiators.controller.GameState._
 import de.htwg.se.gladiators.model.{ Player, Board }
 import de.htwg.se.gladiators.util.Coordinate
+import de.htwg.se.gladiators.util.Factories.BoardFactory
 
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A controller" when {
@@ -129,22 +130,23 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
 
                 controller.gameState = TurnPlayerOne
-                controller.playerOne = Some(Player("", 0, 0, Vector()))
-                controller.inputCommand(BuyUnit(1, Coordinate(0, 0)))
+                controller.playerOne = Some(Player("", 0, controller.board.tiles.size, Vector()))
+                controller.inputCommand(BuyUnit(1, Coordinate(0, (controller.board.tiles.size / 2) - 1)))
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
             }
 
             "send out successful messages" in {
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
+                controller.board = BoardFactory.initRandomBoard(percentageSand = 100)
 
-                controller.playerOne = Some(Player("", 0, 10000, Vector()))
+                controller.playerOne = Some(Player("", controller.board.tiles.size - 1, 10000, Vector()))
                 controller.gameState = TurnPlayerOne
-                controller.inputCommand(BuyUnit(1, Coordinate(controller.board.tiles.size / 2, controller.board.tiles.size - 2)))
+                controller.inputCommand(BuyUnit(1, Coordinate((controller.board.tiles.size / 2), 1)))
                 eventQueue.events.dequeue().asInstanceOf[SuccessfullyBoughtGladiator].player should be(controller.playerOne.get)
 
                 controller.playerTwo = Some(Player("", 0, 10000, Vector()))
                 controller.gameState = TurnPlayerTwo
-                controller.inputCommand(BuyUnit(1, Coordinate(controller.board.tiles.size / 2, 1)))
+                controller.inputCommand(BuyUnit(1, Coordinate((controller.board.tiles.size / 2), controller.board.tiles.size - 2)))
                 eventQueue.events.dequeue().asInstanceOf[SuccessfullyBoughtGladiator].player should be(controller.playerTwo.get)
 
                 controller.playerOne.get.credits should be >= 0
