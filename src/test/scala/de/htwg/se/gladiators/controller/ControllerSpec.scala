@@ -112,6 +112,22 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             }
         }
         "receiving buy commands" should {
+            "fail because all tiles are blocked" in {
+                val initialCredits = 1000
+                val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
+                controller.board = BoardFactory.initRandomBoard(percentageSand = 0)
+
+                controller.playerOne = Some(Player("", controller.board.tiles.size - 1, initialCredits, Vector()))
+                controller.gameState = TurnPlayerOne
+                controller.inputCommand(BuyUnit(1, Coordinate((controller.board.tiles.size / 2), 1)))
+
+                controller.playerTwo = Some(Player("", 0, initialCredits, Vector()))
+                controller.gameState = TurnPlayerTwo
+                controller.inputCommand(BuyUnit(1, Coordinate((controller.board.tiles.size / 2), controller.board.tiles.size - 2)))
+
+                eventQueue.events.dequeue.isInstanceOf[ErrorMessage] should be (true)
+                eventQueue.events.dequeue.isInstanceOf[ErrorMessage] should be (true)
+            }
             "fail because of the wrong controller-state" in {
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
 
