@@ -10,13 +10,13 @@ object MovementType extends Enum[MovementType] {
     val values = findValues
 
     case object Move extends MovementType {
-        def message = ""
+        def message = "This is a valid move"
     }
     case object Attack extends MovementType {
-        def message = ""
+        def message = "This is a valid Attack"
     }
     case object BaseAttack extends MovementType {
-        def message = ""
+        def message = "This is a valid Base-Attack"
     }
     case object MoveOutOfBounds extends MovementType {
         def message = "This move is out of bounds"
