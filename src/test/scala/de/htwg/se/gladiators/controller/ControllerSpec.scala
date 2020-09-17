@@ -158,6 +158,14 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.playerTwo.get.credits should be >= 0
             }
         }
+        "moving a unit" should {
+            val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
+            "publish an error message" in {
+                controller.gameState = NamingPlayerOne
+                controller.inputCommand(Move(Coordinate(0, 0), Coordinate(1, 1)))
+                eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
+            }
+        }
     }
     def createControllerEventQueue(shopStockSize: Option[Int]) = {
         val controller = Controller()
