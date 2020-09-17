@@ -192,19 +192,58 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             }
         }
         "moving a unit" should {
-            val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
             "publish an error because of the wrong gameState" in {
+                val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
+
                 controller.gameState = NamingPlayerOne
                 controller.inputCommand(Move(Coordinate(0, 0), Coordinate(1, 1)))
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
             }
             "publish an error because the move is out of bounds" in {
+                val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
+
                 controller.gameState = TurnPlayerOne
                 controller.playerOne = Some(Player("", 0, 0, Vector(GladiatorFactory.createGladiator(position = Some(Coordinate(0, 0)), moved = Some(false)))))
                 controller.playerTwo = Some(Player("", 0, 0, Vector()))
 
                 controller.inputCommand(Move(Coordinate(0, 0), Coordinate(-1, -1)))
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
+            }
+            "publish a successful move for player one" in {
+                val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
+
+                controller.gameState = TurnPlayerOne
+                controller.board = BoardFactory.initRandomBoard(15, 100)
+                controller.playerOne = Some(Player("", controller.board.tiles.size - 1, 0, Vector(
+                    GladiatorFactory
+                        .createGladiator(
+                            position = Some(Coordinate(0, 0)),
+                            moved = Some(false),
+                            movementPoints = Some(4)))))
+
+                controller.playerTwo = Some(Player("", 0, 0, Vector()))
+
+                controller.inputCommand(Move(Coordinate(0, 0), Coordinate(1, 0)))
+                eventQueue.events.dequeue().isInstanceOf[Moved] should be(true)
+                controller.playerOne.get.gladiators.head.moved should be(true)
+            }
+            "publish a successful move for player two" in {
+                val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
+
+                controller.gameState = TurnPlayerTwo
+                controller.board = BoardFactory.initRandomBoard(15, 100)
+                controller.playerOne = Some(Player("", controller.board.tiles.size - 1, 0, Vector()))
+
+                controller.playerTwo = Some(Player("", 0, 0, Vector(
+                    GladiatorFactory
+                        .createGladiator(
+                            position = Some(Coordinate(0, 0)),
+                            moved = Some(false),
+                            movementPoints = Some(4)))))
+
+                controller.inputCommand(Move(Coordinate(0, 0), Coordinate(1, 0)))
+                eventQueue.events.dequeue().isInstanceOf[Moved] should be(true)
+                controller.playerTwo.get.gladiators.head.moved should be(true)
             }
         }
         "receiving commands" should {
