@@ -7,4 +7,5 @@ trait ControllerInterface extends Publisher {
     var gameState: GameState = GameState.NamingPlayerOne
     def inputCommand(command: Command): Unit
     def boardToString: String
+    def shopToString: String
 }
