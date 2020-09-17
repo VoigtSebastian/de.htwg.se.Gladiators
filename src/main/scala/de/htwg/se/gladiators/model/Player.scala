@@ -17,7 +17,6 @@ case class Player(
         Vector(
             Coordinate((boardSize / 2 - 1), nextToBase),
             Coordinate((boardSize / 2 + 1), nextToBase),
-            Coordinate(boardSize / 2, aboveBase)
-        ).filter(coordinate => tiles(coordinate.y)(coordinate.x) == Sand && gladiators.filter(gladiator => gladiator.position == coordinate).isEmpty)
+            Coordinate(boardSize / 2, aboveBase)).filter(coordinate => tiles(coordinate.y)(coordinate.x) == Sand && gladiators.filter(gladiator => gladiator.position == coordinate).isEmpty)
     }
 }
