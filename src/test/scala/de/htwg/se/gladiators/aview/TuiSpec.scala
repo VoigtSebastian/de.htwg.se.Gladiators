@@ -28,11 +28,14 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 val controller = TestingController()
                 controller.gameState = GameState.TurnPlayerOne
                 val tui = Tui(controller)
-                tui.processInputLine("ThisIsNotACommand") should be(true)
-                tui.processInputLine("move 1 1 4 4") should be(true)
-                tui.processInputLine("move 1 1 4 4 1234") should be(true)
-                tui.processInputLine("move 2") should be(true)
 
+                val stream = new java.io.ByteArrayOutputStream()
+                Console.withOut(stream) {
+                    tui.processInputLine("ThisIsNotACommand") should be(true)
+                    tui.processInputLine("move 1 1 4 4") should be(true)
+                    tui.processInputLine("move 1 1 4 4 1234") should be(true)
+                    tui.processInputLine("move 2") should be(true)
+                }
                 controller.commandQueue.dequeue should be(Move(Coordinate(1, 1), Coordinate(4, 4)))
             }
             "send out naming commands" in {
@@ -62,13 +65,18 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
             "print messages " in {
                 val controller = TestingController()
-                Tui(controller)
+                val tui = Tui(controller)
                 val stream = new java.io.ByteArrayOutputStream()
                 Console.withOut(stream) {
                     controller.publish(Init)
                     controller.publish(PlayerOneNamed("torsten"))
                     controller.publish(PlayerTwoNamed("torsten"))
                     controller.publish(Turn(Player("", 0, 0, Vector())))
+
+                    tui.processInputLine("shop")
+                    tui.processInputLine("s")
+                    tui.errorMessage("message")
+                    tui.couldNotParseCommand("command")
                 }
             }
         }

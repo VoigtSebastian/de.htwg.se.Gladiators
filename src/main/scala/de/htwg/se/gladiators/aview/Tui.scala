@@ -8,6 +8,8 @@ import de.htwg.se.gladiators.controller.ControllerInterface
 import de.htwg.se.gladiators.util.Command._
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.controller.GameState
+import de.htwg.se.gladiators.util.Events.SuccessfullyBoughtGladiator
+import de.htwg.se.gladiators.util.Events.ErrorMessage
 
 case class Tui(controller: ControllerInterface) extends Reactor {
     listenTo(controller)
@@ -18,7 +20,15 @@ case class Tui(controller: ControllerInterface) extends Reactor {
         case Init => print(namePlayerOneMessage)
         case PlayerOneNamed(_) => print(namePlayerTwoMessage)
         case PlayerTwoNamed(_) => println("Game start")
-        case Turn(player) => println(s"It's ${player.name}s turn!\n${controller.boardToString}")
+        case Turn(player) => {
+            println(s"It's ${player.name}s turn!")
+            printBoard
+        }
+        case SuccessfullyBoughtGladiator(player, gladiator) => {
+            println(f"${player.name} successfully bought the gladiator at position ${gladiator.position}")
+            printBoard
+        }
+        case ErrorMessage(message) => errorMessage(message)
     }
 
     def processInputLine(line: String): Boolean = {

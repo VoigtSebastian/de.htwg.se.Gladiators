@@ -16,17 +16,19 @@ class ControllerSpec extends AnyWordSpec with Matchers {
     "A controller" when {
         "created" should {
             val controller = Controller()
+            controller.playerTwo = Some(Player("", 0, 0, Vector()))
+            controller.playerOne = Some(Player("", 0, 0, Vector()))
             "be in the NamingPlayerOne state" in {
                 controller.gameState should be(GameState.NamingPlayerOne)
             }
             "have an initialized board" in {
                 controller.board.isInstanceOf[Board] should be(true)
             }
-            "return nice string values" in {
-                controller.playerTwo = Some(Player("", 0, 0, Vector()))
-                controller.playerOne = Some(Player("", 0, 0, Vector()))
-
+            "return the board as a string" in {
                 controller.boardToString should not be (empty)
+            }
+            "return the shop as a string" in {
+                controller.shopToString should not be(empty)
             }
         }
         "returning the current player" should {
