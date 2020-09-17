@@ -136,18 +136,21 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             }
 
             "send out successful messages" in {
+                val initialCredits = 1000
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
                 controller.board = BoardFactory.initRandomBoard(percentageSand = 100)
 
-                controller.playerOne = Some(Player("", controller.board.tiles.size - 1, 10000, Vector()))
+                controller.playerOne = Some(Player("", controller.board.tiles.size - 1, initialCredits, Vector()))
                 controller.gameState = TurnPlayerOne
                 controller.inputCommand(BuyUnit(1, Coordinate((controller.board.tiles.size / 2), 1)))
                 eventQueue.events.dequeue().asInstanceOf[SuccessfullyBoughtGladiator].player should be(controller.playerOne.get)
+                controller.playerOne.get.credits should be(initialCredits - controller.playerOne.get.gladiators(0).calculateCost)
 
-                controller.playerTwo = Some(Player("", 0, 10000, Vector()))
+                controller.playerTwo = Some(Player("", 0, initialCredits, Vector()))
                 controller.gameState = TurnPlayerTwo
                 controller.inputCommand(BuyUnit(1, Coordinate((controller.board.tiles.size / 2), controller.board.tiles.size - 2)))
                 eventQueue.events.dequeue().asInstanceOf[SuccessfullyBoughtGladiator].player should be(controller.playerTwo.get)
+                controller.playerTwo.get.credits should be(initialCredits - controller.playerTwo.get.gladiators(0).calculateCost)
 
                 controller.playerOne.get.credits should be >= 0
                 controller.playerTwo.get.credits should be >= 0
