@@ -22,5 +22,8 @@ object TileType extends Enum[TileType] {
         override def coloredStringRepresentation(gladiator: Option[GladiatorType]): String = coloredString(223, gladiator, "M")
     }
 
-    def coloredString(color: Int, gladiator: Option[GladiatorType], letter: String) = s"\u001b[48;5;${color}m" + gladiator.getOrElse(s" $letter ") + "\u001b[0m"
+    def coloredString(color: Int, gladiator: Option[GladiatorType], letter: String) = s"\u001b[48;5;${color}m" + (gladiator match {
+        case Some(gladiator) => gladiator.coloredString
+        case None => s" $letter "
+    }) + "\u001b[0m"
 }
