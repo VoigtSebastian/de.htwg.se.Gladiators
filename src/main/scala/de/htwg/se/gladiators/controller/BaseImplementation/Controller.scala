@@ -11,6 +11,8 @@ import de.htwg.se.gladiators.util.Factories.ShopFactory
 import de.htwg.se.gladiators.util.Factories.BoardFactory.initRandomBoard
 import de.htwg.se.gladiators.model.{ Gladiator, Shop }
 import de.htwg.se.gladiators.util.Coordinate
+import de.htwg.se.gladiators.model.Moves.movementType
+import de.htwg.se.gladiators.util.MovementType
 
 case class Controller() extends ControllerInterface {
     var playerOne: Option[Player] = None
@@ -41,7 +43,18 @@ case class Controller() extends ControllerInterface {
             }
             case EndTurn => endTurn
             case BuyUnit(number, position) => buyUnit(number, position)
+            case Move(from, to) if gameState == TurnPlayerOne || gameState == TurnPlayerTwo => println(s"Moving from $from to $to")
+            case Move(_, _) => ErrorMessage(f"Cannot move in gameState $gameState").broadcast
             case Quit => println("Goodbye")
+        }
+    }
+
+    def move(from: Coordinate, to: Coordinate): Unit = {
+        movementType(from, to, board, currentPlayer.get, enemyPlayer.get) match {
+            case MovementType.Move => ???
+            case MovementType.Attack => ???
+            case MovementType.AlreadyMoved => ???
+            case movementType: MovementType => ErrorMessage(movementType.message).broadcast
         }
     }
 
