@@ -76,13 +76,13 @@ case class Controller() extends ControllerInterface {
                 if (playerOne.get.placementTilesNewUnit(board.tiles.size, board.tiles).contains(position))
                     playerOne = Some(checkoutFromShop(playerOne.get, newShop, gladiator.copy(position = position)))
                 else
-                    ErrorMessage(f"You can not place a unit at this position").broadcast
+                    ErrorMessage(f"The position $position is blocked").broadcast
             }
             case (Some((newShop, gladiator)), TurnPlayerTwo, true) => {
                 if (playerTwo.get.placementTilesNewUnit(board.tiles.size, board.tiles).contains(position))
                     playerTwo = Some(checkoutFromShop(playerTwo.get, newShop, gladiator.copy(position = position)))
                 else
-                    ErrorMessage(f"You can not place a unit at this position").broadcast
+                    ErrorMessage(f"The position $position is blocked").broadcast
             }
             case (_, _, false) => ErrorMessage(f"You can not place a unit at $position").broadcast
             case (Some(_), _, _) => ErrorMessage(f"Cannot buy units in state $gameState").broadcast
