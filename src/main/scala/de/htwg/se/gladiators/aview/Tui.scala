@@ -25,15 +25,13 @@ case class Tui(controller: ControllerInterface) extends Reactor {
         line.toLowerCase match {
             case r"quit( .*)?" => {
                 controller.inputCommand(Quit)
-                false
+                return false
             }
             case r".*" if controller.gameState == GameState.NamingPlayerOne => {
                 controller.inputCommand(NamePlayerOne(line.replace(namePlayerOneMessage, "")))
-                true
             }
             case r".*" if controller.gameState == GameState.NamingPlayerTwo => {
                 controller.inputCommand(NamePlayerTwo(line.replace(namePlayerTwoMessage, "")))
-                true
             }
             case r"move \d+ \d+ \d+ \d+" => {
                 val args = commandBuilder(line)
@@ -41,20 +39,16 @@ case class Tui(controller: ControllerInterface) extends Reactor {
                     Move(
                         Coordinate(args(0), args(1)),
                         Coordinate(args(2), args(3))))
-                true
             }
-            case r"(end|e)" => {
-                controller.inputCommand(EndTurn)
-                true
             }
-            case _ => {
-                errorMessage(line)
-                true
-            }
+            case r"(end|e)" => controller.inputCommand(EndTurn)
+            case _ => couldNotParseCommand(line)
         }
+        true
     }
 
-    def errorMessage(line: String) = s"Could not parse command: ($line)"
+    def errorMessage(line: String) = println(s"Error: ($line)")
+    def couldNotParseCommand(line: String) = errorMessage(f"Could not parse command: ($line)")
 
     def commandBuilder(line: String): List[Int] =
         line
