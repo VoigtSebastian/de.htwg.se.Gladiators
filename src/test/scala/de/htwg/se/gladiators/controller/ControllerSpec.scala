@@ -130,10 +130,11 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
             "fail because of insufficient credits" in {
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
+                controller.board = BoardFactory.initRandomBoard(percentageSand = 100)
 
+                controller.playerOne = Some(Player("", controller.board.tiles.size - 1, 0, Vector()))
                 controller.gameState = TurnPlayerOne
-                controller.playerOne = Some(Player("", 0, controller.board.tiles.size, Vector()))
-                controller.inputCommand(BuyUnit(1, Coordinate(0, (controller.board.tiles.size / 2) - 1)))
+                controller.inputCommand(BuyUnit(1, Coordinate((controller.board.tiles.size / 2), 1)))
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
             }
 
