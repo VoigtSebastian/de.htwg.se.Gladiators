@@ -9,7 +9,7 @@ class MovementTypeSpec extends AnyWordSpec with Matchers {
             "have a string representation" in {
                 MovementType
                     .values
-                    .foreach(_.toString should not be (empty))
+                    .foreach(_.message should not be (empty))
             }
         }
     }
