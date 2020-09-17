@@ -28,7 +28,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.boardToString should not be (empty)
             }
             "return the shop as a string" in {
-                controller.shopToString should not be(empty)
+                controller.shopToString should not be (empty)
             }
         }
         "returning the current player" should {
