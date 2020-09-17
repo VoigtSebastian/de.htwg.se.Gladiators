@@ -3,13 +3,11 @@ package de.htwg.se.gladiators.aview
 import kaleidoscope._
 import scala.swing.Reactor
 
-import de.htwg.se.gladiators.util.Events.{ Init, PlayerOneNamed, PlayerTwoNamed, Turn }
+import de.htwg.se.gladiators.util.Events.{ Init, PlayerOneNamed, PlayerTwoNamed, Turn, SuccessfullyBoughtGladiator, Moved, ErrorMessage }
 import de.htwg.se.gladiators.controller.ControllerInterface
 import de.htwg.se.gladiators.util.Command._
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.controller.GameState
-import de.htwg.se.gladiators.util.Events.SuccessfullyBoughtGladiator
-import de.htwg.se.gladiators.util.Events.ErrorMessage
 
 case class Tui(controller: ControllerInterface) extends Reactor {
     listenTo(controller)
@@ -25,8 +23,12 @@ case class Tui(controller: ControllerInterface) extends Reactor {
             printBoard
         }
         case SuccessfullyBoughtGladiator(player, gladiator) => {
-            println(f"${player.name} successfully bought the gladiator at position ${gladiator.position}")
             printBoard
+            println(f"${player.name} successfully bought the gladiator at position ${gladiator.position}")
+        }
+        case Moved(player, from, to, _) => {
+            printBoard
+            println(f"${player.name} moved a unit from ${from} to ${to}")
         }
         case ErrorMessage(message) => errorMessage(message)
     }
