@@ -34,9 +34,9 @@ case class Board(tiles: Vector[Vector[TileType]]) {
         "   " + (0 to (tiles.length - 1)).map(n => f"${n}%2d ").mkString + "\n" + tiles
             .zipWithIndex
             .map({
-                case (rowV, row) => f"$row%2d " + rowV.zipWithIndex.map({
-                    case (tile, line) =>
-                        tile.coloredStringRepresentation(gladiatorAtPosition(gladiators, Coordinate(row, line)))
+                case (rows, y) => f"$y%2d " + rows.zipWithIndex.map({
+                    case (tile, x) =>
+                        tile.coloredStringRepresentation(gladiatorAtPosition(gladiators, Coordinate(x, y)))
                 }).mkString + "\n"
             }).mkString
 
