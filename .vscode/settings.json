@@ -1,0 +1,12 @@
+{
+    "files.watcherExclude": {
+        "**/target": true,
+        ".bloop/*": true,
+        ".metals/*": true
+    },
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "editor.suggest.showWords": false,
+    "diffEditor.ignoreTrimWhitespace": false
+}
