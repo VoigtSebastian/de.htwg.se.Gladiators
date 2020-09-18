@@ -54,12 +54,10 @@ case class Controller() extends ControllerInterface {
             case MovementType.Move => {
                 gameState match {
                     case TurnPlayerOne => playerOne = Some(updatePlayerMove(playerOne.get, from, to))
-                    case TurnPlayerTwo => playerTwo = Some(updatePlayerMove(playerTwo.get, from, to))
-                    case _ => ErrorMessage("Internal Controller error").broadcast
+                    case _ => playerTwo = Some(updatePlayerMove(playerTwo.get, from, to))
                 }
             }
             case MovementType.Attack => ???
-            case MovementType.AlreadyMoved => ???
             case movementType: MovementType => ErrorMessage(movementType.message).broadcast
         }
     }
