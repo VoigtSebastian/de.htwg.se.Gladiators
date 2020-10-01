@@ -77,7 +77,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         "updating the current player" should {
             "throw an exception" in {
                 val controller = Controller()
-                assertThrows[Exception] { controller.updateCurrentPlayer(None) }
+                the [Exception] thrownBy controller.updateCurrentPlayer(None) should have message controller.uncheckedStateMessage
             }
             "update player one correctly" in {
                 val controller = Controller()
