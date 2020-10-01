@@ -74,6 +74,26 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.enemyPlayer should be(None)
             }
         }
+        "updating the current player" should {
+            "throw an exception" in {
+                val controller = Controller()
+                assertThrows[Exception] { controller.updateCurrentPlayer(None) }
+            }
+            "update player one correctly" in {
+                val controller = Controller()
+                controller.gameState = GameState.TurnPlayerOne
+                controller.playerOne = Some(Player("", 0, 0, Vector()))
+                controller.updateCurrentPlayer(None)
+                controller.playerOne should be(None)
+            }
+            "update player two correctly" in {
+                val controller = Controller()
+                controller.gameState = GameState.TurnPlayerTwo
+                controller.playerTwo = Some(Player("", 0, 0, Vector()))
+                controller.updateCurrentPlayer(None)
+                controller.playerTwo should be(None)
+            }
+        }
         "receiving commands in init state" should {
             val controller = Controller()
             val eventQueue = EventQueue(controller)
