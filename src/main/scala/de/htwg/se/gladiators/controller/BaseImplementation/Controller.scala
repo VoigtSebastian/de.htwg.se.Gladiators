@@ -15,6 +15,7 @@ import de.htwg.se.gladiators.model.Moves.movementType
 import de.htwg.se.gladiators.util.MovementType
 
 case class Controller() extends ControllerInterface {
+    val uncheckedStateMessage = "This code should not be reachable"
     var playerOne: Option[Player] = None
     var playerTwo: Option[Player] = None
     var board: Board = initRandomBoard()
@@ -100,7 +101,7 @@ case class Controller() extends ControllerInterface {
     def updateCurrentPlayer(player: Option[Player]) = gameState match {
         case TurnPlayerOne => playerOne = player
         case TurnPlayerTwo => playerTwo = player
-        case _ => throw new Exception("This code should be unreachable")
+        case _ => throw new Exception(uncheckedStateMessage)
     }
 
     def currentPlayer = gameState match {
