@@ -33,32 +33,30 @@ case class Controller() extends ControllerInterface {
 
     override def inputCommand(command: Command): Unit = {
         command match {
-            case NamePlayerOne(name) => {
-                if (gameState == NamingPlayerOne) namePlayerOne(name)
-                else ErrorMessage(s"Player one can not be named anymore").broadcast
-            }
-            case NamePlayerTwo(name) => {
-                if (gameState == NamingPlayerTwo) namePlayerTwo(name)
-                else ErrorMessage(s"Player two can not be named anymore").broadcast
-            }
+            case NamePlayerOne(name) => namePlayerOne(name)
+            case NamePlayerTwo(name) => namePlayerTwo(name)
             case EndTurn => endTurn
             case BuyUnit(number, position) => buyUnit(number, position)
-            case Move(from, to) if gameState == TurnPlayerOne || gameState == TurnPlayerTwo => move(from, to)
-            case Move(_, _) => ErrorMessage(f"Cannot move in gameState $gameState").broadcast
+            case Move(from, to) => move(from, to)
             case Quit => Shutdown.broadcast
         }
     }
 
     def move(from: Coordinate, to: Coordinate): Unit = {
-        movementType(from, to, board, currentPlayer.get, enemyPlayer.get) match {
-            case MovementType.Move => {
-                gameState match {
-                    case TurnPlayerOne => playerOne = Some(updatePlayerMove(playerOne.get, from, to))
-                    case _ => playerTwo = Some(updatePlayerMove(playerTwo.get, from, to))
-                }
+        gameState match {
+            case TurnPlayerOne => movementType(from, to, board, currentPlayer.get, enemyPlayer.get) match {
+                case MovementType.Move => playerOne = Some(updatePlayerMove(playerOne.get, from, to))
+                case MovementType.Attack => ???
+                case MovementType.BaseAttack => ???
+                case movementType: MovementType => ErrorMessage(movementType.message).broadcast
             }
-            case MovementType.Attack => ???
-            case movementType: MovementType => ErrorMessage(movementType.message).broadcast
+            case TurnPlayerTwo => movementType(from, to, board, currentPlayer.get, enemyPlayer.get) match {
+                case MovementType.Move => playerTwo = Some(updatePlayerMove(playerTwo.get, from, to))
+                case MovementType.Attack => ???
+                case MovementType.BaseAttack => ???
+                case movementType: MovementType => ErrorMessage(movementType.message).broadcast
+            }
+            case _ => ErrorMessage(f"Cannot move in gameState $gameState").broadcast
         }
     }
 
@@ -135,17 +133,28 @@ case class Controller() extends ControllerInterface {
 
     def namePlayerOne(name: String) = {
         // TODO: Player API lookup to set score
-        gameState = NamingPlayerTwo
-        playerOne = Some(Player(name, board.tiles.size - 1, 100))
-        PlayerOneNamed(name).broadcast
+        gameState match {
+            case NamingPlayerOne => {
+                gameState = NamingPlayerTwo
+                playerOne = Some(Player(name, board.tiles.size - 1, 100))
+                PlayerOneNamed(name).broadcast
+            }
+            case _ =>
+                ErrorMessage(s"Player two can not be named anymore").broadcast
+        }
     }
 
     def namePlayerTwo(name: String) = {
         // TODO: Player API lookup to set sc
-        gameState = TurnPlayerOne
-        playerTwo = Some(Player(name, 0, 100))
-        PlayerTwoNamed(name).broadcast
-        Turn(playerOne.get).broadcast
+        gameState match {
+            case NamingPlayerTwo => {
+                gameState = TurnPlayerOne
+                playerTwo = Some(Player(name, 0, 100))
+                PlayerTwoNamed(name).broadcast
+                Turn(playerOne.get).broadcast
+            }
+            case _ => ErrorMessage(s"Player two can not be named anymore").broadcast
+        }
     }
 
     override def boardToString = board.coloredString(playerOne.get.gladiators ++ playerTwo.get.gladiators)
