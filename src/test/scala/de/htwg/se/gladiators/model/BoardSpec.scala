@@ -6,12 +6,13 @@ import org.scalatest.matchers.should.Matchers
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.util.Factories.BoardFactory
 import de.htwg.se.gladiators.util.Factories.GladiatorFactory
+import BoardFactory.{ createNormalBoard3x3, createSandBoard3x3 }
 
 class CoordinateSpec extends AnyWordSpec with Matchers {
     "A Board" when {
         "checking valid coordinates" should {
             "return all coordinates" in {
-                val result = createSandBoard
+                val result = createSandBoard3x3
                     .getValidCoordinates(
                         Coordinate(0, 0),
                         6,
@@ -22,7 +23,7 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
                 }
             }
             "return no coordinates" in {
-                val result = createSandBoard
+                val result = createSandBoard3x3
                     .getValidCoordinates(
                         Coordinate(0, 0),
                         6,
@@ -31,7 +32,7 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
                 result should be(empty)
             }
             "return only walkable coordinates" in {
-                val result = createNormalBoard
+                val result = createNormalBoard3x3
                     .getValidCoordinates(
                         Coordinate(1, 1),
                         6,
@@ -44,7 +45,7 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
                 result should contain(Coordinate(2, 2))
             }
             "return only coordinates that can be attacked" in {
-                val result = createNormalBoard
+                val result = createNormalBoard3x3
                     .getValidCoordinates(
                         Coordinate(1, 1),
                         6,
@@ -61,7 +62,7 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
             }
         }
         "checking if coordinates are legal" should {
-            val board = createSandBoard
+            val board = createSandBoard3x3
             "return true" in {
                 for ((x, y) <- (0 to 2).map(i => (i, i))) {
                     board.isCoordinateLegal(Coordinate(x, y)) should be(true)
@@ -75,7 +76,7 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
         }
         "being asked for a Tile" should {
             "return Sand" in {
-                val board = createSandBoard
+                val board = createSandBoard3x3
                 for ((x, y) <- (0 to 2).map(i => (i, i))) {
                     board.tileAtCoordinate(Coordinate(0, 2)) should be(TileType.Sand)
                 }
@@ -94,21 +95,5 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
                 board.coloredString(Vector()).isInstanceOf[String] should be(true)
             }
         }
-    }
-
-    def createSandBoard: Board = {
-        val tiles = Vector(
-            Vector(TileType.Sand, TileType.Sand, TileType.Sand),
-            Vector(TileType.Sand, TileType.Sand, TileType.Sand),
-            Vector(TileType.Sand, TileType.Sand, TileType.Sand))
-        Board(tiles)
-    }
-
-    def createNormalBoard: Board = {
-        val tiles = Vector(
-            Vector(TileType.Sand, TileType.Base, TileType.Palm),
-            Vector(TileType.Sand, TileType.Sand, TileType.Sand),
-            Vector(TileType.Palm, TileType.Base, TileType.Sand))
-        Board(tiles)
     }
 }
