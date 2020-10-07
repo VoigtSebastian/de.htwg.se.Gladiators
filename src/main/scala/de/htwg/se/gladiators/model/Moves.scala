@@ -20,7 +20,10 @@ object Moves {
                 case false => IllegalMove
             }
             case (_, Sand) => checkLegalMove(from, to, currentPlayer, board) match {
-                case true => Move
+                case true => enemyPlayer.gladiators.filter(_.position == to).length > 0 match {
+                    case true => Attack
+                    case false => Move
+                }
                 case false => IllegalMove
             }
             case _ => ???
