@@ -26,4 +26,20 @@ object BoardFactory {
     def addMine(vector: Vector[Vector[TileType]], dimensions: Int): Vector[Vector[TileType]] =
         vector
             .updated(dimensions / 2, vector(dimensions / 2).updated(Random.nextInt(dimensions), TileType.Mine(Random.nextInt(50))))
+
+    def createSandBoard3x3: Board = {
+        val tiles = Vector(
+            Vector(TileType.Sand, TileType.Sand, TileType.Sand),
+            Vector(TileType.Sand, TileType.Sand, TileType.Sand),
+            Vector(TileType.Sand, TileType.Sand, TileType.Sand))
+        Board(tiles)
+    }
+
+    def createNormalBoard3x3: Board = {
+        val tiles = Vector(
+            Vector(TileType.Sand, TileType.Base, TileType.Palm),
+            Vector(TileType.Sand, TileType.Sand, TileType.Sand),
+            Vector(TileType.Palm, TileType.Base, TileType.Sand))
+        Board(tiles)
+    }
 }
