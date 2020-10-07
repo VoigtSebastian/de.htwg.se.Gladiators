@@ -21,6 +21,20 @@ class GladiatorSpec extends AnyWordSpec with Matchers {
                     .move(Coordinate(1, 1))
                     .position should be(Coordinate(1, 1))
             }
+            "reduce their health points when attacked by the correct amount" in {
+                GladiatorFactory
+                    .createGladiator(healthPoints = Some(10))
+                    .attacked(10)
+                    .healthPoints should be(0)
+                GladiatorFactory
+                    .createGladiator(healthPoints = Some(100))
+                    .attacked(10)
+                    .healthPoints should be(90)
+                GladiatorFactory
+                    .createGladiator(healthPoints = Some(0))
+                    .attacked(10)
+                    .healthPoints should be(-10)
+            }
         }
     }
 }
