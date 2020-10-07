@@ -51,7 +51,7 @@ case class Controller() extends ControllerInterface {
     }
 
     def move(from: Coordinate, to: Coordinate): Events = {
-        gameState match {
+        (gameState match {
             case TurnPlayerOne | TurnPlayerTwo => movementType(from, to, board, currentPlayer.get, enemyPlayer.get) match {
                 case MovementType.Move => {
                     var (player, event) = updatePlayerMove(currentPlayer.get, from, to)
@@ -60,20 +60,20 @@ case class Controller() extends ControllerInterface {
                 }
                 case MovementType.Attack => attackUnit(from, to)
                 case MovementType.BaseAttack => baseAttack(from)
-                case movementType: MovementType => ErrorMessage(movementType.message).broadcast
+                case movementType: MovementType => ErrorMessage(movementType.message)
             }
-            case _ => ErrorMessage(f"Cannot move in gameState $gameState").broadcast
-        }
+            case _ => ErrorMessage(f"Cannot move in gameState $gameState")
+        }).broadcast
     }
 
     def baseAttack(from: Coordinate): Events = {
         updateEnemyPlayer(Some(
             enemyPlayer.get.copy(
                 health = (enemyPlayer.get.health - currentPlayer.get.gladiators.filter(_.position == from).head.attackPoints))))
-        (enemyPlayer.get.health <= 0 match {
+        enemyPlayer.get.health <= 0 match {
             case true => Won(currentPlayer.get)
             case false => BaseAttacked(currentPlayer.get)
-        }).broadcast
+        }
     }
 
     def attackUnit(from: Coordinate, to: Coordinate): Events = {
@@ -86,12 +86,12 @@ case class Controller() extends ControllerInterface {
                 .gladiators
                 .filter(_.position == from).head.attackPoints, to))))
 
-        Attacked(currentPlayer.get, (numberOfGladiators < enemyPlayer.get.gladiators.length)).broadcast
+        Attacked(currentPlayer.get, (numberOfGladiators < enemyPlayer.get.gladiators.length))
     }
 
     def updatePlayerMove(player: Player, from: Coordinate, to: Coordinate): (Player, Events) = {
         val updatedPlayer = player.copy(gladiators = player.gladiators.move(from, to))
-        val message = Moved(player, from, to, updatedPlayer.gladiators.filter(_.position == to).head).broadcast
+        val message = Moved(player, from, to, updatedPlayer.gladiators.filter(_.position == to).head)
         (updatedPlayer, message)
     }
 
