@@ -33,6 +33,10 @@ case class Controller() extends ControllerInterface {
             case true => gladiator.move(to)
             case false => gladiator
         })
+        def attacked(points: Int, position: Coordinate) = gladiators.map(gladiator => gladiator.position == position match {
+            case true => gladiator.attacked(points)
+            case false => gladiator
+        }).filter(_.healthPoints > 0)
     }
 
     override def inputCommand(command: Command): Unit = {
