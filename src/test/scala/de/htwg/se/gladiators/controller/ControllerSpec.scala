@@ -238,6 +238,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.gameState = NamingPlayerOne
                 controller.inputCommand(Move(Coordinate(0, 0), Coordinate(1, 1)))
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
+                eventQueue.events.isEmpty should be(true)
             }
             "publish an error because the move is out of bounds" in {
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
@@ -248,6 +249,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
                 controller.inputCommand(Move(Coordinate(0, 0), Coordinate(-1, -1)))
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
+                eventQueue.events.isEmpty should be(true)
             }
             "publish a successful move for player one" in {
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
@@ -266,6 +268,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.inputCommand(Move(Coordinate(0, 0), Coordinate(1, 0)))
                 eventQueue.events.dequeue().isInstanceOf[Moved] should be(true)
                 controller.playerOne.get.gladiators.head.moved should be(true)
+                eventQueue.events.isEmpty should be(true)
             }
             "publish a successful move for player two" in {
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
@@ -284,6 +287,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.inputCommand(Move(Coordinate(0, 0), Coordinate(1, 0)))
                 eventQueue.events.dequeue().isInstanceOf[Moved] should be(true)
                 controller.playerTwo.get.gladiators.head.moved should be(true)
+                eventQueue.events.isEmpty should be(true)
             }
         }
         "used to attack" should {
@@ -292,6 +296,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.gameState = Finished
                 controller.move(Coordinate(0, 0), Coordinate(0, 1)).isInstanceOf[ErrorMessage] should be(true)
                 eventQueue.events.dequeue.isInstanceOf[ErrorMessage] should be(true)
+                eventQueue.events.isEmpty should be(true)
             }
             "return an attacked message" in {
                 val (controller, eventQueue) = createControllerEventQueue()
@@ -311,6 +316,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
                 controller.move(Coordinate(0, 0), Coordinate(0, 1)).isInstanceOf[Attacked] should be(true)
                 eventQueue.events.dequeue.isInstanceOf[Attacked] should be(true)
+                eventQueue.events.isEmpty should be(true)
             }
             "return that there is one unit less" in {
                 val (controller, eventQueue) = createControllerEventQueue()
@@ -337,6 +343,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.move(Coordinate(0, 0), Coordinate(0, 1)).isInstanceOf[Attacked] should be(true)
                 eventQueue.events.dequeue.isInstanceOf[Attacked] should be(true)
                 controller.playerTwo.get.gladiators should be(empty)
+                eventQueue.events.isEmpty should be(true)
             }
         }
         "used to do base attacks" should {
@@ -360,6 +367,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.move(Coordinate(1, 1), Coordinate(1, controller.playerOne.get.enemyBaseLine)).isInstanceOf[BaseAttacked] should be(true)
                 eventQueue.events.dequeue.isInstanceOf[BaseAttacked] should be(true)
                 controller.playerTwo.get.health should be(healthBeforeAttack - controller.playerOne.get.gladiators.head.attackPoints)
+                eventQueue.events.isEmpty should be(true)
             }
             "return the Won event" in {
                 val (controller, eventQueue) = createControllerEventQueue()
@@ -380,6 +388,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
                 controller.move(Coordinate(1, 1), Coordinate(1, controller.playerOne.get.enemyBaseLine)).isInstanceOf[Won] should be(true)
                 eventQueue.events.dequeue.isInstanceOf[Won] should be(true)
+                eventQueue.events.isEmpty should be(true)
             }
         }
         "receiving commands" should {
