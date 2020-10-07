@@ -28,11 +28,11 @@ object BoardFactory {
             .updated(dimensions / 2, vector(dimensions / 2).updated(Random.nextInt(dimensions), TileType.Mine(Random.nextInt(50))))
 
     /**
-      * Sand Sand Sand
-      * Sand Sand Sand
-      * Sand Sand Sand
-      * @return Board consisting only of Sand-tiles
-      */
+     * Sand Sand Sand
+     * Sand Sand Sand
+     * Sand Sand Sand
+     * @return Board consisting only of Sand-tiles
+     */
     def createSandBoard3x3: Board = {
         val tiles = Vector(
             Vector(TileType.Sand, TileType.Sand, TileType.Sand),
@@ -42,11 +42,11 @@ object BoardFactory {
     }
 
     /**
-      * Sand Base Palm
-      * Sand Sand Sand
-      * Palm Base Sand
-      * @return Board containing Sand-, Palm- and Base-tiles
-      */
+     * Sand Base Palm
+     * Sand Sand Sand
+     * Palm Base Sand
+     * @return Board containing Sand-, Palm- and Base-tiles
+     */
     def createNormalBoard3x3: Board = {
         val tiles = Vector(
             Vector(TileType.Sand, TileType.Base, TileType.Palm),
