@@ -286,6 +286,59 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.playerTwo.get.gladiators.head.moved should be(true)
             }
         }
+        "used to attack" should {
+            "return an error message" in {
+                val (controller, eventQueue) = createControllerEventQueue()
+                controller.gameState = Finished
+                controller.move(Coordinate(0, 0), Coordinate(0, 1)).isInstanceOf[ErrorMessage] should be(true)
+                eventQueue.events.dequeue.isInstanceOf[ErrorMessage] should be(true)
+            }
+            "return an attacked message" in {
+                val (controller, eventQueue) = createControllerEventQueue()
+                controller.namePlayerOne("One")
+                controller.namePlayerTwo("Two")
+                controller.board = BoardFactory.createSandBoard3x3
+                controller.playerOne = Some(controller
+                    .playerOne
+                    .get
+                    .copy(gladiators = Vector(GladiatorFactory.createGladiator(position = Some(Coordinate(0, 0)), moved = Some(false), movementPoints = Some(2)))))
+                controller.playerTwo = Some(controller
+                    .playerTwo
+                    .get
+                    .copy(gladiators = Vector(GladiatorFactory.createGladiator(position = Some(Coordinate(0, 1))))))
+                controller.gameState = TurnPlayerOne
+                (1 to 3).foreach(_ => eventQueue.events.dequeue)
+
+                controller.move(Coordinate(0, 0), Coordinate(0, 1)).isInstanceOf[Attacked] should be(true)
+                eventQueue.events.dequeue.isInstanceOf[Attacked] should be(true)
+            }
+            "return that there is one unit less" in {
+                val (controller, eventQueue) = createControllerEventQueue()
+                controller.namePlayerOne("One")
+                controller.namePlayerTwo("Two")
+                controller.board = BoardFactory.createSandBoard3x3
+                controller.playerOne = Some(controller
+                    .playerOne
+                    .get
+                    .copy(gladiators = Vector(GladiatorFactory.createGladiator(
+                        position = Some(Coordinate(0, 0)),
+                        moved = Some(false),
+                        movementPoints = Some(2),
+                        attackPoints = Some(9000)))))
+                controller.playerTwo = Some(controller
+                    .playerTwo
+                    .get
+                    .copy(gladiators = Vector(GladiatorFactory.createGladiator(
+                        position = Some(Coordinate(0, 1)),
+                        healthPoints = Some(1)))))
+                controller.gameState = TurnPlayerOne
+                (1 to 3).foreach(_ => eventQueue.events.dequeue)
+
+                controller.move(Coordinate(0, 0), Coordinate(0, 1)).isInstanceOf[Attacked] should be(true)
+                eventQueue.events.dequeue.isInstanceOf[Attacked] should be(true)
+                controller.playerTwo.get.gladiators should be(empty)
+            }
+        }
         "receiving commands" should {
             "publish a Shutdown event" in {
                 val (controller, eventQueue) = createControllerEventQueue()

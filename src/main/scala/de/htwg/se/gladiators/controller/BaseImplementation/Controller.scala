@@ -28,7 +28,7 @@ case class Controller() extends ControllerInterface {
         }
     }
 
-    implicit class MoveGladiator(gladiators: Vector[Gladiator]) {
+    implicit class MoveGladiators(gladiators: Vector[Gladiator]) {
         def move(from: Coordinate, to: Coordinate) = gladiators.map(gladiator => gladiator.position == from match {
             case true => gladiator.move(to)
             case false => gladiator
@@ -58,12 +58,25 @@ case class Controller() extends ControllerInterface {
                     updateCurrentPlayer(Some(player))
                     event
                 }
-                case MovementType.Attack => ???
+                case MovementType.Attack => attackUnit(from, to)
                 case MovementType.BaseAttack => ???
                 case movementType: MovementType => ErrorMessage(movementType.message).broadcast
             }
             case _ => ErrorMessage(f"Cannot move in gameState $gameState").broadcast
         }
+    }
+
+    def attackUnit(from: Coordinate, to: Coordinate): Events = {
+        val numberOfGladiators = enemyPlayer.get.gladiators.length
+        updateEnemyPlayer(Some(enemyPlayer.get.copy(gladiators = enemyPlayer
+            .get
+            .gladiators
+            .attacked(currentPlayer
+                .get
+                .gladiators
+                .filter(_.position == from).head.attackPoints, to))))
+
+        Attacked(currentPlayer.get, (numberOfGladiators < enemyPlayer.get.gladiators.length)).broadcast
     }
 
     def updatePlayerMove(player: Player, from: Coordinate, to: Coordinate): (Player, Events) = {
