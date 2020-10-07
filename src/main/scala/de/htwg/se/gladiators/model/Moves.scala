@@ -54,7 +54,7 @@ object Moves {
                 .filter(_.position == from)(0)
                 .movementPoints,
             Vector(Sand, Base))
-            .filter(coordinate => (coordinate.x == board.tiles.length / 2) && (coordinate.y == currentPlayer.enemyBaseLine))
+            .filter(coordinate => coordinate == Coordinate(board.tiles.length / 2, currentPlayer.enemyBaseLine))
             .length >= 1)
     }
 
