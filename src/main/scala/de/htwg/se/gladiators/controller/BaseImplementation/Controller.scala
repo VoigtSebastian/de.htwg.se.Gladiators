@@ -108,6 +108,13 @@ case class Controller() extends ControllerInterface {
         case _ => throw new Exception(uncheckedStateMessage)
     }
 
+    @throws(classOf[Exception])
+    def updateEnemyPlayer(player: Option[Player]) = gameState match {
+        case TurnPlayerOne => playerTwo = player
+        case TurnPlayerTwo => playerOne = player
+        case _ => throw new Exception(uncheckedStateMessage)
+    }
+
     def currentPlayer = gameState match {
         case TurnPlayerOne => playerOne
         case TurnPlayerTwo => playerTwo
