@@ -77,7 +77,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         "updating the current player" should {
             "throw an exception" in {
                 val controller = Controller()
-                the [Exception] thrownBy controller.updateCurrentPlayer(None) should have message controller.uncheckedStateMessage
+                the[Exception] thrownBy controller.updateCurrentPlayer(None) should have message controller.uncheckedStateMessage
             }
             "update player one correctly" in {
                 val controller = Controller()
@@ -94,10 +94,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.playerTwo should be(None)
             }
         }
-        "updating the enemy player" in {
+        "updating the enemy player" should {
             "throw an exception" in {
                 val controller = Controller()
-                the [Exception] thrownBy controller.updateEnemyPlayer(None) should have message controller.uncheckedStateMessage
+                the[Exception] thrownBy controller.updateEnemyPlayer(None) should have message controller.uncheckedStateMessage
             }
             "update player one correctly" in {
                 val controller = Controller()
