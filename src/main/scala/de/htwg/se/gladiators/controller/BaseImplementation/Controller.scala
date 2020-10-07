@@ -59,11 +59,21 @@ case class Controller() extends ControllerInterface {
                     event
                 }
                 case MovementType.Attack => attackUnit(from, to)
-                case MovementType.BaseAttack => ???
+                case MovementType.BaseAttack => baseAttack(from)
                 case movementType: MovementType => ErrorMessage(movementType.message).broadcast
             }
             case _ => ErrorMessage(f"Cannot move in gameState $gameState").broadcast
         }
+    }
+
+    def baseAttack(from: Coordinate): Events = {
+        updateEnemyPlayer(Some(
+            enemyPlayer.get.copy(
+                health = (enemyPlayer.get.health - currentPlayer.get.gladiators.filter(_.position == from).head.attackPoints))))
+        (enemyPlayer.get.health <= 0 match {
+            case true => Won(currentPlayer.get)
+            case false => BaseAttacked(currentPlayer.get)
+        }).broadcast
     }
 
     def attackUnit(from: Coordinate, to: Coordinate): Events = {

@@ -339,6 +339,49 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.playerTwo.get.gladiators should be(empty)
             }
         }
+        "used to do base attacks" should {
+            "return a BaseAttacked Event" in {
+                val (controller, eventQueue) = createControllerEventQueue()
+                controller.board = BoardFactory.createNormalBoard3x3
+                controller.namePlayerOne("One")
+                controller.namePlayerTwo("Two")
+                controller.playerOne = Some(controller
+                    .playerOne
+                    .get
+                    .copy(gladiators = Vector(GladiatorFactory.createGladiator(
+                        position = Some(Coordinate(1, 1)),
+                        moved = Some(false),
+                        movementPoints = Some(2),
+                        attackPoints = Some(1)))))
+                (1 to 3).foreach(_ => eventQueue.events.dequeue)
+                controller.gameState = TurnPlayerOne
+
+                val healthBeforeAttack = controller.playerTwo.get.health
+                controller.move(Coordinate(1, 1), Coordinate(1, controller.playerOne.get.enemyBaseLine)).isInstanceOf[BaseAttacked] should be(true)
+                eventQueue.events.dequeue.isInstanceOf[BaseAttacked] should be(true)
+                controller.playerTwo.get.health should be(healthBeforeAttack - controller.playerOne.get.gladiators.head.attackPoints)
+            }
+            "return the Won event" in {
+                val (controller, eventQueue) = createControllerEventQueue()
+                controller.board = BoardFactory.createNormalBoard3x3
+                controller.namePlayerOne("One")
+                controller.namePlayerTwo("Two")
+                controller.playerOne = Some(controller
+                    .playerOne
+                    .get
+                    .copy(gladiators = Vector(GladiatorFactory.createGladiator(
+                        position = Some(Coordinate(1, 1)),
+                        moved = Some(false),
+                        movementPoints = Some(2),
+                        attackPoints = Some(100)))))
+                (1 to 3).foreach(_ => eventQueue.events.dequeue)
+                controller.gameState = TurnPlayerOne
+                controller.playerTwo = Some(controller.playerTwo.get.copy(health = 1))
+
+                controller.move(Coordinate(1, 1), Coordinate(1, controller.playerOne.get.enemyBaseLine)).isInstanceOf[Won] should be(true)
+                eventQueue.events.dequeue.isInstanceOf[Won] should be(true)
+            }
+        }
         "receiving commands" should {
             "publish a Shutdown event" in {
                 val (controller, eventQueue) = createControllerEventQueue()
