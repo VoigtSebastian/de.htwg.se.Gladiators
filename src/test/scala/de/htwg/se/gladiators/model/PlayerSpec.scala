@@ -9,8 +9,8 @@ import de.htwg.se.gladiators.util.Factories.GladiatorFactory
 class PlayerSpec extends AnyWordSpec with Matchers {
     "A Player" should {
         val board = BoardFactory.initRandomBoard(7, 100)
-        val playerOne = Player("", 6, 0, Vector())
-        val playerTwo = Player("", 0, 0, Vector())
+        val playerOne = Player("", 6, 0, 100, Vector())
+        val playerTwo = Player("", 0, 0, 100, Vector())
         "return all tiles around the own base at the bottom of the map" in {
             val tiles = playerOne
                 .placementTilesNewUnit(7, board.tiles)
