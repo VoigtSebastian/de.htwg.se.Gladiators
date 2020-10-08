@@ -20,6 +20,11 @@ object TileType extends Enum[TileType] {
     }
     case class Mine(gold: Int) extends TileType {
         override def coloredStringRepresentation(gladiator: Option[GladiatorType]): String = coloredString(223, gladiator, "M")
+        def goldPerHit = 10
+        def mine = (gold - goldPerHit) match {
+            case newValue if newValue > 0 => Some(this.copy(newValue))
+            case _ => None
+        }
     }
 
     def coloredString(color: Int, gladiator: Option[GladiatorType], letter: String) = s"\u001b[48;5;${color}m" + (gladiator match {
