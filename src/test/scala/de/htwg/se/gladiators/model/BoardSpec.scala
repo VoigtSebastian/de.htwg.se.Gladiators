@@ -7,9 +7,29 @@ import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.util.Factories.BoardFactory
 import de.htwg.se.gladiators.util.Factories.GladiatorFactory
 import BoardFactory.{ createNormalBoard3x3, createSandBoard3x3 }
+import de.htwg.se.gladiators.model.TileType._
 
 class CoordinateSpec extends AnyWordSpec with Matchers {
     "A Board" when {
+        "updating tiles" should {
+            "update to Palm" in {
+                createSandBoard3x3
+                    .updateTile(Coordinate(0, 0), Palm)
+                    .tiles(0)(0) should be(Palm)
+
+                createSandBoard3x3
+                    .updateTile(Coordinate(1, 2), Palm)
+                    .tiles(2)(1) should be(Palm)
+            }
+            "update to Base" in {
+                val board = createSandBoard3x3
+                (0 to 2).zip(0 to 2).foreach {
+                    case (x, y) => board
+                        .updateTile(Coordinate(x, y), Base)
+                        .tiles(y)(x) should be(Base)
+                    }
+            }
+        }
         "checking valid coordinates" should {
             "return all coordinates" in {
                 val result = createSandBoard3x3
