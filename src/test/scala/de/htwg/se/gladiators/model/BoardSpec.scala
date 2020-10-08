@@ -27,7 +27,7 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
                     case (x, y) => board
                         .updateTile(Coordinate(x, y), Base)
                         .tiles(y)(x) should be(Base)
-                    }
+                }
             }
         }
         "checking valid coordinates" should {
