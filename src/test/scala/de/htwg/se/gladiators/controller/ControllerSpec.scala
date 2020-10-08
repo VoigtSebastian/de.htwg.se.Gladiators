@@ -12,6 +12,7 @@ import de.htwg.se.gladiators.model.{ Player, Board }
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.util.Factories.BoardFactory
 import de.htwg.se.gladiators.util.Factories.GladiatorFactory
+import de.htwg.se.gladiators.model.TileType.{ Mine, Sand }
 
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A controller" when {
@@ -388,6 +389,63 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
                 controller.move(Coordinate(1, 1), Coordinate(1, controller.playerOne.get.enemyBaseLine)).isInstanceOf[Won] should be(true)
                 eventQueue.events.dequeue.isInstanceOf[Won] should be(true)
+                eventQueue.events.isEmpty should be(true)
+            }
+        }
+        "used to mine a mine" should {
+            "not deplete the mine" in {
+                val mine = Mine(100)
+                val (controller, eventQueue) = createControllerEventQueue()
+                controller.board = BoardFactory
+                    .createNormalBoard3x3
+                    .updateTile(Coordinate(0, 1), mine)
+
+                controller.namePlayerOne("One")
+                controller.namePlayerTwo("Two")
+
+                controller.playerOne = Some(controller
+                    .playerOne
+                    .get
+                    .copy(gladiators = Vector(GladiatorFactory.createGladiator(
+                        position = Some(Coordinate(0, 0)),
+                        moved = Some(false),
+                        movementPoints = Some(2),
+                        attackPoints = Some(100)))))
+                (1 to 3).foreach(_ => eventQueue.events.dequeue)
+
+                controller.gameState = TurnPlayerOne
+
+                controller.move(Coordinate(0, 0), Coordinate(0, 1))
+                eventQueue.events.dequeue.isInstanceOf[Mined] should be(true)
+                controller.board.tiles(1)(0) should be(Mine(100 - mine.goldPerHit))
+                eventQueue.events.isEmpty should be(true)
+            }
+            "deplete the mine" in {
+                val (controller, eventQueue) = createControllerEventQueue()
+                controller.board = BoardFactory
+                    .createNormalBoard3x3
+                    .updateTile(Coordinate(0, 1), Mine(1))
+
+                controller.namePlayerOne("One")
+                controller.namePlayerTwo("Two")
+
+                controller.playerOne = Some(controller
+                    .playerOne
+                    .get
+                    .copy(gladiators = Vector(GladiatorFactory.createGladiator(
+                        position = Some(Coordinate(0, 0)),
+                        moved = Some(false),
+                        movementPoints = Some(2),
+                        attackPoints = Some(100)))))
+                (1 to 3).foreach(_ => eventQueue.events.dequeue)
+
+                controller.gameState = TurnPlayerOne
+
+                controller
+                    .move(Coordinate(0, 0), Coordinate(0, 1))
+                    .asInstanceOf[Mined].amount should be(1)
+                eventQueue.events.dequeue.isInstanceOf[Mined] should be(true)
+                controller.board.tiles(1)(0) should be(Sand)
                 eventQueue.events.isEmpty should be(true)
             }
         }
