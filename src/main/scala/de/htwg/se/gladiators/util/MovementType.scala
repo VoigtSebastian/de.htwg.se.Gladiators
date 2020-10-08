@@ -15,6 +15,10 @@ object MovementType extends Enum[MovementType] {
     case object Attack extends MovementType {
         def message = "This is a valid Attack"
     }
+
+    case object Mining extends MovementType {
+        def message: String = "This move represents valid mining"
+    }
     case object BaseAttack extends MovementType {
         def message = "This is a valid Base-Attack"
     }
