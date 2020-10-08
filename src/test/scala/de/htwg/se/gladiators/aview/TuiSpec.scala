@@ -79,6 +79,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                     controller.publish(Shutdown)
                     controller.publish(Won(Player("", 0, 0, 0)))
                     controller.publish(Attacked(Player("", 0, 0, 0), true, Coordinate(0, 0), Coordinate(0, 0)))
+                    controller.publish(Mined(Player("", 0, 0, 0), 10, true))
 
                     controller.gameState = TurnPlayerOne
 

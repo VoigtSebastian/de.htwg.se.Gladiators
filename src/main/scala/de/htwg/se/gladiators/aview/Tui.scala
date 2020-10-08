@@ -32,6 +32,7 @@ case class Tui(controller: ControllerInterface) extends Reactor {
         }
         case Attacked(player, killed, _, position) => println(f"${player.name} attacked ${if (killed) "and killed"} an unit at position $position!")
         case ErrorMessage(message) => errorMessage(message)
+        case Mined(player, amount, depleted) => println(f"${player.name} mined $amount ${if (depleted) "and depleted the Mine"}")
         case Shutdown => println("Goodbye!")
         case Won(player) => println(f"Congratulations, ${player.name} won!")
     }
