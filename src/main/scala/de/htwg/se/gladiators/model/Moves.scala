@@ -26,7 +26,10 @@ object Moves {
                 }
                 case false => IllegalMove
             }
-            case _ => ???
+            case (_, Mine(gold)) => ((gold > 0), checkMiningPossible(from, to, currentPlayer, board, gold)) match {
+                case (true, true) => Mining
+                case (_, _) => IllegalMove
+            }
         }
     }
 
@@ -44,6 +47,17 @@ object Moves {
             return Some(AlreadyMoved)
         }
         None
+    }
+
+    def checkMiningPossible(from: Coordinate, to: Coordinate, currentPlayer: Player, board: Board, gold: Int): Boolean = {
+        (board.getValidCoordinates(
+            from,
+            currentPlayer
+                .gladiators
+                .filter(_.position == from)(0)
+                .movementPoints,
+            Vector(Sand, Mine(gold)))
+            .contains(to))
     }
 
     def checkBaseAttack(from: Coordinate, currentPlayer: Player, board: Board): Boolean = {
