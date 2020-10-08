@@ -10,5 +10,5 @@ object Gladiators extends App {
     val tui = wire[Tui]
 
     controller.publish(Init)
-    while (tui.processInputLine(scala.io.StdIn.readLine())) {}
+    while (tui.processInputLine(scala.io.StdIn.readLine()) && !controller.shouldShutdown.get) {}
 }

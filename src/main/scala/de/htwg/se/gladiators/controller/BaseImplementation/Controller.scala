@@ -13,6 +13,7 @@ import de.htwg.se.gladiators.model.{ Gladiator, Shop }
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.model.Moves.movementType
 import de.htwg.se.gladiators.util.MovementType
+import java.util.concurrent.atomic.AtomicBoolean
 
 case class Controller() extends ControllerInterface {
     val uncheckedStateMessage = "This code should not be reachable"
@@ -20,6 +21,7 @@ case class Controller() extends ControllerInterface {
     var playerTwo: Option[Player] = None
     var board: Board = initRandomBoard()
     var shop = ShopFactory.initRandomShop()
+    val shouldShutdown = new AtomicBoolean(false)
 
     implicit class Publish(notification: Events) {
         def broadcast = {
@@ -46,7 +48,10 @@ case class Controller() extends ControllerInterface {
             case EndTurn => endTurn
             case BuyUnit(number, position) => buyUnit(number, position)
             case Move(from, to) => move(from, to)
-            case Quit => Shutdown.broadcast
+            case Quit => {
+                Shutdown.broadcast
+                shouldShutdown.set(true)
+            }
         }
     }
 
