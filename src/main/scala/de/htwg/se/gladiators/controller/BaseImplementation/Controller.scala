@@ -14,6 +14,7 @@ import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.model.Moves.movementType
 import de.htwg.se.gladiators.util.MovementType
 import java.util.concurrent.atomic.AtomicBoolean
+import de.htwg.se.gladiators.model.TileType.{ Mine, Sand }
 
 case class Controller() extends ControllerInterface {
     val uncheckedStateMessage = "This code should not be reachable"
@@ -65,10 +66,25 @@ case class Controller() extends ControllerInterface {
                 }
                 case MovementType.Attack => attackUnit(from, to)
                 case MovementType.BaseAttack => baseAttack(from)
+                case MovementType.Mining => mining(to)
                 case movementType: MovementType => ErrorMessage(movementType.message)
             }
             case _ => ErrorMessage(f"Cannot move in gameState $gameState")
         }).broadcast
+    }
+
+    def mining(position: Coordinate): Events = {
+        val mine = board.tileAtCoordinate(position).asInstanceOf[Mine]
+        mine.mine match {
+            case Some(Mine(gold)) => {
+                board = board.updateTile(position, Mine(gold))
+                Mined(currentPlayer.get, mine.goldPerHit, false)
+            }
+            case None => {
+                board = board.updateTile(position, Sand)
+                Mined(currentPlayer.get, mine.gold, true)
+            }
+        }
     }
 
     def baseAttack(from: Coordinate): Events = {
