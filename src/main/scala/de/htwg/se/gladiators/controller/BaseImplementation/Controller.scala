@@ -91,7 +91,7 @@ case class Controller() extends ControllerInterface {
                 .gladiators
                 .filter(_.position == from).head.attackPoints, to))))
 
-        Attacked(currentPlayer.get, (numberOfGladiators < enemyPlayer.get.gladiators.length))
+        Attacked(currentPlayer.get, (numberOfGladiators < enemyPlayer.get.gladiators.length), from, to)
     }
 
     def updatePlayerMove(player: Player, from: Coordinate, to: Coordinate): (Player, Events) = {

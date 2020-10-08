@@ -16,7 +16,7 @@ object Events extends Enum[Events] {
     case class SuccessfullyBoughtGladiator(player: Player, gladiator: Gladiator) extends Events
     case class Turn(player: Player) extends Events
     case class Moved(player: Player, from: Coordinate, to: Coordinate, gladiator: Gladiator) extends Events
-    case class Attacked(currentPlayer: Player, killed: Boolean) extends Events
+    case class Attacked(currentPlayer: Player, killed: Boolean, from: Coordinate, to: Coordinate) extends Events
     case class BaseAttacked(currentPlayer: Player) extends Events
     case object Shutdown extends Events
     case class Won(player: Player) extends Events
