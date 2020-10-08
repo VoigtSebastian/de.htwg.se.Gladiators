@@ -5,7 +5,7 @@ import de.htwg.se.gladiators.controller.BaseImplementation.Controller
 import de.htwg.se.gladiators.util.Events.Init
 import com.softwaremill.macwire._
 
-object Main extends App {
+object Gladiators extends App {
     val controller = wire[Controller]
     val tui = wire[Tui]
 
