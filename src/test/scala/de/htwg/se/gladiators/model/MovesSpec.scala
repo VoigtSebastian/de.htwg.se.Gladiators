@@ -5,6 +5,7 @@ import org.scalatest.matchers.should.Matchers
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.util.MovementType._
 import de.htwg.se.gladiators.util.Factories.GladiatorFactory.createGladiator
+import de.htwg.se.gladiators.model.TileType.Mine
 
 class MovesSpec extends AnyWordSpec with Matchers {
     "A Move" when {
@@ -56,6 +57,16 @@ class MovesSpec extends AnyWordSpec with Matchers {
             "categorize that the Gladiator already moved" in {
                 val currentPlayer = Player("", 0, 0, 100, Vector(createGladiator(position = Some(Coordinate(0, 0)), movementPoints = Some(2))))
                 Moves.movementType(Coordinate(0, 0), Coordinate(1, 0), board, currentPlayer, enemyPlayer) should be(AlreadyMoved)
+            }
+            "categorize mining" in {
+                val currentPlayer = Player("", 0, 0, 100, Vector(createGladiator(position = Some(Coordinate(0, 0)), movementPoints = Some(2), moved = Some(false))))
+                val goldBoard = board.copy(tiles = board.tiles.updated(1, board.tiles(0).updated(0, Mine(500))))
+                Moves.movementType(Coordinate(0, 0), Coordinate(0, 1), goldBoard, currentPlayer, enemyPlayer) should be(Mining)
+            }
+            "categorize an illegal move, because the mine  is to far away" in {
+                val currentPlayer = Player("", 0, 0, 100, Vector(createGladiator(position = Some(Coordinate(0, 0)), movementPoints = Some(0), moved = Some(false))))
+                val goldBoard = board.copy(tiles = board.tiles.updated(1, board.tiles(0).updated(0, Mine(500))))
+                Moves.movementType(Coordinate(0, 0), Coordinate(0, 1), goldBoard, currentPlayer, enemyPlayer) should be(IllegalMove)
             }
         }
     }
