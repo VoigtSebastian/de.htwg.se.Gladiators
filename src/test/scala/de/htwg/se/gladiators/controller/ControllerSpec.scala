@@ -32,6 +32,20 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             "return the shop as a string" in {
                 controller.shopToString should not be (empty)
             }
+            "be able to reset Gladiators" in {
+                controller.playerOne = Some(controller
+                    .playerOne
+                    .get
+                    .copy(gladiators = (0 to 10).map(_ => GladiatorFactory.initRandomGladiator).toVector))
+                controller.playerOne = (controller
+                    .resetGladiatorsMoved(controller.playerOne.get))
+
+                controller
+                    .playerOne
+                    .get
+                    .gladiators
+                    .foreach(_.moved should be(false))
+            }
         }
         "returning the current player" should {
             "return Player One" in {
