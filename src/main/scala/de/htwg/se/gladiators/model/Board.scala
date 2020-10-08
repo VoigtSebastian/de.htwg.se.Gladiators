@@ -48,4 +48,6 @@ case class Board(tiles: Vector[Vector[TileType]]) {
                 case Some(value) => Some(value.gladiatorType)
                 case None => None
             }
+
+    def updateTile(position: Coordinate, newTile: TileType) = this.copy(tiles.updated(position.y, tiles(position.y).updated(position.x, newTile)))
 }
