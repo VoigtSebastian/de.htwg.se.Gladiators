@@ -3,7 +3,7 @@ import sbt.Keys.libraryDependencies
 
 addCompilerPlugin(scalafixSemanticdb)
 
-coverageExcludedPackages := "<empty>;de.htwg.se.gladiators.Gladiators"
+coverageExcludedPackages := "<empty>;de.htwg.se.gladiators.Gladiators;de.htwg.se.gladiators.aview.Gui.*"
 
 version := "0.1"
 scalaVersion := "2.12.12"
