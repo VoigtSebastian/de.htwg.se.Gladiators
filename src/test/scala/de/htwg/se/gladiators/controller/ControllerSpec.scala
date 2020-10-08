@@ -396,6 +396,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 val (controller, eventQueue) = createControllerEventQueue()
                 controller.inputCommand(Quit)
                 eventQueue.events.dequeue() == Shutdown
+                controller.shouldShutdown.get should be(true)
             }
         }
     }
