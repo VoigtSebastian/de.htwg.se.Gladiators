@@ -32,6 +32,7 @@ case class Tui(controller: ControllerInterface) extends Reactor {
         }
         case ErrorMessage(message) => errorMessage(message)
         case Shutdown => println("Goodbye!")
+        case Won(player) => println(f"Congratulations, ${player.name} won!")
     }
 
     def processInputLine(line: String): Boolean = {
