@@ -15,13 +15,14 @@ import de.htwg.se.gladiators.model.Moves.movementType
 import de.htwg.se.gladiators.util.MovementType
 import java.util.concurrent.atomic.AtomicBoolean
 import de.htwg.se.gladiators.model.TileType.{ Mine, Sand }
+import de.htwg.se.gladiators.util.Configuration
 
-case class Controller() extends ControllerInterface {
+case class Controller(configuration: Configuration) extends ControllerInterface {
     val uncheckedStateMessage = "This code should not be reachable"
     var playerOne: Option[Player] = None
     var playerTwo: Option[Player] = None
-    var board: Board = initRandomBoard()
-    var shop = ShopFactory.initRandomShop()
+    var board: Board = initRandomBoard(dimensions = configuration.boardSize)
+    var shop = ShopFactory.initRandomShop(numberOfItemsInStock = configuration.itemsInShop)
     val shouldShutdown = new AtomicBoolean(false)
 
     implicit class Publish(notification: Events) {
