@@ -8,6 +8,7 @@ case class Player(
     enemyBaseLine: Int,
     credits: Int,
     health: Int,
+    alreadyBought: Boolean,
     gladiators: Vector[Gladiator] = Vector()) {
 
     def placementTilesNewUnit(boardSize: Int, tiles: Vector[Vector[TileType]]): Vector[Coordinate] = {

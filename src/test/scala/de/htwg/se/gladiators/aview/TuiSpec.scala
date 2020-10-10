@@ -72,14 +72,14 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                     controller.publish(Init)
                     controller.publish(PlayerOneNamed("torsten"))
                     controller.publish(PlayerTwoNamed("torsten"))
-                    controller.publish(Turn(Player("", 0, 0, 100)))
+                    controller.publish(Turn(Player("", 0, 0, 100, false)))
                     controller.publish(ErrorMessage("error"))
-                    controller.publish(SuccessfullyBoughtGladiator(Player("", 0, 0, 100), GladiatorFactory.createGladiator()))
-                    controller.publish(Moved(Player("", 0, 0, 100), Coordinate(0, 0), Coordinate(0, 0), GladiatorFactory.createGladiator()))
+                    controller.publish(SuccessfullyBoughtGladiator(Player("", 0, 0, 100, false), GladiatorFactory.createGladiator()))
+                    controller.publish(Moved(Player("", 0, 0, 100, false), Coordinate(0, 0), Coordinate(0, 0), GladiatorFactory.createGladiator()))
                     controller.publish(Shutdown)
-                    controller.publish(Won(Player("", 0, 0, 0)))
-                    controller.publish(Attacked(Player("", 0, 0, 0), true, Coordinate(0, 0), Coordinate(0, 0)))
-                    controller.publish(Mined(Player("", 0, 0, 0), 10, true))
+                    controller.publish(Won(Player("", 0, 0, 0, false)))
+                    controller.publish(Attacked(Player("", 0, 0, 0, false), true, Coordinate(0, 0), Coordinate(0, 0)))
+                    controller.publish(Mined(Player("", 0, 0, 0, false), 10, true))
 
                     controller.gameState = TurnPlayerOne
 
