@@ -7,10 +7,32 @@ import de.htwg.se.gladiators.util.Configuration
 import scala.swing.event.WindowClosing
 import scala.swing._
 import de.htwg.se.gladiators.util.Coordinate
+import de.htwg.se.gladiators.util.Events.PlayerOneNamed
 
 class Gui(controller: ControllerInterface, configuration: Configuration) extends MainFrame with Reactor {
     listenTo(controller)
     title = "Gladiator"
+
+    NamePlayerDialog.namePlayer("Player One")
+    // val sf = new Frame { secondFrame =>
+    //     title = "Secondary Frame"
+    //     visible = true
+    //     contents = new FlowPanel {
+    //         contents += new Button(Action("Close Me") { secondFrame.dispose() })
+    //         contents += new Button(Action("Exit") { println("exit called") })
+    //     }
+    //     listenTo(controller)
+    //     reactions += {
+    //         case PlayerOneNamed(name) => {
+    //             secondFrame.dispose
+    //             println(f"Gui: $name")
+    //         }
+    //     }
+    // }
+
+    // val r = Dialog.showInput(this, "What is the name of Player One", initial = "")
+    // println(r)
+
     var selectedShopItem: Option[Int] = None
     var selectedTile: Option[Coordinate] = None
 
