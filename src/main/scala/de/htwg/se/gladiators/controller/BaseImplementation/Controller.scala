@@ -42,7 +42,7 @@ case class Controller() extends ControllerInterface {
         }).filter(_.healthPoints > 0)
     }
 
-    override def inputCommand(command: Command): Unit = {
+    override def inputCommand(command: Command): Events = {
         command match {
             case NamePlayerOne(name) => namePlayerOne(name)
             case NamePlayerTwo(name) => namePlayerTwo(name)
@@ -50,8 +50,8 @@ case class Controller() extends ControllerInterface {
             case BuyUnit(number, position) => buyUnit(number, position)
             case Move(from, to) => move(from, to)
             case Quit => {
-                Shutdown.broadcast
                 shouldShutdown.set(true)
+                Shutdown.broadcast
             }
         }
     }

@@ -12,7 +12,10 @@ case class TestingController() extends ControllerInterface {
     val testError = ErrorMessage("These are test functions, the return value is always and Error")
     var commandQueue: Queue[Command] = Queue()
 
-    override def inputCommand(command: Command) = commandQueue.enqueue(command)
+    override def inputCommand(command: Command) = {
+        commandQueue.enqueue(command)
+        testError
+    }
     override def boardToString = "???"
     override def shopToString = "???"
 
