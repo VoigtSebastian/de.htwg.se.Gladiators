@@ -14,7 +14,10 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
     var selectedShopItem: Option[Int] = None
     var selectedTile: Option[Coordinate] = None
 
-    implicit class BetterComponents(component: Component) {
+    val shopPanel = ShopPanel(configuration.itemsInShop).listenAndReturn
+    val boardPanel = BoardPanel(configuration.boardSize).listenAndReturn
+
+    implicit class BetterComponents[T <: Component](component: T) {
         def listenAndReturn = {
             listenTo(component)
             component
@@ -22,31 +25,36 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
     }
 
     contents = new BoxPanel(Orientation.Horizontal) {
-        contents += ShopPanel(configuration.itemsInShop).listenAndReturn
-        contents += BoardPanel(configuration.boardSize).listenAndReturn
+        contents += shopPanel
+        contents += boardPanel
     }
 
     reactions += {
         case WindowClosing(_) => controller.inputCommand(Quit)
 
-        case ShopClicked(number) => {
+        case ShopClicked(number) if Some(number) != selectedShopItem => {
             selectedShopItem = Some(number)
+            selectedTile = None
             println(f"Shop clicked $number")
         }
+        case ShopClicked(_) => selectedShopItem = None
 
-        case TileClicked(newTile) => (selectedTile, selectedShopItem) match {
-            case (None, None) => { selectedTile = Some(newTile) }
-            case (Some(_), None) if selectedTile.get != newTile => {
-                move(newTile)
-                resetSelected
+        case TileClicked(newTile) =>
+            (selectedTile, selectedShopItem) match {
+                case (None, None) => selectTile(newTile)
+                case (Some(_), None) if selectedTile.get != newTile => {
+                    move(newTile)
+                    resetSelected
+                    deselectTile(newTile)
+                }
+                case (Some(_), None) => resetSelected
+                case (None, Some(_)) => {
+                    selectTile(newTile)
+                    println(f"Buy unit ${selectedShopItem.get} to ${newTile}")
+                    resetSelected
+                }
+                case (Some(_), Some(_)) => ()
             }
-            case (Some(_), None) => selectedTile = None
-            case (None, Some(_)) => {
-                println(f"Buy unit ${selectedShopItem.get} to ${newTile}")
-                resetSelected
-            }
-            case (Some(_), Some(_)) => ()
-        }
     }
 
     peer.setDefaultCloseOperation(0)
@@ -54,10 +62,18 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
     pack
     visible = true
 
+    def selectTile(coordinate: Coordinate) = {
+        selectedTile = Some(coordinate)
+        boardPanel.selectTile(coordinate)
+    }
+
     def resetSelected = {
+        deselectTile(selectedTile.get)
         selectedTile = None
         selectedShopItem = None
     }
+
+    def deselectTile(coordinate: Coordinate) = boardPanel.deselectTile(coordinate)
 
     def move(to: Coordinate) = println(f"Move from ${selectedTile.get} to $to")
 }
