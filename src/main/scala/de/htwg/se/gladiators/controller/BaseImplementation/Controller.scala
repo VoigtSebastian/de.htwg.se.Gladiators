@@ -119,10 +119,12 @@ case class Controller() extends ControllerInterface {
     def buyUnit(number: Int, position: Coordinate): Events = {
         (shop.buy(number), gameState, board.isCoordinateLegal(position)) match {
             case (Some((newShop, gladiator)), state, true) if state == TurnPlayerOne || state == TurnPlayerTwo => {
-                if (currentPlayer.get.placementTilesNewUnit(board.tiles.size, board.tiles).contains(position)) {
+                if (currentPlayer.get.alreadyBought == true)
+                    ErrorMessage(f"You can just buy one unit per turn").broadcast
+                else if (currentPlayer.get.placementTilesNewUnit(board.tiles.size, board.tiles).contains(position)) {
                     val (player, event) = checkoutFromShop(currentPlayer.get, newShop, gladiator.copy(position = position))
                     updateCurrentPlayer(Some(player))
-                    return event
+                    return event.broadcast
                 } else
                     return ErrorMessage(f"The position $position is blocked").broadcast
             }
@@ -136,11 +138,11 @@ case class Controller() extends ControllerInterface {
         (player.credits - gladiator.calculateCost) match {
             case balance if balance >= 0 => {
                 shop = newShop
-                val newPlayer = player.copy(gladiators = player.gladiators :+ gladiator, credits = balance)
-                (newPlayer, SuccessfullyBoughtGladiator(newPlayer, gladiator).broadcast)
+                val newPlayer = player.copy(gladiators = player.gladiators :+ gladiator, credits = balance, alreadyBought = true)
+                (newPlayer, SuccessfullyBoughtGladiator(newPlayer, gladiator))
             }
             case balance => {
-                (player, ErrorMessage(f"You are ${balance * (-1)} credits short.").broadcast)
+                (player, ErrorMessage(f"You are ${balance * (-1)} credits short."))
             }
         }
     }
@@ -178,11 +180,13 @@ case class Controller() extends ControllerInterface {
             case TurnPlayerOne => {
                 gameState = TurnPlayerTwo
                 playerTwo = resetGladiatorsMoved(playerTwo.get)
+                playerTwo = Some(playerTwo.get.copy(alreadyBought = false))
                 Turn(playerTwo.get).broadcast
             }
             case TurnPlayerTwo => {
                 gameState = TurnPlayerOne
                 playerOne = resetGladiatorsMoved(playerOne.get)
+                playerOne = Some(playerOne.get.copy(alreadyBought = false))
                 Turn(playerOne.get).broadcast
             }
             case _ => ErrorMessage(s"You can not end a turn in gameState $gameState").broadcast
@@ -194,7 +198,7 @@ case class Controller() extends ControllerInterface {
         gameState match {
             case NamingPlayerOne => {
                 gameState = NamingPlayerTwo
-                playerOne = Some(Player(name, board.tiles.size - 1, 100, 100))
+                playerOne = Some(Player(name, board.tiles.size - 1, 100, 100, false))
                 PlayerOneNamed(name).broadcast
             }
             case _ =>
@@ -207,7 +211,7 @@ case class Controller() extends ControllerInterface {
         gameState match {
             case NamingPlayerTwo => {
                 gameState = TurnPlayerOne
-                playerTwo = Some(Player(name, 0, 100, 100))
+                playerTwo = Some(Player(name, 0, 100, 100, false))
                 PlayerTwoNamed(name).broadcast
                 Turn(playerOne.get).broadcast
             }
