@@ -482,6 +482,111 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.shouldShutdown.get should be(true)
             }
         }
+        "being asked if the current player occupies a tile" should {
+            "return false" in {
+                val (controller, _) = createControllerEventQueue()
+                val length = controller.board.tiles.length - 1
+                (0 to length).zip(0 to length).foreach({ case (x, y) => controller.tileOccupiedByCurrentPlayer(Coordinate(x, y)) should be(false) })
+            }
+            "return true" in {
+                val (controller, _) = createControllerEventQueue()
+                controller.namePlayerOne("jürgen")
+                controller.playerOne = Some(controller
+                    .playerOne
+                    .get
+                    .copy(gladiators = Vector(GladiatorFactory.createGladiator(position = Some(Coordinate(0, 0))))))
+                controller.gameState = TurnPlayerOne
+                controller.tileOccupiedByCurrentPlayer(Coordinate(0, 0)) should be(true)
+            }
+        }
+        "being asked for attack tiles from a certain position" should {
+            "return false because there is no current Player" in {
+                val (controller, _) = createControllerEventQueue()
+                val length = controller.board.tiles.length - 1
+                (0 to length).zip(0 to length).foreach({ case (x, y) => controller.attackTiles(Coordinate(x, y)) should be(None) })
+            }
+            "return true" in {
+                val (controller, _) = createControllerEventQueue()
+                controller.board = BoardFactory.createSandBoard3x3
+                controller.namePlayerOne("jürgen")
+                controller.playerOne = Some(controller
+                    .playerOne
+                    .get
+                    .copy(gladiators = Vector(GladiatorFactory
+                        .createGladiator(
+                            position = Some(Coordinate(0, 0)),
+                            movementPoints = Some(1)))))
+                controller.gameState = TurnPlayerOne
+                controller
+                    .attackTiles(Coordinate(0, 0)) should not be empty
+            }
+            "return None because the tile is not occupied" in {
+                val (controller, _) = createControllerEventQueue()
+                controller.board = BoardFactory.createSandBoard3x3
+                controller.namePlayerOne("jürgen")
+                controller.playerOne = Some(controller
+                    .playerOne
+                    .get
+                    .copy(gladiators = Vector(GladiatorFactory
+                        .createGladiator(
+                            position = Some(Coordinate(0, 0)),
+                            movementPoints = Some(1)))))
+                controller.gameState = TurnPlayerOne
+                controller
+                    .attackTiles(Coordinate(1, 0)) should be(None)
+            }
+        }
+        "being asked for move tiles from a certain position" should {
+            "return false because there is no current Player" in {
+                val (controller, _) = createControllerEventQueue()
+                val length = controller.board.tiles.length - 1
+                (0 to length).zip(0 to length).foreach({ case (x, y) => controller.moveTiles(Coordinate(x, y)) should be(None) })
+            }
+            "return true" in {
+                val (controller, _) = createControllerEventQueue()
+                controller.board = BoardFactory.createSandBoard3x3
+                controller.namePlayerOne("jürgen")
+                controller.playerOne = Some(controller
+                    .playerOne
+                    .get
+                    .copy(gladiators = Vector(GladiatorFactory
+                        .createGladiator(
+                            position = Some(Coordinate(0, 0)),
+                            movementPoints = Some(1)))))
+                controller.gameState = TurnPlayerOne
+                controller
+                    .moveTiles(Coordinate(0, 0)) should not be empty
+            }
+            "return None because the tile is not occupied" in {
+                val (controller, _) = createControllerEventQueue()
+                controller.board = BoardFactory.createSandBoard3x3
+                controller.namePlayerOne("jürgen")
+                controller.playerOne = Some(controller
+                    .playerOne
+                    .get
+                    .copy(gladiators = Vector(GladiatorFactory
+                        .createGladiator(
+                            position = Some(Coordinate(0, 0)),
+                            movementPoints = Some(1)))))
+                controller.gameState = TurnPlayerOne
+                controller
+                    .moveTiles(Coordinate(1, 0)) should be(None)
+            }
+        }
+        "being tiles to place new units" should {
+            "return false" in {
+                val (controller, _) = createControllerEventQueue()
+                controller.newUnitPlacementTiles should be(None)
+            }
+            "return true" in {
+                val (controller, _) = createControllerEventQueue()
+                controller.board = BoardFactory.createSandBoard3x3
+                controller.namePlayerOne("jürgen")
+                controller.gameState = TurnPlayerOne
+                controller
+                    .newUnitPlacementTiles should not be empty
+            }
+        }
     }
     def createControllerEventQueue(shopStockSize: Option[Int] = None) = {
         val controller = Controller(Configuration(5, 15))

@@ -14,7 +14,7 @@ import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.model.Moves.movementType
 import de.htwg.se.gladiators.util.MovementType
 import java.util.concurrent.atomic.AtomicBoolean
-import de.htwg.se.gladiators.model.TileType.{ Mine, Sand }
+import de.htwg.se.gladiators.model.TileType.{ Mine, Sand, Base }
 import de.htwg.se.gladiators.util.Configuration
 
 case class Controller(configuration: Configuration) extends ControllerInterface {
@@ -218,6 +218,40 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
             }
             case _ => ErrorMessage(s"Player two can not be named anymore").broadcast
         }
+    }
+
+    def tileOccupiedByCurrentPlayer(tile: Coordinate): Boolean = currentPlayer match {
+        case None => false
+        case Some(player) => !player.gladiators.filter(_.position == tile).isEmpty
+    }
+
+    def attackTiles(tile: Coordinate): Option[Iterable[Coordinate]] = currentPlayer match {
+        case None => None
+        case Some(player) => player
+            .gladiators
+            .filter(_.position == tile)
+            .map(gladiator => board.getValidCoordinates(gladiator.position, gladiator.gladiatorType.movementPointsAttack, Vector(Sand, Base)))
+            .flatten match {
+                case list: Vector[Coordinate] if list.length > 0 => Some(list)
+                case _ => None
+            }
+    }
+
+    def moveTiles(tile: Coordinate): Option[Iterable[Coordinate]] = currentPlayer match {
+        case None => None
+        case Some(player) => player
+            .gladiators
+            .filter(_.position == tile)
+            .map(gladiator => board.getValidCoordinates(gladiator.position, gladiator.movementPoints, Vector(Sand)))
+            .flatten match {
+                case list: Vector[Coordinate] if list.length > 0 => Some(list)
+                case _ => None
+            }
+    }
+
+    def newUnitPlacementTiles: Option[Iterable[Coordinate]] = currentPlayer match {
+        case None => None
+        case Some(player) => Some(player.placementTilesNewUnit(board.tiles.length, board.tiles))
     }
 
     override def boardToString = board.coloredString(playerOne.get.gladiators ++ playerTwo.get.gladiators)

@@ -43,4 +43,9 @@ case class TestingController() extends ControllerInterface {
         commandQueue.enqueue(Command.Move(from, to))
         testError
     }
+
+    def tileOccupiedByCurrentPlayer(tile: Coordinate): Boolean = false
+    def attackTiles(tile: Coordinate): Option[Iterable[Coordinate]] = None
+    def moveTiles(tile: Coordinate): Option[Iterable[Coordinate]] = None
+    def newUnitPlacementTiles: Option[Iterable[Coordinate]] = None
 }
