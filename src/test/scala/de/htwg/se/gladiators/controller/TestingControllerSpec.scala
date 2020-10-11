@@ -38,6 +38,18 @@ class TestingControllerSpec extends AnyWordSpec with Matchers {
                 controller.buyUnit(0, Coordinate(0, 0)).isInstanceOf[ErrorMessage] should be(true)
                 controller.commandQueue.dequeue() should be(BuyUnit(0, Coordinate(0, 0)))
             }
+            "return false when being asked if this tile is occupied" in {
+                ((1 to 10).zip(1 to 10)).foreach({ case (x, y) => controller.tileOccupiedByCurrentPlayer(Coordinate(x, y)) should be(false) })
+            }
+            "return None when asking for attacking tiles at a certain position" in {
+                ((1 to 10).zip(1 to 10)).foreach({ case (x, y) => controller.attackTiles(Coordinate(x, y)) should be(None) })
+            }
+            "return None when asking for moving tiles at a certain position" in {
+                ((1 to 10).zip(1 to 10)).foreach({ case (x, y) => controller.moveTiles(Coordinate(x, y)) should be(None) })
+            }
+            "return an empty Vector when asking for new unit placement" in {
+                controller.newUnitPlacementTiles should be(None)
+            }
         }
     }
 }
