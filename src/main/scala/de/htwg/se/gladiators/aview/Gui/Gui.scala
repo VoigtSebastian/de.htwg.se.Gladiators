@@ -9,6 +9,7 @@ import de.htwg.se.gladiators.util.Command._
 
 import scala.swing.event.WindowClosing
 import scala.swing._
+import de.htwg.se.gladiators.aview.Gui.GladiatorComponents._
 
 class Gui(controller: ControllerInterface, configuration: Configuration) extends MainFrame with Reactor with Publisher {
     listenTo(controller)
@@ -36,29 +37,12 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
         case PlayerTwoNamed(_) => showGame
     }
 
-    def showNamingPlayerOne = {
-        contents = new BoxPanel(Orientation.Vertical) {
-            val textArea = new TextField("")
-            contents += new Label("Whats the name of Player One")
-            contents += textArea
-            contents += Button("Submit") { controller.inputCommand(NamePlayerOne(textArea.text)) }
-        }
-        repaint
-        pack
-        visible = true
-    }
+    repaint
+    pack
+    visible = true
 
-    def showNamingPlayerTwo = {
-        contents = new BoxPanel(Orientation.Vertical) {
-            val textArea = new TextField("")
-            contents += new Label("Whats the name of Player Two")
-            contents += textArea
-            contents += Button("Submit") { controller.inputCommand(NamePlayerTwo(textArea.text)) }
-        }
-        repaint
-        pack
-        visible = true
-    }
+    def showNamingPlayerOne = contents = ShowPlayerName("Player One") { (text: String) => controller.inputCommand(NamePlayerOne(text)) }
+    def showNamingPlayerTwo = contents = ShowPlayerName("Player Two") { (text: String) => controller.inputCommand(NamePlayerTwo(text)) }
 
     def showGame = {
         contents = new BoxPanel(Orientation.Horizontal) {
@@ -91,11 +75,8 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
                     case (Some(_), Some(_)) => ()
                 }
         }
-
-        repaint
-        pack
-        visible = true
     }
+
     def selectTile(coordinate: Coordinate) = {
         selectedTile = Some(coordinate)
         boardPanel.selectTile(coordinate)
