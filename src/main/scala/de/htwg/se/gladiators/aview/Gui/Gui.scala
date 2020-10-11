@@ -3,41 +3,17 @@ package de.htwg.se.gladiators.aview.Gui
 import de.htwg.se.gladiators.controller.ControllerInterface
 import de.htwg.se.gladiators.aview.Gui.GuiEvents._
 import de.htwg.se.gladiators.util.Command.Quit
-import de.htwg.se.gladiators.util.Configuration
+import de.htwg.se.gladiators.util.{ Configuration, Coordinate }
+import de.htwg.se.gladiators.util.Events._
+import de.htwg.se.gladiators.util.Command._
+
 import scala.swing.event.WindowClosing
 import scala.swing._
-import de.htwg.se.gladiators.util.Coordinate
-import de.htwg.se.gladiators.util.Events.PlayerOneNamed
 
-class Gui(controller: ControllerInterface, configuration: Configuration) extends MainFrame with Reactor {
+class Gui(controller: ControllerInterface, configuration: Configuration) extends MainFrame with Reactor with Publisher {
     listenTo(controller)
     title = "Gladiator"
-
-    NamePlayerDialog.namePlayer("Player One")
-    // val sf = new Frame { secondFrame =>
-    //     title = "Secondary Frame"
-    //     visible = true
-    //     contents = new FlowPanel {
-    //         contents += new Button(Action("Close Me") { secondFrame.dispose() })
-    //         contents += new Button(Action("Exit") { println("exit called") })
-    //     }
-    //     listenTo(controller)
-    //     reactions += {
-    //         case PlayerOneNamed(name) => {
-    //             secondFrame.dispose
-    //             println(f"Gui: $name")
-    //         }
-    //     }
-    // }
-
-    // val r = Dialog.showInput(this, "What is the name of Player One", initial = "")
-    // println(r)
-
-    var selectedShopItem: Option[Int] = None
-    var selectedTile: Option[Coordinate] = None
-
-    val shopPanel = ShopPanel(configuration.itemsInShop).listenAndReturn
-    val boardPanel = BoardPanel(configuration.boardSize).listenAndReturn
+    peer.setDefaultCloseOperation(0)
 
     implicit class BetterComponents[T <: Component](component: T) {
         def listenAndReturn = {
@@ -46,44 +22,79 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
         }
     }
 
-    contents = new BoxPanel(Orientation.Horizontal) {
-        contents += shopPanel
-        contents += boardPanel
-    }
+    var selectedShopItem: Option[Int] = None
+    var selectedTile: Option[Coordinate] = None
+
+    val shopPanel = ShopPanel(configuration.itemsInShop).listenAndReturn
+    val boardPanel = BoardPanel(configuration.boardSize).listenAndReturn
 
     reactions += {
         case WindowClosing(_) => controller.inputCommand(Quit)
-
-        case ShopClicked(number) if Some(number) != selectedShopItem => {
-            selectedShopItem = Some(number)
-            selectedTile = None
-            println(f"Shop clicked $number")
-        }
-        case ShopClicked(_) => selectedShopItem = None
-
-        case TileClicked(newTile) =>
-            (selectedTile, selectedShopItem) match {
-                case (None, None) => selectTile(newTile)
-                case (Some(_), None) if selectedTile.get != newTile => {
-                    move(newTile)
-                    resetSelected
-                    deselectTile(newTile)
-                }
-                case (Some(_), None) => resetSelected
-                case (None, Some(_)) => {
-                    selectTile(newTile)
-                    println(f"Buy unit ${selectedShopItem.get} to ${newTile}")
-                    resetSelected
-                }
-                case (Some(_), Some(_)) => ()
-            }
+        case Init => showNamingPlayerOne
+        case PlayerOneNamed(_) => showNamingPlayerTwo
+        case PlayerTwoNamed(_) => showGame
     }
 
-    peer.setDefaultCloseOperation(0)
-    repaint
-    pack
-    visible = true
+    def showNamingPlayerOne = {
+        contents = new BoxPanel(Orientation.Vertical) {
+            val textArea = new TextArea("")
+            contents += new Label("Whats the name of Player One")
+            contents += textArea
+            contents += Button("Submit") { controller.inputCommand(NamePlayerOne(textArea.text)) }
+        }
+        repaint
+        pack
+        visible = true
+    }
 
+    def showNamingPlayerTwo = {
+        contents = new BoxPanel(Orientation.Vertical) {
+            val textArea = new TextArea("")
+            contents += new Label("Whats the name of Player Two")
+            contents += textArea
+            contents += Button("Submit") { controller.inputCommand(NamePlayerTwo(textArea.text)) }
+        }
+        repaint
+        pack
+        visible = true
+    }
+
+    def showGame = {
+        contents = new BoxPanel(Orientation.Horizontal) {
+            contents += shopPanel
+            contents += boardPanel
+        }
+
+        reactions += {
+            case ShopClicked(number) if Some(number) != selectedShopItem => {
+                selectedShopItem = Some(number)
+                selectedTile = None
+                println(f"Shop clicked $number")
+            }
+            case ShopClicked(_) => selectedShopItem = None
+
+            case TileClicked(newTile) =>
+                (selectedTile, selectedShopItem) match {
+                    case (None, None) => selectTile(newTile)
+                    case (Some(_), None) if selectedTile.get != newTile => {
+                        move(newTile)
+                        resetSelected
+                        deselectTile(newTile)
+                    }
+                    case (Some(_), None) => resetSelected
+                    case (None, Some(_)) => {
+                        selectTile(newTile)
+                        println(f"Buy unit ${selectedShopItem.get} to ${newTile}")
+                        resetSelected
+                    }
+                    case (Some(_), Some(_)) => ()
+                }
+        }
+
+        repaint
+        pack
+        visible = true
+    }
     def selectTile(coordinate: Coordinate) = {
         selectedTile = Some(coordinate)
         boardPanel.selectTile(coordinate)
