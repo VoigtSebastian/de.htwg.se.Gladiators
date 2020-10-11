@@ -14,6 +14,7 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
     listenTo(controller)
     title = "Gladiator"
     peer.setDefaultCloseOperation(0)
+    peer.setLocationRelativeTo(null)
 
     implicit class BetterComponents[T <: Component](component: T) {
         def listenAndReturn = {
@@ -37,7 +38,7 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
 
     def showNamingPlayerOne = {
         contents = new BoxPanel(Orientation.Vertical) {
-            val textArea = new TextArea("")
+            val textArea = new TextField("")
             contents += new Label("Whats the name of Player One")
             contents += textArea
             contents += Button("Submit") { controller.inputCommand(NamePlayerOne(textArea.text)) }
@@ -49,7 +50,7 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
 
     def showNamingPlayerTwo = {
         contents = new BoxPanel(Orientation.Vertical) {
-            val textArea = new TextArea("")
+            val textArea = new TextField("")
             contents += new Label("Whats the name of Player Two")
             contents += textArea
             contents += Button("Submit") { controller.inputCommand(NamePlayerTwo(textArea.text)) }
