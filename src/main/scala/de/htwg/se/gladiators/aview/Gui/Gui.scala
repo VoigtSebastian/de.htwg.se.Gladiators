@@ -28,7 +28,7 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
     var selectedTile: Option[Coordinate] = None
 
     val shopPanel = ShopPanel(configuration.itemsInShop).listenAndReturn
-    val boardPanel = BoardPanel(configuration.boardSize).listenAndReturn
+    val boardPanel = BoardPanel(configuration.boardSize, controller.boardTiles).listenAndReturn
 
     reactions += {
         case WindowClosing(_) => controller.inputCommand(Quit)
