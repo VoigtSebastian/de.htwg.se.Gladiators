@@ -16,9 +16,9 @@ trait ControllerInterface extends Publisher {
     def move(from: Coordinate, to: Coordinate): Events
 
     def tileOccupiedByCurrentPlayer(tile: Coordinate): Boolean
-    def attackTiles(tile: Coordinate): Option[Iterable[Coordinate]]
-    def moveTiles(tile: Coordinate): Option[Iterable[Coordinate]]
-    def newUnitPlacementTiles: Option[Iterable[Coordinate]]
+    def attackTiles(tile: Coordinate): Option[Vector[Coordinate]]
+    def moveTiles(tile: Coordinate): Option[Vector[Coordinate]]
+    def newUnitPlacementTiles: Option[Vector[Coordinate]]
 
     def boardToString: String
     def shopToString: String
