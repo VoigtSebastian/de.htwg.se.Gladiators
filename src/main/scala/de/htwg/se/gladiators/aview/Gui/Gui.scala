@@ -53,7 +53,7 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
         reactions += {
             case ShopClicked(number) if Some(number) != selectedShopItem => {
                 selectedShopItem = Some(number)
-                selectedTile = None
+                resetSelectedTile
                 println(f"Shop clicked $number")
             }
             case ShopClicked(_) => selectedShopItem = None
@@ -83,9 +83,14 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
     }
 
     def resetSelected = {
-        deselectTile(selectedTile.get)
-        selectedTile = None
+        resetSelectedTile
         selectedShopItem = None
+    }
+
+    def resetSelectedTile = {
+        if (selectedTile != None)
+            deselectTile(selectedTile.get)
+        selectedTile = None
     }
 
     def deselectTile(coordinate: Coordinate) = boardPanel.deselectTile(coordinate)
