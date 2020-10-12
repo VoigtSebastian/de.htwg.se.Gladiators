@@ -53,4 +53,5 @@ case class TestingController() extends ControllerInterface {
     def boardTiles: Vector[Vector[TileType]] = Vector.empty
     def gladiatorsPlayerOne: Option[Vector[Gladiator]] = None
     def gladiatorsPlayerTwo: Option[Vector[Gladiator]] = None
+    def stock: Vector[Gladiator] = Vector.empty
 }

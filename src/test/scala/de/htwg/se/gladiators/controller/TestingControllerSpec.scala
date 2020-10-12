@@ -59,6 +59,9 @@ class TestingControllerSpec extends AnyWordSpec with Matchers {
             "return None when being asked for the Gladiators of Player Two" in {
                 controller.gladiatorsPlayerTwo should be(None)
             }
+            "return an empty list when being asked for the Gladiators in stock" in {
+                controller.stock should be(Vector.empty)
+            }
         }
     }
 }
