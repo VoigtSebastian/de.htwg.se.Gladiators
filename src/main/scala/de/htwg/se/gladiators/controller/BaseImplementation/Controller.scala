@@ -225,7 +225,7 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
         case Some(player) => !player.gladiators.filter(_.position == tile).isEmpty
     }
 
-    def attackTiles(tile: Coordinate): Option[Iterable[Coordinate]] = currentPlayer match {
+    def attackTiles(tile: Coordinate): Option[Vector[Coordinate]] = currentPlayer match {
         case None => None
         case Some(player) => player
             .gladiators
@@ -237,7 +237,7 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
             }
     }
 
-    def moveTiles(tile: Coordinate): Option[Iterable[Coordinate]] = currentPlayer match {
+    def moveTiles(tile: Coordinate): Option[Vector[Coordinate]] = currentPlayer match {
         case None => None
         case Some(player) => player
             .gladiators
@@ -249,7 +249,7 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
             }
     }
 
-    def newUnitPlacementTiles: Option[Iterable[Coordinate]] = currentPlayer match {
+    def newUnitPlacementTiles: Option[Vector[Coordinate]] = currentPlayer match {
         case None => None
         case Some(player) => Some(player.placementTilesNewUnit(board.tiles.length, board.tiles))
     }
