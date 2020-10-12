@@ -588,6 +588,12 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             }
         }
     }
+    "being asked for the TileTypes of the board" should {
+        "return them" in {
+            val (controller, _) = createControllerEventQueue()
+            controller.boardTiles should be(controller.board.tiles)
+        }
+    }
     def createControllerEventQueue(shopStockSize: Option[Int] = None) = {
         val controller = Controller(Configuration(5, 15))
         val eventQueue = EventQueue(controller)

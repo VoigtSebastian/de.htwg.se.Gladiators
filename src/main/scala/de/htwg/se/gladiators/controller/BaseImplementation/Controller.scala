@@ -16,6 +16,7 @@ import de.htwg.se.gladiators.util.MovementType
 import java.util.concurrent.atomic.AtomicBoolean
 import de.htwg.se.gladiators.model.TileType.{ Mine, Sand, Base }
 import de.htwg.se.gladiators.util.Configuration
+import de.htwg.se.gladiators.model.TileType
 
 case class Controller(configuration: Configuration) extends ControllerInterface {
     val uncheckedStateMessage = "This code should not be reachable"
@@ -253,6 +254,8 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
         case None => None
         case Some(player) => Some(player.placementTilesNewUnit(board.tiles.length, board.tiles))
     }
+
+    def boardTiles: Vector[Vector[TileType]] = board.tiles
 
     override def boardToString = board.coloredString(playerOne.get.gladiators ++ playerTwo.get.gladiators)
 

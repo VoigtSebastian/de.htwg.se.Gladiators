@@ -47,8 +47,11 @@ class TestingControllerSpec extends AnyWordSpec with Matchers {
             "return None when asking for moving tiles at a certain position" in {
                 ((1 to 10).zip(1 to 10)).foreach({ case (x, y) => controller.moveTiles(Coordinate(x, y)) should be(None) })
             }
-            "return an empty Vector when asking for new unit placement" in {
+            "return None when asking for new unit placement" in {
                 controller.newUnitPlacementTiles should be(None)
+            }
+            "return an empty Vector when being asked for board tiles" in {
+                controller.boardTiles should be(Vector.empty)
             }
         }
     }

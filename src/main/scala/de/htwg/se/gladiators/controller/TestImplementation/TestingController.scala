@@ -7,6 +7,7 @@ import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.util.Events
 import de.htwg.se.gladiators.util.Command
 import de.htwg.se.gladiators.util.Events._
+import de.htwg.se.gladiators.model.TileType
 
 case class TestingController() extends ControllerInterface {
     val testError = ErrorMessage("These are test functions, the return value is always and Error")
@@ -48,4 +49,5 @@ case class TestingController() extends ControllerInterface {
     def attackTiles(tile: Coordinate): Option[Vector[Coordinate]] = None
     def moveTiles(tile: Coordinate): Option[Vector[Coordinate]] = None
     def newUnitPlacementTiles: Option[Vector[Coordinate]] = None
+    def boardTiles: Vector[Vector[TileType]] = Vector.empty
 }
