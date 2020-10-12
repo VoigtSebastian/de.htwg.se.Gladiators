@@ -594,6 +594,23 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             controller.boardTiles should be(controller.board.tiles)
         }
     }
+    "being asked for gladiators" should {
+        "return None" in {
+            val controller = Controller(Configuration(5, 15))
+            controller.gladiatorsPlayerOne should be(None)
+            controller.gladiatorsPlayerTwo should be(None)
+        }
+        "return Some" in {
+            val (controller, _) = createControllerEventQueue()
+            controller.namePlayerOne("one")
+            controller.namePlayerTwo("two")
+            controller.playerOne = Some(controller.playerOne.get.copy(gladiators = Vector(GladiatorFactory.initRandomGladiator)))
+            controller.playerTwo = Some(controller.playerTwo.get.copy(gladiators = Vector(GladiatorFactory.initRandomGladiator)))
+
+            controller.gladiatorsPlayerOne.get should not be (empty)
+            controller.gladiatorsPlayerTwo.get should not be (empty)
+        }
+    }
     def createControllerEventQueue(shopStockSize: Option[Int] = None) = {
         val controller = Controller(Configuration(5, 15))
         val eventQueue = EventQueue(controller)
