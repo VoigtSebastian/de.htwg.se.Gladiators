@@ -611,6 +611,12 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             controller.gladiatorsPlayerTwo.get should not be (empty)
         }
     }
+    "being asked for the Gladiators in stock" should {
+        "return the shops stock" in {
+            val controller = Controller(Configuration(5, 15))
+            controller.stock should be(controller.shop.stock)
+        }
+    }
     def createControllerEventQueue(shopStockSize: Option[Int] = None) = {
         val controller = Controller(Configuration(5, 15))
         val eventQueue = EventQueue(controller)

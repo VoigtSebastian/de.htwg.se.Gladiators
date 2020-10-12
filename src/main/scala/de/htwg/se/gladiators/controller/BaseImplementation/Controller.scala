@@ -267,6 +267,8 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
         case None => None
     }
 
+    def stock: Vector[Gladiator] = shop.stock
+
     override def boardToString = board.coloredString(playerOne.get.gladiators ++ playerTwo.get.gladiators)
 
     override def shopToString = shop.toString

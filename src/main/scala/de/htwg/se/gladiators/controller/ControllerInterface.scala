@@ -26,6 +26,8 @@ trait ControllerInterface extends Publisher {
     def gladiatorsPlayerOne: Option[Vector[Gladiator]]
     def gladiatorsPlayerTwo: Option[Vector[Gladiator]]
 
+    def stock: Vector[Gladiator]
+
     def boardToString: String
     def shopToString: String
 }
