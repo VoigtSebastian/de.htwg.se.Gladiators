@@ -4,8 +4,8 @@ import de.htwg.se.gladiators.controller.ControllerInterface
 import de.htwg.se.gladiators.aview.Gui.GuiEvents._
 import de.htwg.se.gladiators.util.Command.Quit
 import de.htwg.se.gladiators.util.{ Configuration, Coordinate }
-import de.htwg.se.gladiators.util.Events._
-import de.htwg.se.gladiators.util.Command._
+import de.htwg.se.gladiators.util.Events
+import de.htwg.se.gladiators.util.Command
 
 import scala.swing.event.WindowClosing
 import scala.swing._
@@ -32,17 +32,18 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
 
     reactions += {
         case WindowClosing(_) => controller.inputCommand(Quit)
-        case Init => showNamingPlayerOne
-        case PlayerOneNamed(_) => showNamingPlayerTwo
-        case PlayerTwoNamed(_) => showGame
+        case Events.Init => showNamingPlayerOne
+        case Events.PlayerOneNamed(_) => showNamingPlayerTwo
+        case Events.PlayerTwoNamed(_) => showGame
+        case Events.Moved(_, _, _, _) => resetSelected
     }
 
     repaint
     pack
     visible = true
 
-    def showNamingPlayerOne = contents = ShowPlayerName("Player One") { (text: String) => controller.inputCommand(NamePlayerOne(text)) }
-    def showNamingPlayerTwo = contents = ShowPlayerName("Player Two") { (text: String) => controller.inputCommand(NamePlayerTwo(text)) }
+    def showNamingPlayerOne = contents = ShowPlayerName("Player One") { (text: String) => controller.inputCommand(Command.NamePlayerOne(text)) }
+    def showNamingPlayerTwo = contents = ShowPlayerName("Player Two") { (text: String) => controller.inputCommand(Command.NamePlayerTwo(text)) }
 
     def showGame = {
         contents = new BoxPanel(Orientation.Horizontal) {
@@ -60,14 +61,14 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
 
             case TileClicked(newTile) =>
                 (selectedTile, selectedShopItem) match {
-                    case (None, None) => selectTile(newTile)
+                    case (None, None) => if (controller.tileOccupiedByCurrentPlayer(newTile)) selectTile(newTile)
                     case (Some(_), None) if selectedTile.get != newTile => {
                         move(newTile)
                         resetSelected
                         deselectTile(newTile)
                     }
                     case (Some(_), None) => resetSelected
-                    case (None, Some(_)) => {
+                    case (None, Some(_)) => if (controller.newUnitPlacementTiles.get.contains(newTile)) {
                         selectTile(newTile)
                         println(f"Buy unit ${selectedShopItem.get} to ${newTile}")
                         resetSelected
