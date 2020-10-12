@@ -257,6 +257,16 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
 
     def boardTiles: Vector[Vector[TileType]] = board.tiles
 
+    def gladiatorsPlayerOne: Option[Vector[Gladiator]] = playerOne match {
+        case Some(player) => Some(player.gladiators)
+        case None => None
+    }
+
+    def gladiatorsPlayerTwo: Option[Vector[Gladiator]] = playerTwo match {
+        case Some(player) => Some(player.gladiators)
+        case None => None
+    }
+
     override def boardToString = board.coloredString(playerOne.get.gladiators ++ playerTwo.get.gladiators)
 
     override def shopToString = shop.toString

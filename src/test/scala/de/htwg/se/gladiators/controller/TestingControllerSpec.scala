@@ -53,6 +53,12 @@ class TestingControllerSpec extends AnyWordSpec with Matchers {
             "return an empty Vector when being asked for board tiles" in {
                 controller.boardTiles should be(Vector.empty)
             }
+            "return None when being asked for the Gladiators of Player One" in {
+                controller.gladiatorsPlayerOne should be(None)
+            }
+            "return None when being asked for the Gladiators of Player Two" in {
+                controller.gladiatorsPlayerTwo should be(None)
+            }
         }
     }
 }

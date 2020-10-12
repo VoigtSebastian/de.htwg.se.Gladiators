@@ -5,6 +5,7 @@ import scala.swing.Publisher
 import de.htwg.se.gladiators.util.Events
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.model.TileType
+import de.htwg.se.gladiators.model.Gladiator
 
 trait ControllerInterface extends Publisher {
     var gameState: GameState = GameState.NamingPlayerOne
@@ -21,6 +22,9 @@ trait ControllerInterface extends Publisher {
     def moveTiles(tile: Coordinate): Option[Vector[Coordinate]]
     def newUnitPlacementTiles: Option[Vector[Coordinate]]
     def boardTiles: Vector[Vector[TileType]]
+
+    def gladiatorsPlayerOne: Option[Vector[Gladiator]]
+    def gladiatorsPlayerTwo: Option[Vector[Gladiator]]
 
     def boardToString: String
     def shopToString: String
