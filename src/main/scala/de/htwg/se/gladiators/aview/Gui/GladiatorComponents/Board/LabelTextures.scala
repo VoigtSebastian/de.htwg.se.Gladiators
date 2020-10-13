@@ -7,16 +7,17 @@ import de.htwg.se.gladiators.model.GladiatorType
 import de.htwg.se.gladiators.model.GladiatorType._
 
 trait LabelTextures {
-    lazy val baseTexture = resizedTexture("textures/housesand_small.png", 40, 40)
-    lazy val sandTexture = resizedTexture("textures/sand_60.png", 40, 40)
-    lazy val palmTexture = resizedTexture("textures/palmsand_small_color.png", 40, 40)
-    lazy val mineTexture = resizedTexture("textures/sandgold_small.png", 40, 40)
-    lazy val archerPlayerOneTexture = resizedTexture(f"textures/sandbow_small_p1.png", 40, 40)
-    lazy val archerPlayerTwoTexture = resizedTexture(f"textures/sandbow_small_p2.png", 40, 40)
-    lazy val knightPlayerOneTexture = resizedTexture(f"textures/sandsword_small_p1.png", 40, 40)
-    lazy val knightPlayerTwoTexture = resizedTexture(f"textures/sandsword_small_p2.png", 40, 40)
-    lazy val tankPlayerOneTexture = resizedTexture(f"textures/sandshield_small_p1.png", 40, 40)
-    lazy val tankPlayerTwoTexture = resizedTexture(f"textures/sandshield_small_p1.png", 40, 40)
+    val standardSize = 50
+    lazy val baseTexture = resizedTexture("textures/housesand_small.png", standardSize, standardSize)
+    lazy val sandTexture = resizedTexture("textures/sand_60.png", standardSize, standardSize)
+    lazy val palmTexture = resizedTexture("textures/palmsand_small_color.png", standardSize, standardSize)
+    lazy val mineTexture = resizedTexture("textures/sandgold_small.png", standardSize, standardSize)
+    lazy val archerPlayerOneTexture = resizedTexture(f"textures/sandbow_small_p1.png", standardSize, standardSize)
+    lazy val archerPlayerTwoTexture = resizedTexture(f"textures/sandbow_small_p2.png", standardSize, standardSize)
+    lazy val knightPlayerOneTexture = resizedTexture(f"textures/sandsword_small_p1.png", standardSize, standardSize)
+    lazy val knightPlayerTwoTexture = resizedTexture(f"textures/sandsword_small_p2.png", standardSize, standardSize)
+    lazy val tankPlayerOneTexture = resizedTexture(f"textures/sandshield_small_p1.png", standardSize, standardSize)
+    lazy val tankPlayerTwoTexture = resizedTexture(f"textures/sandshield_small_p1.png", standardSize, standardSize)
 
     def tileTypeToTexture(tileType: TileType) = {
         tileType match {
