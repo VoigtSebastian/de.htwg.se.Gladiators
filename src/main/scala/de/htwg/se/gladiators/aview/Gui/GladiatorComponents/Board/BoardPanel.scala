@@ -5,6 +5,7 @@ import de.htwg.se.gladiators.util.Coordinate
 import scala.swing._
 import de.htwg.se.gladiators.aview.Gui.GladiatorComponents.Board.BoardLabel
 import de.htwg.se.gladiators.model.TileType
+import de.htwg.se.gladiators.model.Gladiator
 
 case class BoardPanel(length: Int, tiles: Vector[Vector[TileType]]) extends GridPanel(length, length) with Publisher {
     val tileLabels = (0 to (length - 1))
@@ -15,7 +16,15 @@ case class BoardPanel(length: Int, tiles: Vector[Vector[TileType]]) extends Grid
 
     def tileClicked(tile: Coordinate) = publish(TileClicked(tile))
 
-    def selectTile(coordinate: Coordinate) = tileLabels(coordinate.y)(coordinate.x).select
-    def deselectTile(coordinate: Coordinate) = tileLabels(coordinate.y)(coordinate.x).deselect
+    def addGladiator(coordinate: Coordinate, gladiator: Gladiator, playerOne: Boolean): Unit = {
+        tileLabels(coordinate.y)(coordinate.x)
+            .addGladiator(gladiator.gladiatorType, playerOne)
+    }
+    def removeGladiator(coordinate: Coordinate, tileType: TileType = TileType.Sand): Unit = {
+        tileLabels(coordinate.y)(coordinate.x)
+            .changeTileType(tileType)
+    }
+    def selectTile(coordinate: Coordinate): Unit = tileLabels(coordinate.y)(coordinate.x).select
+    def deselectTile(coordinate: Coordinate): Unit = tileLabels(coordinate.y)(coordinate.x).deselect
 
 }
