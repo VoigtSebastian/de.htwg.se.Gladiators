@@ -42,6 +42,7 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
             resetSelected
         }
         case Events.SuccessfullyBoughtGladiator(player, gladiator) => {
+            shopPanel.updateItems(controller.stock)
             if (selectedShopItem != None) shopPanel.deselectItem(selectedShopItem.get)
             boardPanel.addGladiator(gladiator.position, gladiator, (player.enemyBaseLine > 0))
         }
