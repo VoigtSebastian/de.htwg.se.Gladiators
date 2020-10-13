@@ -27,7 +27,7 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
     var selectedShopItem: Option[Int] = None
     var selectedTile: Option[Coordinate] = None
 
-    val shopPanel = ShopPanel(configuration.itemsInShop).listenAndReturn
+    val shopPanel = ShopPanel(controller.stock).listenAndReturn
     val boardPanel = BoardPanel(configuration.boardSize, controller.boardTiles).listenAndReturn
 
     reactions += {
@@ -35,6 +35,16 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
         case Events.Init => showNamingPlayerOne
         case Events.PlayerOneNamed(_) => showNamingPlayerTwo
         case Events.PlayerTwoNamed(_) => showGame
+
+        case Events.Moved(player, from, to, gladiator) => {
+            boardPanel.addGladiator(to, gladiator, (player.enemyBaseLine > 0))
+            boardPanel.removeGladiator(from)
+            resetSelected
+        }
+        case Events.SuccessfullyBoughtGladiator(player, gladiator) => {
+            if (selectedShopItem != None) shopPanel.deselectItem(selectedShopItem.get)
+            boardPanel.addGladiator(gladiator.position, gladiator, (player.enemyBaseLine > 0))
+        }
     }
 
     repaint
@@ -53,10 +63,13 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
         reactions += {
             case ShopClicked(number) if Some(number) != selectedShopItem => {
                 selectedShopItem = Some(number)
+                shopPanel.selectItem(number)
                 resetSelectedTile
-                println(f"Shop clicked $number")
             }
-            case ShopClicked(_) => selectedShopItem = None
+            case ShopClicked(_) => {
+                shopPanel.deselectItem(selectedShopItem.get)
+                selectedShopItem = None
+            }
 
             case TileClicked(newTile) =>
                 (selectedTile, selectedShopItem) match {
@@ -69,19 +82,11 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
                     case (Some(_), None) => resetSelected
                     case (None, Some(_)) => if (controller.newUnitPlacementTiles.get.contains(newTile)) {
                         selectTile(newTile)
-                        println(f"Buy unit ${selectedShopItem.get} to ${newTile}")
+                        controller.buyUnit(selectedShopItem.get, newTile)
                         resetSelected
                     }
                     case (Some(_), Some(_)) => ()
                 }
-            case Events.Moved(player, from, to, gladiator) => {
-                boardPanel.addGladiator(to, gladiator, (player.enemyBaseLine > 0))
-                boardPanel.removeGladiator(from)
-                resetSelected
-            }
-            case Events.SuccessfullyBoughtGladiator(player, gladiator) => {
-                boardPanel.addGladiator(gladiator.position, gladiator, (player.enemyBaseLine > 0))
-            }
         }
     }
 
