@@ -13,4 +13,5 @@ class ShopLabel(number: Int, gladiator: Gladiator)(onClick: Int => Unit) extends
 
     def select = (border = Swing.LineBorder(Color.red, 2))
     def deselect = (border = Swing.LineBorder(Color.black, 2))
+    def updateText(gladiator: Gladiator) = (text = f"$number ${gladiator.gladiatorType.simpleString}")
 }

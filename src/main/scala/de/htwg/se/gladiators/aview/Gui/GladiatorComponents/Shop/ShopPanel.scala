@@ -13,5 +13,7 @@ case class ShopPanel(stock: Vector[Gladiator]) extends BoxPanel(Orientation.Vert
     def gladiatorClicked(number: Int) = publish(ShopClicked(number))
     def selectItem(number: Int) = shopButtons(number - 1).select
     def deselectItem(number: Int) = shopButtons(number - 1).deselect
-    def updateItem(number: Int) = ???
+    def updateItems(newStock: Vector[Gladiator]) = newStock
+        .zip(shopButtons)
+        .foreach({ case (newGladiator, button) => button.updateText(newGladiator) })
 }
