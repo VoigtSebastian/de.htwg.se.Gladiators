@@ -35,7 +35,6 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
         case Events.Init => showNamingPlayerOne
         case Events.PlayerOneNamed(_) => showNamingPlayerTwo
         case Events.PlayerTwoNamed(_) => showGame
-        case Events.Moved(_, _, _, _) => resetSelected
     }
 
     repaint
@@ -75,6 +74,14 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
                     }
                     case (Some(_), Some(_)) => ()
                 }
+            case Events.Moved(player, from, to, gladiator) => {
+                boardPanel.addGladiator(to, gladiator, (player.enemyBaseLine > 0))
+                boardPanel.removeGladiator(from)
+                resetSelected
+            }
+            case Events.SuccessfullyBoughtGladiator(player, gladiator) => {
+                boardPanel.addGladiator(gladiator.position, gladiator, (player.enemyBaseLine > 0))
+            }
         }
     }
 
@@ -96,5 +103,5 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
 
     def deselectTile(coordinate: Coordinate) = boardPanel.deselectTile(coordinate)
 
-    def move(to: Coordinate) = println(f"Move from ${selectedTile.get} to $to")
+    def move(to: Coordinate) = controller.move(selectedTile.get, to)
 }
