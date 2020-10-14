@@ -26,4 +26,14 @@ val commonDependencies = Seq(
     "com.softwaremill.macwire" %% "util" % "2.3.6"
 )
 
-libraryDependencies ++= commonDependencies
+lazy val root = (project in file(".")).settings(
+    name := "Gladiators",
+    libraryDependencies ++= commonDependencies,
+    assemblyMergeStrategy in assembly := {
+        case PathList("reference.conf") => MergeStrategy.concat
+        case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+        case x => MergeStrategy.first
+    },
+    assemblyJarName in assembly := "Gladiators.jar",
+    mainClass in assembly := Some("de.htwg.se.gladiators.Gladiators")
+)// .aggregate(Player).dependsOn(Player)
