@@ -11,4 +11,5 @@ object GuiEvents extends Enum[GuiEvents] {
 
     case class ShopClicked(item: Int) extends GuiEvents
     case class TileClicked(coordinate: Coordinate) extends GuiEvents
+    object EndTurn extends GuiEvents
 }
