@@ -1,4 +1,4 @@
-package de.htwg.se.gladiators.services
+package de.htwg.se.gladiators.playerService
 
 import akka.http.scaladsl.Http
 import scala.io.StdIn
@@ -13,6 +13,7 @@ import akka.http.scaladsl.model.headers.RawHeader
 import scala.concurrent.duration.{ Duration, SECONDS }
 import scala.concurrent.{ Await, Future }
 import akka.http.javadsl.model.ResponseEntity
+import de.htwg.se.gladiators.playerService.routes.Routes
 
 object PlayerService extends App {
     implicit val system = ActorSystem("checkout-system")
@@ -20,14 +21,7 @@ object PlayerService extends App {
 
     Runtime.getRuntime.addShutdownHook(new Thread() { override def run = shutdown })
 
-    val routes = concat(
-        path("hello") {
-            get {
-                complete("world")
-            }
-        })
-
-    val bindingFuture = Http().bindAndHandle(routes, "0.0.0.0", 8086)
+    val bindingFuture = Http().bindAndHandle(Routes.routes, "0.0.0.0", 8086)
     println(s"Server online at http://0.0.0.0:8086/")
 
     while (true) { Thread.sleep(500) }

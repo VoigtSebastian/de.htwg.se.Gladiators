@@ -59,5 +59,5 @@ lazy val PlayerService = project.settings(
         case x => MergeStrategy.first
     },
     assemblyJarName in assembly := "PlayerService.jar",
-    mainClass in assembly := Some("de.htwg.se.gladiators.services.PlayerService")
+    mainClass in assembly := Some("de.htwg.se.gladiators.playerService.PlayerService")
 )
