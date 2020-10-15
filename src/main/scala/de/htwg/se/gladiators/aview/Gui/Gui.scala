@@ -10,6 +10,7 @@ import de.htwg.se.gladiators.util.Command
 import scala.swing.event.WindowClosing
 import scala.swing._
 import de.htwg.se.gladiators.aview.Gui.GladiatorComponents._
+import de.htwg.se.gladiators.aview.Gui.GladiatorComponents.PlayerPanel.PlayerPanel
 
 class Gui(controller: ControllerInterface, configuration: Configuration) extends MainFrame with Reactor with Publisher {
     listenTo(controller)
@@ -29,13 +30,13 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
 
     val shopPanel = ShopPanel(controller.stock).listenAndReturn
     val boardPanel = BoardPanel(configuration.boardSize, controller.boardTiles).listenAndReturn
+    val playerPanel = PlayerPanel().listenAndReturn
 
     reactions += {
         case WindowClosing(_) => controller.inputCommand(Quit)
         case Events.Init => showNamingPlayerOne
         case Events.PlayerOneNamed(_) => showNamingPlayerTwo
         case Events.PlayerTwoNamed(_) => showGame
-
         case Events.Moved(player, from, to, gladiator) => {
             boardPanel.addGladiator(to, gladiator, (player.enemyBaseLine > 0))
             boardPanel.removeGladiator(from)
@@ -43,6 +44,7 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
         }
         case Events.SuccessfullyBoughtGladiator(player, gladiator) => {
             shopPanel.updateItems(controller.stock)
+            playerPanel.turn(player.name, player.credits)
             if (selectedShopItem != None) shopPanel.deselectItem(selectedShopItem.get)
             boardPanel.addGladiator(gladiator.position, gladiator, (player.enemyBaseLine > 0))
         }
@@ -56,12 +58,16 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
     def showNamingPlayerTwo = contents = ShowPlayerName("Player Two") { (text: String) => controller.inputCommand(Command.NamePlayerTwo(text)) }
 
     def showGame = {
-        contents = new BoxPanel(Orientation.Horizontal) {
-            contents += shopPanel
-            contents += boardPanel
+        contents = new BoxPanel(Orientation.Vertical) {
+            contents += playerPanel
+            contents += new BoxPanel(Orientation.Horizontal) {
+                contents += shopPanel
+                contents += boardPanel
+            }
         }
 
         reactions += {
+            case EndTurn => controller.endTurn
             case ShopClicked(number) if Some(number) != selectedShopItem => {
                 selectedShopItem = Some(number)
                 shopPanel.selectItem(number)
@@ -88,6 +94,7 @@ class Gui(controller: ControllerInterface, configuration: Configuration) extends
                     }
                     case (Some(_), Some(_)) => ()
                 }
+            case Events.Turn(player) => playerPanel.turn(player.name, player.credits)
         }
     }
 
