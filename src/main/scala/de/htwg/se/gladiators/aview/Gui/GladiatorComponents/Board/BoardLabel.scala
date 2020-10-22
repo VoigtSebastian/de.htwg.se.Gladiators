@@ -6,7 +6,7 @@ import java.awt.Color
 import de.htwg.se.gladiators.model.TileType
 import de.htwg.se.gladiators.model.GladiatorType
 
-class BoardLabel(x: Int, y: Int, tileType: TileType)(onClick: Coordinate => Unit) extends Label(f"$x-$y") with LabelTextures {
+class BoardLabel(x: Int, y: Int, tileType: TileType)(onClick: Coordinate => Unit) extends Label("") with LabelTextures {
     font = new Font("Algeria", Font.Italic.id, 14)
     listenTo(mouse.clicks)
     deselect
