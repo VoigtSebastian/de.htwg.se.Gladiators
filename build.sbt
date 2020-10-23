@@ -24,17 +24,6 @@ val commonDependencies = Seq(
     "com.softwaremill.macwire" %% "util" % "2.3.6"
 )
 
-val webDependencies = Seq(
-    "com.typesafe.akka" %% "akka-stream" % "2.6.8",
-    "com.typesafe.akka" %% "akka-http" % "10.2.0",
-    "de.heikoseeberger" %% "akka-http-play-json" % "1.32.0",
-    "com.typesafe.akka" %% "akka-actor-typed" % "2.6.8",
-    "io.spray" %% "spray-json" % "1.3.5",
-    "io.spray" %% "spray-json" % "1.3.5",
-    "com.typesafe.akka" %% "akka-http-spray-json" % "10.2.0",
-    "com.typesafe.play" %% "play-json" % "2.8.1",
-)
-
 lazy val root = (project in file(".")).settings(
     name := "Gladiators",
     libraryDependencies ++= commonDependencies,
@@ -45,17 +34,4 @@ lazy val root = (project in file(".")).settings(
     },
     assemblyJarName in assembly := "Gladiators.jar",
     mainClass in assembly := Some("de.htwg.se.gladiators.Gladiators")
-).aggregate(PlayerService).dependsOn(PlayerService)
-
-lazy val PlayerService = project.settings(
-    name := "PlayerService",
-    libraryDependencies ++= commonDependencies,
-    libraryDependencies ++= webDependencies,
-    assemblyMergeStrategy in assembly := {
-        case PathList("reference.conf") => MergeStrategy.concat
-        case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-        case x => MergeStrategy.first
-    },
-    assemblyJarName in assembly := "PlayerService.jar",
-    mainClass in assembly := Some("de.htwg.se.gladiators.playerService.PlayerService")
 )
