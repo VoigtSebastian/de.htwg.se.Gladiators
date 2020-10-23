@@ -24,7 +24,7 @@ val commonDependencies = Seq(
     "com.softwaremill.macwire" %% "util" % "2.3.6"
 )
 
-lazy val root = (project in file(".")).settings(
+lazy val gladiatorsBase = (project in file(".")).settings(
     name := "Gladiators",
     libraryDependencies ++= commonDependencies,
     assemblyMergeStrategy in assembly := {
