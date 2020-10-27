@@ -20,6 +20,7 @@ case class TestingController() extends ControllerInterface {
     }
     override def boardToString = "???"
     override def shopToString = "???"
+    override def boardToColoredString = "???"
 
     def namePlayerOne(name: String): Events = {
         commandQueue.enqueue(Command.NamePlayerOne(name))

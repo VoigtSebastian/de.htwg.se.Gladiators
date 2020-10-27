@@ -30,6 +30,17 @@ case class Board(tiles: Vector[Vector[TileType]]) {
         ) yield (right ::: left ::: up ::: down ::: thisPosition).distinct
     }
 
+    def uncoloredString(gladiators: Vector[Gladiator]): String = {
+        "   " + (0 to (tiles.length - 1)).map(n => f"${n}%2d ").mkString + "\n" + tiles
+            .zipWithIndex
+            .map({
+                case (rows, y) => f"$y%2d " + rows.zipWithIndex.map({
+                    case (tile, x) =>
+                        " " + tile.stringRepresentation(gladiatorAtPosition(gladiators, Coordinate(x, y))) + " "
+                }).mkString + "\n"
+            }).mkString
+    }
+
     def coloredString(gladiators: Vector[Gladiator]): String = {
         "   " + (0 to (tiles.length - 1)).map(n => f"${n}%2d ").mkString + "\n" + tiles
             .zipWithIndex

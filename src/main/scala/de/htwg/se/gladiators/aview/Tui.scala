@@ -70,7 +70,7 @@ case class Tui(controller: ControllerInterface) extends Reactor {
         true
     }
 
-    def printBoard = println(controller.boardToString)
+    def printBoard = println(controller.boardToColoredString)
     def errorMessage(line: String) = println(s"Error: ($line)")
     def couldNotParseCommand(line: String) = errorMessage(f"Could not parse command: ($line)")
 

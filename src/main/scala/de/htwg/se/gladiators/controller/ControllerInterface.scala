@@ -28,6 +28,7 @@ trait ControllerInterface extends Publisher {
 
     def stock: Vector[Gladiator]
 
+    def boardToColoredString: String
     def boardToString: String
     def shopToString: String
 }
