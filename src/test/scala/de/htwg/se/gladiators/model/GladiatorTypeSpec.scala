@@ -19,17 +19,17 @@ class GladiatorTypeSpec extends AnyWordSpec with Matchers {
         "have a string representation" in {
             GladiatorType
                 .values
-                .foreach(_.coloredString should not be(empty))
+                .foreach(_.coloredString should not be (empty))
         }
         "have a short string representation" in {
             GladiatorType
                 .values
-                .foreach(_.shortString should not be(empty))
+                .foreach(_.shortString should not be (empty))
         }
         "have a simple string representation" in {
             GladiatorType
                 .values
-                .foreach(_.simpleString should not be(empty))
+                .foreach(_.simpleString should not be (empty))
         }
     }
 }
