@@ -13,6 +13,12 @@ class TileTypeSpec extends AnyWordSpec with Matchers {
         "have a colored string representation with gladiator" in {
             TileType.values.foreach(_.coloredStringRepresentation(Some(Archer)) should contain('A'))
         }
+        "have a simple string representation without gladiator" in {
+            TileType.values.foreach(_.stringRepresentation(None) should not be (empty))
+        }
+        "have a simple string representation with gladiator" in {
+            TileType.values.foreach(_.stringRepresentation(Some(Archer)) should contain('A'))
+        }
     }
     "A Mine" should {
         "have a gold per hit value" in {
