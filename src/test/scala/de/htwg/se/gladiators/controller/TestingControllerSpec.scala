@@ -62,6 +62,9 @@ class TestingControllerSpec extends AnyWordSpec with Matchers {
             "return an empty list when being asked for the Gladiators in stock" in {
                 controller.stock should be(Vector.empty)
             }
+            "return a ??? string when being asked for a board string representation" in {
+                controller.boardToString should be("???")
+            }
         }
     }
 }
