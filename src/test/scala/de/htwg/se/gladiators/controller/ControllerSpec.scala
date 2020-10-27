@@ -28,8 +28,11 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             "have an initialized board" in {
                 controller.board.isInstanceOf[Board] should be(true)
             }
-            "return the board as a string" in {
+            "return the board as a simple string" in {
                 controller.boardToString should not be (empty)
+            }
+            "return the board as a colored string" in {
+                controller.boardToColoredString should not be (empty)
             }
             "return the shop as a string" in {
                 controller.shopToString should not be (empty)
