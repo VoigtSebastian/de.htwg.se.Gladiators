@@ -30,25 +30,25 @@ object GladiatorFactory {
         case Archer => Gladiator(
             Archer,
             Coordinate(-1, -1),
-            randomNumberInterval(40, 70).toInt,
-            randomNumberInterval(1, 3).toInt,
+            randomNumberInterval(30, 50).toInt,
+            randomNumberInterval(2, 3).toInt,
             randomNumberInterval(40, 70).toInt,
             true)
 
         case Knight => Gladiator(
             Knight,
             Coordinate(-1, -1),
-            randomNumberInterval(40, 70).toInt,
-            randomNumberInterval(2, 3).toInt,
-            randomNumberInterval(40, 70).toInt,
+            randomNumberInterval(50, 80).toInt,
+            randomNumberInterval(3, 4).toInt,
+            randomNumberInterval(50, 80).toInt,
             true)
 
         case Tank => Gladiator(
             Tank,
             Coordinate(-1, -1),
-            randomNumberInterval(40, 70).toInt,
+            randomNumberInterval(80, 100).toInt,
             randomNumberInterval(1, 2).toInt,
-            randomNumberInterval(40, 70).toInt,
+            randomNumberInterval(30, 50).toInt,
             true)
     }
 
