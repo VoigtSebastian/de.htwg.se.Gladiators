@@ -13,11 +13,23 @@ class GladiatorTypeSpec extends AnyWordSpec with Matchers {
                 GladiatorType.Knight.movementPointsAttack should be > 0
                 GladiatorType.Tank.movementPointsAttack should be > 0
             }
-            "have a string representation" in {
-                GladiatorType.Archer.coloredString should contain('A')
-                GladiatorType.Knight.coloredString should contain('K')
-                GladiatorType.Tank.coloredString should contain('T')
-            }
+        }
+    }
+    "Every GladiatorType" should {
+        "have a string representation" in {
+            GladiatorType
+                .values
+                .foreach(_.coloredString should not be (empty))
+        }
+        "have a short string representation" in {
+            GladiatorType
+                .values
+                .foreach(_.shortString should not be (empty))
+        }
+        "have a simple string representation" in {
+            GladiatorType
+                .values
+                .foreach(_.simpleString should not be (empty))
         }
     }
 }
