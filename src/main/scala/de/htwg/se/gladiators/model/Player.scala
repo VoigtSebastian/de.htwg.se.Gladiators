@@ -1,7 +1,7 @@
 package de.htwg.se.gladiators.model
 
-import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.model.TileType.Sand
+import de.htwg.se.gladiators.util.Coordinate
 
 case class Player(
     name: String,

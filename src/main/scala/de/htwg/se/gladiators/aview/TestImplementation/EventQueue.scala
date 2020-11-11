@@ -1,9 +1,10 @@
 package de.htwg.se.gladiators.aview.TestImplementation
 
-import scala.swing.Reactor
 import scala.collection.mutable.Queue
-import de.htwg.se.gladiators.util.Events
+import scala.swing.Reactor
+
 import de.htwg.se.gladiators.controller.ControllerInterface
+import de.htwg.se.gladiators.util.Events
 
 case class EventQueue(controller: ControllerInterface) extends Reactor {
     listenTo(controller)

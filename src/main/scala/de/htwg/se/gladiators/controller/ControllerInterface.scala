@@ -1,11 +1,12 @@
 package de.htwg.se.gladiators.controller
 
-import de.htwg.se.gladiators.util.Command
 import scala.swing.Publisher
-import de.htwg.se.gladiators.util.Events
-import de.htwg.se.gladiators.util.Coordinate
-import de.htwg.se.gladiators.model.TileType
+
 import de.htwg.se.gladiators.model.Gladiator
+import de.htwg.se.gladiators.model.TileType
+import de.htwg.se.gladiators.util.Command
+import de.htwg.se.gladiators.util.Coordinate
+import de.htwg.se.gladiators.util.Events
 
 trait ControllerInterface extends Publisher {
     var gameState: GameState = GameState.NamingPlayerOne

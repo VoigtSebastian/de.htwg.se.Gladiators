@@ -1,8 +1,9 @@
 package de.htwg.se.gladiators.util.Factories
 
+import scala.util.Random
+
 import de.htwg.se.gladiators.model.Gladiator
 import de.htwg.se.gladiators.model.GladiatorType
-import scala.util.Random
 import de.htwg.se.gladiators.model.GladiatorType._
 import de.htwg.se.gladiators.util.Coordinate
 

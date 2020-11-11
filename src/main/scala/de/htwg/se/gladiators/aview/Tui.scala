@@ -1,13 +1,14 @@
 package de.htwg.se.gladiators.aview
 
-import kaleidoscope._
 import scala.swing.Reactor
 
-import de.htwg.se.gladiators.util.Events._
 import de.htwg.se.gladiators.controller.ControllerInterface
+import de.htwg.se.gladiators.controller.GameState
 import de.htwg.se.gladiators.util.Command._
 import de.htwg.se.gladiators.util.Coordinate
-import de.htwg.se.gladiators.controller.GameState
+import de.htwg.se.gladiators.util.Events._
+
+import kaleidoscope._
 
 case class Tui(controller: ControllerInterface) extends Reactor {
     listenTo(controller)

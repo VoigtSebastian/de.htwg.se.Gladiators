@@ -1,8 +1,9 @@
 package de.htwg.se.gladiators.util.Factories
 
+import scala.util.Random
+
 import de.htwg.se.gladiators.model.Board
 import de.htwg.se.gladiators.model.TileType
-import scala.util.Random
 
 object BoardFactory {
     def initRandomBoard(dimensions: Int = 15, percentageSand: Int = 80) = Board(

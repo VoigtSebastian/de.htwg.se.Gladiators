@@ -1,15 +1,16 @@
 package de.htwg.se.gladiators.aview
 
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers
-import de.htwg.se.gladiators.controller.TestImplementation.TestingController
-import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.controller.GameState
-import de.htwg.se.gladiators.util.Command._
 import de.htwg.se.gladiators.controller.GameState._
-import de.htwg.se.gladiators.util.Events._
+import de.htwg.se.gladiators.controller.TestImplementation.TestingController
 import de.htwg.se.gladiators.model.Player
+import de.htwg.se.gladiators.util.Command._
+import de.htwg.se.gladiators.util.Coordinate
+import de.htwg.se.gladiators.util.Events._
 import de.htwg.se.gladiators.util.Factories.GladiatorFactory
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A Tui" when {

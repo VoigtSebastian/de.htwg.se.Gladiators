@@ -1,6 +1,7 @@
 package de.htwg.se.gladiators.aview.Gui.GladiatorComponents.PlayerPanel
 
 import scala.swing._
+
 import de.htwg.se.gladiators.aview.Gui.GladiatorComponents.GButton
 import de.htwg.se.gladiators.aview.Gui.GladiatorComponents.GLabel
 import de.htwg.se.gladiators.aview.Gui.GuiEvents.EndTurn

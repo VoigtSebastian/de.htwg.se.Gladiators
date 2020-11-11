@@ -1,8 +1,10 @@
 package de.htwg.se.gladiators.aview.Gui.GladiatorComponents.Shop
 
 import scala.swing._
-import java.awt.Color
+
 import de.htwg.se.gladiators.model.Gladiator
+
+import java.awt.Color
 
 class ShopLabel(number: Int, gladiator: Gladiator)(onClick: Int => Unit) extends Label(f"$number ${gladiator.gladiatorType.simpleString}") {
     font = new Font("Algeria", Font.Bold.id, 16)

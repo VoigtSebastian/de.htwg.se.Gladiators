@@ -1,9 +1,9 @@
 package de.htwg.se.gladiators.model
 
+import de.htwg.se.gladiators.model.TileType._
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.util.MovementType
 import de.htwg.se.gladiators.util.MovementType._
-import de.htwg.se.gladiators.model.TileType._
 
 object Moves {
     def movementType(from: Coordinate, to: Coordinate, board: Board, currentPlayer: Player, enemyPlayer: Player): MovementType = {

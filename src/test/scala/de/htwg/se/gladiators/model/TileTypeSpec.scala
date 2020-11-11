@@ -1,9 +1,10 @@
 package de.htwg.se.gladiators.model
 
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers
 import de.htwg.se.gladiators.model.GladiatorType.Archer
 import de.htwg.se.gladiators.model.TileType.Mine
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class TileTypeSpec extends AnyWordSpec with Matchers {
     "Every TileType" should {

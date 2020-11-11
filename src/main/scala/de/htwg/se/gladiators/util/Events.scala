@@ -1,9 +1,11 @@
 package de.htwg.se.gladiators.util
 
 import scala.swing.event.Event
-import enumeratum._
-import de.htwg.se.gladiators.model.Player
+
 import de.htwg.se.gladiators.model.Gladiator
+import de.htwg.se.gladiators.model.Player
+
+import enumeratum._
 
 sealed trait Events extends EnumEntry with Event
 

@@ -1,22 +1,27 @@
 package de.htwg.se.gladiators.controller.BaseImplementation
 
 import de.htwg.se.gladiators.controller.ControllerInterface
+import de.htwg.se.gladiators.controller.GameState._
+import de.htwg.se.gladiators.model.Board
+import de.htwg.se.gladiators.model.Gladiator
+import de.htwg.se.gladiators.model.Moves.movementType
+import de.htwg.se.gladiators.model.Player
+import de.htwg.se.gladiators.model.Shop
+import de.htwg.se.gladiators.model.TileType
+import de.htwg.se.gladiators.model.TileType.Base
+import de.htwg.se.gladiators.model.TileType.Mine
+import de.htwg.se.gladiators.model.TileType.Sand
 import de.htwg.se.gladiators.util.Command
 import de.htwg.se.gladiators.util.Command._
+import de.htwg.se.gladiators.util.Configuration
+import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.util.Events
 import de.htwg.se.gladiators.util.Events._
-import de.htwg.se.gladiators.controller.GameState._
-import de.htwg.se.gladiators.model.{ Player, Board }
-import de.htwg.se.gladiators.util.Factories.ShopFactory
 import de.htwg.se.gladiators.util.Factories.BoardFactory.initRandomBoard
-import de.htwg.se.gladiators.model.{ Gladiator, Shop }
-import de.htwg.se.gladiators.util.Coordinate
-import de.htwg.se.gladiators.model.Moves.movementType
+import de.htwg.se.gladiators.util.Factories.ShopFactory
 import de.htwg.se.gladiators.util.MovementType
+
 import java.util.concurrent.atomic.AtomicBoolean
-import de.htwg.se.gladiators.model.TileType.{ Mine, Sand, Base }
-import de.htwg.se.gladiators.util.Configuration
-import de.htwg.se.gladiators.model.TileType
 
 case class Controller(configuration: Configuration) extends ControllerInterface {
     val uncheckedStateMessage = "This code should not be reachable"

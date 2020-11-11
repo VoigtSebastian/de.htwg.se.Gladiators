@@ -1,10 +1,12 @@
 package de.htwg.se.gladiators.aview.Gui.GladiatorComponents.Board
 
-import de.htwg.se.gladiators.util.Coordinate
 import scala.swing._
-import java.awt.Color
-import de.htwg.se.gladiators.model.TileType
+
 import de.htwg.se.gladiators.model.GladiatorType
+import de.htwg.se.gladiators.model.TileType
+import de.htwg.se.gladiators.util.Coordinate
+
+import java.awt.Color
 
 class BoardLabel(x: Int, y: Int, tileType: TileType)(onClick: Coordinate => Unit) extends Label("") with LabelTextures {
     font = new Font("Algeria", Font.Italic.id, 14)

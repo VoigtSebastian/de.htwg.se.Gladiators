@@ -1,11 +1,12 @@
 package de.htwg.se.gladiators
 
+import de.htwg.se.gladiators.aview.Gui.Gui
 import de.htwg.se.gladiators.aview.Tui
 import de.htwg.se.gladiators.controller.BaseImplementation.Controller
-import de.htwg.se.gladiators.util.Events.Init
-import com.softwaremill.macwire._
-import de.htwg.se.gladiators.aview.Gui.Gui
 import de.htwg.se.gladiators.util.Configuration
+import de.htwg.se.gladiators.util.Events.Init
+
+import com.softwaremill.macwire._
 
 object Gladiators extends App {
     val configuration = Configuration(5, 15)

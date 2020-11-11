@@ -1,19 +1,22 @@
 package de.htwg.se.gladiators.controller
 
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers
-import de.htwg.se.gladiators.controller.BaseImplementation.Controller
 import de.htwg.se.gladiators.aview.TestImplementation.EventQueue
-import de.htwg.se.gladiators.util.Events._
-import de.htwg.se.gladiators.util.Command._
-import de.htwg.se.gladiators.util.Factories.ShopFactory
+import de.htwg.se.gladiators.controller.BaseImplementation.Controller
 import de.htwg.se.gladiators.controller.GameState._
-import de.htwg.se.gladiators.model.{ Player, Board }
+import de.htwg.se.gladiators.model.Board
+import de.htwg.se.gladiators.model.Player
+import de.htwg.se.gladiators.model.TileType.Mine
+import de.htwg.se.gladiators.model.TileType.Sand
+import de.htwg.se.gladiators.util.Command._
+import de.htwg.se.gladiators.util.Configuration
 import de.htwg.se.gladiators.util.Coordinate
+import de.htwg.se.gladiators.util.Events._
 import de.htwg.se.gladiators.util.Factories.BoardFactory
 import de.htwg.se.gladiators.util.Factories.GladiatorFactory
-import de.htwg.se.gladiators.model.TileType.{ Mine, Sand }
-import de.htwg.se.gladiators.util.Configuration
+import de.htwg.se.gladiators.util.Factories.ShopFactory
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A controller" when {

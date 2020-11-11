@@ -1,9 +1,12 @@
 package de.htwg.se.gladiators.model
 
-import de.htwg.se.gladiators.util.Coordinate
-import scala.concurrent.{ Future, ExecutionContext }
 import scala.concurrent.Await
-import scala.concurrent.duration.{ Duration, SECONDS }
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.concurrent.duration.SECONDS
+
+import de.htwg.se.gladiators.util.Coordinate
 
 case class Board(tiles: Vector[Vector[TileType]]) {
     implicit val ec = ExecutionContext.global

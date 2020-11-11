@@ -1,10 +1,10 @@
 package de.htwg.se.gladiators.util.Factories
 
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers
-
 import de.htwg.se.gladiators.model.Board
 import de.htwg.se.gladiators.model.TileType
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class BoardFactorySpec extends AnyWordSpec with Matchers {
     "A BoardFactory" when {

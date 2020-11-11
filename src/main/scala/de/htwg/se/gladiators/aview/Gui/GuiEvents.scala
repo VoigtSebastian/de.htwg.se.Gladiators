@@ -1,8 +1,10 @@
 package de.htwg.se.gladiators.aview.Gui
 
 import scala.swing.event.Event
-import enumeratum._
+
 import de.htwg.se.gladiators.util.Coordinate
+
+import enumeratum._
 
 sealed trait GuiEvents extends EnumEntry with Event
 

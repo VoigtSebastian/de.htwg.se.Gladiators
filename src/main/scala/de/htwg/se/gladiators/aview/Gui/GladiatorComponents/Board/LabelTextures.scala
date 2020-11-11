@@ -1,10 +1,11 @@
 package de.htwg.se.gladiators.aview.Gui.GladiatorComponents.Board
 
-import javax.swing.ImageIcon
-import de.htwg.se.gladiators.model.TileType
-import de.htwg.se.gladiators.model.TileType._
 import de.htwg.se.gladiators.model.GladiatorType
 import de.htwg.se.gladiators.model.GladiatorType._
+import de.htwg.se.gladiators.model.TileType
+import de.htwg.se.gladiators.model.TileType._
+
+import javax.swing.ImageIcon
 
 trait LabelTextures {
     val standardSize = 50

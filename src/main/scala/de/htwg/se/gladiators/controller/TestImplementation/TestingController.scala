@@ -1,14 +1,14 @@
 package de.htwg.se.gladiators.controller.TestImplementation
 
-import de.htwg.se.gladiators.controller.ControllerInterface
-import de.htwg.se.gladiators.util.Command
 import scala.collection.mutable.Queue
+
+import de.htwg.se.gladiators.controller.ControllerInterface
+import de.htwg.se.gladiators.model.Gladiator
+import de.htwg.se.gladiators.model.TileType
+import de.htwg.se.gladiators.util.Command
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.util.Events
-import de.htwg.se.gladiators.util.Command
 import de.htwg.se.gladiators.util.Events._
-import de.htwg.se.gladiators.model.TileType
-import de.htwg.se.gladiators.model.Gladiator
 
 case class TestingController() extends ControllerInterface {
     val testError = ErrorMessage("These are test functions, the return value is always and Error")

@@ -1,16 +1,17 @@
 package de.htwg.se.gladiators.aview.Gui
 
-import de.htwg.se.gladiators.controller.ControllerInterface
-import de.htwg.se.gladiators.aview.Gui.GuiEvents._
-import de.htwg.se.gladiators.util.Command.Quit
-import de.htwg.se.gladiators.util.{ Configuration, Coordinate }
-import de.htwg.se.gladiators.util.Events
-import de.htwg.se.gladiators.util.Command
-
-import scala.swing.event.WindowClosing
 import scala.swing._
-import de.htwg.se.gladiators.aview.Gui.GladiatorComponents._
+import scala.swing.event.WindowClosing
+
 import de.htwg.se.gladiators.aview.Gui.GladiatorComponents.PlayerPanel.PlayerPanel
+import de.htwg.se.gladiators.aview.Gui.GladiatorComponents._
+import de.htwg.se.gladiators.aview.Gui.GuiEvents._
+import de.htwg.se.gladiators.controller.ControllerInterface
+import de.htwg.se.gladiators.util.Command
+import de.htwg.se.gladiators.util.Command.Quit
+import de.htwg.se.gladiators.util.Configuration
+import de.htwg.se.gladiators.util.Coordinate
+import de.htwg.se.gladiators.util.Events
 
 class Gui(controller: ControllerInterface, configuration: Configuration) extends MainFrame with Reactor with Publisher {
     listenTo(controller)

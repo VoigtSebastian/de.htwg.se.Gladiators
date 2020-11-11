@@ -1,9 +1,13 @@
 package de.htwg.se.gladiators.aview.Gui
 
-import scala.swing.{ Orientation, BoxPanel, BorderPanel, Publisher }
+import scala.swing.BorderPanel
+import scala.swing.BoxPanel
+import scala.swing.Orientation
+import scala.swing.Publisher
+
+import de.htwg.se.gladiators.aview.Gui.GladiatorComponents.Shop.ShopLabel
 import de.htwg.se.gladiators.aview.Gui.GuiEvents.ShopClicked
 import de.htwg.se.gladiators.model.Gladiator
-import de.htwg.se.gladiators.aview.Gui.GladiatorComponents.Shop.ShopLabel
 
 case class ShopPanel(stock: Vector[Gladiator]) extends BoxPanel(Orientation.Vertical) with Publisher {
     val shopButtons = (1 to stock.length)

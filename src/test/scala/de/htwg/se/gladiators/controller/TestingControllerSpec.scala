@@ -1,11 +1,12 @@
 package de.htwg.se.gladiators.controller
 
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers
 import de.htwg.se.gladiators.controller.TestImplementation.TestingController
+import de.htwg.se.gladiators.util.Command._
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.util.Events._
-import de.htwg.se.gladiators.util.Command._
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class TestingControllerSpec extends AnyWordSpec with Matchers {
     "A Testing Controller" when {

@@ -1,11 +1,12 @@
 package de.htwg.se.gladiators.model
 
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers
-import de.htwg.se.gladiators.util.Coordinate
-import de.htwg.se.gladiators.util.MovementType._
-import de.htwg.se.gladiators.util.Factories.GladiatorFactory.createGladiator
 import de.htwg.se.gladiators.model.TileType.Mine
+import de.htwg.se.gladiators.util.Coordinate
+import de.htwg.se.gladiators.util.Factories.GladiatorFactory.createGladiator
+import de.htwg.se.gladiators.util.MovementType._
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class MovesSpec extends AnyWordSpec with Matchers {
     "A Move" when {

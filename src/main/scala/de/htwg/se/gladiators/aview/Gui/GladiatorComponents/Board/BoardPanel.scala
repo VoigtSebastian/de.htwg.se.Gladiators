@@ -1,11 +1,12 @@
 package de.htwg.se.gladiators.aview.Gui
 
-import de.htwg.se.gladiators.aview.Gui.GuiEvents.TileClicked
-import de.htwg.se.gladiators.util.Coordinate
 import scala.swing._
+
 import de.htwg.se.gladiators.aview.Gui.GladiatorComponents.Board.BoardLabel
-import de.htwg.se.gladiators.model.TileType
+import de.htwg.se.gladiators.aview.Gui.GuiEvents.TileClicked
 import de.htwg.se.gladiators.model.Gladiator
+import de.htwg.se.gladiators.model.TileType
+import de.htwg.se.gladiators.util.Coordinate
 
 case class BoardPanel(length: Int, tiles: Vector[Vector[TileType]]) extends GridPanel(length, length) with Publisher {
     val tileLabels = (0 to (length - 1))

@@ -1,7 +1,7 @@
 package de.htwg.se.gladiators.util.Factories
 
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class ShopFactorySpec extends AnyWordSpec with Matchers {
     "A ShopFactory" when {
