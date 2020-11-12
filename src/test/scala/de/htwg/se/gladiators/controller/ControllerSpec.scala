@@ -2,6 +2,7 @@ package de.htwg.se.gladiators.controller
 
 import de.htwg.se.gladiators.aview.TestImplementation.EventQueue
 import de.htwg.se.gladiators.controller.BaseImplementation.Controller
+import de.htwg.se.gladiators.controller.BaseImplementation.ControllerJson._
 import de.htwg.se.gladiators.controller.GameState._
 import de.htwg.se.gladiators.model.Board
 import de.htwg.se.gladiators.model.Player
@@ -17,6 +18,7 @@ import de.htwg.se.gladiators.util.Factories.ShopFactory
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import play.api.libs.json.Json
 
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A controller" when {
@@ -53,6 +55,9 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                     .get
                     .gladiators
                     .foreach(_.moved should be(false))
+            }
+            "have a json representation" in {
+                Json.toJson(controller).toString should not be (empty)
             }
         }
         "returning the current player" should {

@@ -1,7 +1,10 @@
 package de.htwg.se.gladiators.util
 
+import de.htwg.se.gladiators.util.json.CoordinateJson._
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import play.api.libs.json.Json
 
 class CoordinateSpec extends AnyWordSpec with Matchers {
     "A Coordinate" when {
@@ -11,8 +14,11 @@ class CoordinateSpec extends AnyWordSpec with Matchers {
                 coordinate.x should be(0)
                 coordinate.y should be(0)
             }
-            "should have a String representation" in {
+            "have a String representation" in {
                 Coordinate(0, 0).toString should not be (empty)
+            }
+            "have a json representation" in {
+                Json.toJson(Coordinate(0, 0)).toString should not be (empty)
             }
         }
         "compared" should {

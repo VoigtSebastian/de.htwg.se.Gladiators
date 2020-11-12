@@ -1,0 +1,18 @@
+package de.htwg.se.gladiators.model.json
+
+import de.htwg.se.gladiators.model.Gladiator
+import de.htwg.se.gladiators.util.json.CoordinateJson._
+
+import play.api.libs.json._
+
+object GladiatorJson {
+    implicit val gladiatorWriters = new Writes[Gladiator] {
+        def writes(gladiator: Gladiator) = Json.obj(
+            "type" -> gladiator.gladiatorType.simpleString,
+            "position" -> gladiator.position,
+            "healthPoints" -> gladiator.healthPoints,
+            "movementPoints" -> gladiator.movementPoints,
+            "attackPoints" -> gladiator.attackPoints,
+            "moved" -> gladiator.moved)
+    }
+}

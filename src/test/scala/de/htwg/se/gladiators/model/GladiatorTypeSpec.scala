@@ -1,9 +1,11 @@
 package de.htwg.se.gladiators.model
 
+import de.htwg.se.gladiators.model.json.GladiatorTypeJson._
 import de.htwg.se.gladiators.util.Factories.ShopFactory
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import play.api.libs.json.Json
 
 class GladiatorTypeSpec extends AnyWordSpec with Matchers {
     val shop = ShopFactory.initRandomShop()
@@ -31,6 +33,11 @@ class GladiatorTypeSpec extends AnyWordSpec with Matchers {
             GladiatorType
                 .values
                 .foreach(_.simpleString should not be (empty))
+        }
+        "have a Json representation" in {
+            Json.toJson(GladiatorType.Archer).toString should not be (empty)
+            Json.toJson(GladiatorType.Tank).toString should not be (empty)
+            Json.toJson(GladiatorType.Knight).toString should not be (empty)
         }
     }
 }
