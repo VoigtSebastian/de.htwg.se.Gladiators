@@ -1,12 +1,13 @@
 package de.htwg.se.gladiators.util
 
+import de.htwg.se.gladiators.model.Player
+import de.htwg.se.gladiators.util.Events._
+import de.htwg.se.gladiators.util.Factories.GladiatorFactory
+import de.htwg.se.gladiators.util.json.EventsJson._
+
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import de.htwg.se.gladiators.util.Events._
-import de.htwg.se.gladiators.model.Player
-import de.htwg.se.gladiators.util.Factories.GladiatorFactory
 import play.api.libs.json.Json
-import de.htwg.se.gladiators.util.json.EventsJson._
 
 class EventsSpec extends AnyWordSpec with Matchers {
     "Every Event" should {
