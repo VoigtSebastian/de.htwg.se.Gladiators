@@ -13,6 +13,6 @@ object ControllerJson {
             "playerTwo" -> controller.playerTwo,
             "board" -> controller.board,
             "shop" -> controller.shop,
-            "currentPlayer" -> currentPlayer)
+            "currentPlayer" -> controller.currentPlayer)
     }
 }
