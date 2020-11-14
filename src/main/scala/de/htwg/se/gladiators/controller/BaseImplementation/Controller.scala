@@ -1,6 +1,7 @@
 package de.htwg.se.gladiators.controller.BaseImplementation
 
 import de.htwg.se.gladiators.controller.ControllerInterface
+import de.htwg.se.gladiators.controller.GameState
 import de.htwg.se.gladiators.controller.GameState._
 import de.htwg.se.gladiators.model.Board
 import de.htwg.se.gladiators.model.Gladiator
@@ -24,6 +25,7 @@ import de.htwg.se.gladiators.util.MovementType
 import java.util.concurrent.atomic.AtomicBoolean
 
 case class Controller(configuration: Configuration) extends ControllerInterface {
+    var currentGameState: GameState = NamingPlayerOne
     val uncheckedStateMessage = "This code should not be reachable"
     var playerOne: Option[Player] = None
     var playerTwo: Option[Player] = None
@@ -37,6 +39,8 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
             notification
         }
     }
+
+    def gameState = currentGameState
 
     implicit class MoveGladiators(gladiators: Vector[Gladiator]) {
         def move(from: Coordinate, to: Coordinate) = gladiators.map(gladiator => gladiator.position == from match {
@@ -64,7 +68,7 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
     }
 
     def move(from: Coordinate, to: Coordinate): Events = {
-        (gameState match {
+        (currentGameState match {
             case TurnPlayerOne | TurnPlayerTwo => movementType(from, to, board, currentPlayer.get, enemyPlayer.get) match {
                 case MovementType.Move => {
                     var (player, event) = updatePlayerMove(currentPlayer.get, from, to)
@@ -76,7 +80,7 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
                 case MovementType.Mining => mining(to)
                 case movementType: MovementType => ErrorMessage(movementType.message)
             }
-            case _ => ErrorMessage(f"Cannot move in gameState $gameState")
+            case _ => ErrorMessage(f"Cannot move in gameState $currentGameState")
         }).broadcast
     }
 
@@ -124,7 +128,7 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
     }
 
     def buyUnit(number: Int, position: Coordinate): Events = {
-        (shop.buy(number), gameState, board.isCoordinateLegal(position)) match {
+        (shop.buy(number), currentGameState, board.isCoordinateLegal(position)) match {
             case (Some((newShop, gladiator)), state, true) if state == TurnPlayerOne || state == TurnPlayerTwo => {
                 if (currentPlayer.get.alreadyBought == true)
                     ErrorMessage(f"You can just buy one unit per turn").broadcast
@@ -136,7 +140,7 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
                     return ErrorMessage(f"The position $position is blocked").broadcast
             }
             case (_, _, false) => ErrorMessage(f"You can not place a unit at $position").broadcast
-            case (Some(_), _, _) => ErrorMessage(f"Cannot buy units in state $gameState").broadcast
+            case (Some(_), _, _) => ErrorMessage(f"Cannot buy units in state $currentGameState").broadcast
             case (None, _, _) => ErrorMessage(f"Error buying from shop").broadcast
         }
     }
@@ -155,26 +159,26 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
     }
 
     @throws(classOf[Exception])
-    def updateCurrentPlayer(player: Option[Player]) = gameState match {
+    def updateCurrentPlayer(player: Option[Player]) = currentGameState match {
         case TurnPlayerOne => playerOne = player
         case TurnPlayerTwo => playerTwo = player
         case _ => throw new Exception(uncheckedStateMessage)
     }
 
     @throws(classOf[Exception])
-    def updateEnemyPlayer(player: Option[Player]) = gameState match {
+    def updateEnemyPlayer(player: Option[Player]) = currentGameState match {
         case TurnPlayerOne => playerTwo = player
         case TurnPlayerTwo => playerOne = player
         case _ => throw new Exception(uncheckedStateMessage)
     }
 
-    def currentPlayer = gameState match {
+    def currentPlayer = currentGameState match {
         case TurnPlayerOne => playerOne
         case TurnPlayerTwo => playerTwo
         case _ => None
     }
 
-    def enemyPlayer = gameState match {
+    def enemyPlayer = currentGameState match {
         case TurnPlayerOne => playerTwo
         case TurnPlayerTwo => playerOne
         case _ => None
@@ -183,28 +187,28 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
     def resetGladiatorsMoved(player: Player) = Some(player.copy(gladiators = player.gladiators.map(_.copy(moved = false))))
 
     def endTurn: Events = {
-        gameState match {
+        currentGameState match {
             case TurnPlayerOne => {
-                gameState = TurnPlayerTwo
+                currentGameState = TurnPlayerTwo
                 playerTwo = resetGladiatorsMoved(playerTwo.get)
                 playerTwo = Some(playerTwo.get.copy(alreadyBought = false))
                 Turn(playerTwo.get).broadcast
             }
             case TurnPlayerTwo => {
-                gameState = TurnPlayerOne
+                currentGameState = TurnPlayerOne
                 playerOne = resetGladiatorsMoved(playerOne.get)
                 playerOne = Some(playerOne.get.copy(alreadyBought = false))
                 Turn(playerOne.get).broadcast
             }
-            case _ => ErrorMessage(s"You can not end a turn in gameState $gameState").broadcast
+            case _ => ErrorMessage(s"You can not end a turn in GameState $currentGameState").broadcast
         }
     }
 
     def namePlayerOne(name: String): Events = {
         // TODO: Player API lookup to set score
-        gameState match {
+        currentGameState match {
             case NamingPlayerOne => {
-                gameState = NamingPlayerTwo
+                currentGameState = NamingPlayerTwo
                 playerOne = Some(Player(name, 0, 100, 100, false))
                 PlayerOneNamed(name).broadcast
             }
@@ -215,9 +219,9 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
 
     def namePlayerTwo(name: String): Events = {
         // TODO: Player API lookup to set sc
-        gameState match {
+        currentGameState match {
             case NamingPlayerTwo => {
-                gameState = TurnPlayerOne
+                currentGameState = TurnPlayerOne
                 playerTwo = Some(Player(name, board.tiles.size - 1, 100, 100, false))
                 PlayerTwoNamed(name).broadcast
                 Turn(playerOne.get).broadcast

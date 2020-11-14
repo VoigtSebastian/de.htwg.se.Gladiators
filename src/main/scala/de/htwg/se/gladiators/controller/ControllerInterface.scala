@@ -9,7 +9,7 @@ import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.util.Events
 
 trait ControllerInterface extends Publisher {
-    var gameState: GameState = GameState.NamingPlayerOne
+    def gameState: GameState
     def inputCommand(command: Command): Events
 
     def namePlayerOne(name: String): Events

@@ -3,6 +3,7 @@ package de.htwg.se.gladiators.controller.TestImplementation
 import scala.collection.mutable.Queue
 
 import de.htwg.se.gladiators.controller.ControllerInterface
+import de.htwg.se.gladiators.controller.GameState
 import de.htwg.se.gladiators.model.Gladiator
 import de.htwg.se.gladiators.model.TileType
 import de.htwg.se.gladiators.util.Command
@@ -11,6 +12,7 @@ import de.htwg.se.gladiators.util.Events
 import de.htwg.se.gladiators.util.Events._
 
 case class TestingController() extends ControllerInterface {
+    var currentGameState: GameState = GameState.TurnPlayerOne
     val testError = ErrorMessage("These are test functions, the return value is always and Error")
     var commandQueue: Queue[Command] = Queue()
 
@@ -21,6 +23,7 @@ case class TestingController() extends ControllerInterface {
     override def boardToString = "???"
     override def shopToString = "???"
     override def boardToColoredString = "???"
+    override def gameState = currentGameState
 
     def namePlayerOne(name: String): Events = {
         commandQueue.enqueue(Command.NamePlayerOne(name))

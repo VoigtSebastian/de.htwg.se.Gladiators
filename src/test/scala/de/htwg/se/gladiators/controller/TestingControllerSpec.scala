@@ -66,6 +66,9 @@ class TestingControllerSpec extends AnyWordSpec with Matchers {
             "return a ??? string when being asked for a board string representation" in {
                 controller.boardToString should be("???")
             }
+            "return TurnPlayerOne" in {
+                controller.gameState should be(GameState.TurnPlayerOne)
+            }
         }
     }
 }

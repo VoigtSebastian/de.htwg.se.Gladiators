@@ -28,7 +28,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             }
             "return false" in {
                 val controller = TestingController()
-                controller.gameState = GameState.TurnPlayerOne
+                controller.currentGameState = GameState.TurnPlayerOne
                 val tui = Tui(controller)
 
                 val stream = new java.io.ByteArrayOutputStream()
@@ -43,10 +43,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             "send out naming commands" in {
                 val controller = TestingController()
                 val tui = Tui(controller)
-                controller.gameState = NamingPlayerOne
+                controller.currentGameState = NamingPlayerOne
                 tui.processInputLine(tui.namePlayerOneMessage + "helmut")
 
-                controller.gameState = NamingPlayerTwo
+                controller.currentGameState = NamingPlayerTwo
                 tui.processInputLine(tui.namePlayerTwoMessage + "torsten")
 
                 controller.commandQueue.dequeue() should be(NamePlayerOne("helmut"))
@@ -55,7 +55,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
             "end the current turn" in {
                 val controller = TestingController()
-                controller.gameState = GameState.TurnPlayerOne
+                controller.currentGameState = GameState.TurnPlayerOne
 
                 val tui = Tui(controller)
 
@@ -82,7 +82,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                     controller.publish(Attacked(Player("", 0, 0, 0, false), true, Coordinate(0, 0), Coordinate(0, 0)))
                     controller.publish(Mined(Player("", 0, 0, 0, false), 10, true))
 
-                    controller.gameState = TurnPlayerOne
+                    controller.currentGameState = TurnPlayerOne
 
                     tui.processInputLine("shop")
                     tui.processInputLine("s")
@@ -92,7 +92,7 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             }
             "send out buy commands" in {
                 val controller = TestingController()
-                controller.gameState = TurnPlayerOne
+                controller.currentGameState = TurnPlayerOne
                 val tui = Tui(controller)
                 tui.processInputLine("buy 1 10 10")
                 tui.processInputLine("b 1 10 10")
