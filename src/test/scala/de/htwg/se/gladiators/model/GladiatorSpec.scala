@@ -6,6 +6,8 @@ import de.htwg.se.gladiators.util.Factories.ShopFactory
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import play.api.libs.json.Json
+import de.htwg.se.gladiators.model.json.GladiatorJson._
 
 class GladiatorSpec extends AnyWordSpec with Matchers {
     val shop = ShopFactory.initRandomShop()
@@ -35,6 +37,16 @@ class GladiatorSpec extends AnyWordSpec with Matchers {
                     .createGladiator(healthPoints = Some(0))
                     .attacked(10)
                     .healthPoints should be(-10)
+            }
+            "have a gladiatorType defined in its Json representation" in {
+                (Json.toJson(GladiatorFactory.createGladiator(gladiatorType = Some(GladiatorType.Archer))) \ "gladiatorType").as[String] should not be (empty)
+                (Json.toJson(GladiatorFactory.createGladiator(gladiatorType = Some(GladiatorType.Tank))) \ "gladiatorType").as[String] should not be (empty)
+                (Json.toJson(GladiatorFactory.createGladiator(gladiatorType = Some(GladiatorType.Knight))) \ "gladiatorType").as[String] should not be (empty)
+            }
+            "have a non-empty Json representation" in {
+                Json.toJson(GladiatorFactory.createGladiator(gladiatorType = Some(GladiatorType.Archer))).toString should not be (empty)
+                Json.toJson(GladiatorFactory.createGladiator(gladiatorType = Some(GladiatorType.Tank))).toString should not be (empty)
+                Json.toJson(GladiatorFactory.createGladiator(gladiatorType = Some(GladiatorType.Knight))).toString should not be (empty)
             }
         }
     }

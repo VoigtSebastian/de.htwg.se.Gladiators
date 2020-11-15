@@ -13,7 +13,7 @@ class CommandSpec extends AnyWordSpec with Matchers {
 
     val jsonMove: JsValue = Json.parse("""
     {
-        "type" : "Move",
+        "commandType" : "Move",
         "from": {"x" : 0, "y": 0},
         "to": {"x" : 0, "y": 0}
     }
@@ -21,7 +21,7 @@ class CommandSpec extends AnyWordSpec with Matchers {
 
     val jsonBuy: JsValue = Json.parse("""
     {
-        "type" : "BuyUnit",
+        "commandType" : "BuyUnit",
         "number": 0,
         "position": {"x" : 0, "y": 0}
     }
@@ -29,27 +29,27 @@ class CommandSpec extends AnyWordSpec with Matchers {
 
     val jsonNamePlayerOne: JsValue = Json.parse("""
     {
-        "type" : "NamePlayerOne",
+        "commandType" : "NamePlayerOne",
         "name": "one"
     }
     """)
 
     val jsonNamePlayerTwo: JsValue = Json.parse("""
     {
-        "type" : "NamePlayerTwo",
+        "commandType" : "NamePlayerTwo",
         "name": "two"
     }
     """)
 
     val jsonEndTurn: JsValue = Json.parse("""
     {
-        "type" : "EndTurn"
+        "commandType" : "EndTurn"
     }
     """)
 
     val jsonQuit: JsValue = Json.parse("""
     {
-        "type" : "Quit"
+        "commandType" : "Quit"
     }
     """)
 
@@ -73,9 +73,14 @@ class CommandSpec extends AnyWordSpec with Matchers {
             "be parsed to a Quit Command" in {
                 readCommand(jsonQuit) should be(Success(Quit))
             }
-            "throw an error" in {
+            "throw an error because the Json does not fit any command" in {
                 readCommand(Json.parse("""
                 {"test": "test"}
+                """)).isFailure should be(true)
+            }
+            "throw an error because the Json does not contain an existing command" in {
+                readCommand(Json.parse("""
+                {"commandType": "NON-EXISTING"}
                 """)).isFailure should be(true)
             }
         }

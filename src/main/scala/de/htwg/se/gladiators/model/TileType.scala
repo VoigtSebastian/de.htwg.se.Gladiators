@@ -17,25 +17,25 @@ object TileType extends Enum[TileType] {
         override def coloredStringRepresentation(gladiator: Option[GladiatorType]): String = coloredString(220, gladiator, "S")
         override def stringRepresentation(gladiator: Option[GladiatorType]): String = shortString(gladiator, "S")
         override def toJsObject: JsObject = Json.obj(
-            "type" -> "Sand")
+            "tileType" -> "Sand")
     }
     case object Palm extends TileType {
         override def coloredStringRepresentation(gladiator: Option[GladiatorType]): String = coloredString(154, gladiator, "P")
         override def stringRepresentation(gladiator: Option[GladiatorType]): String = shortString(gladiator, "P")
         override def toJsObject: JsObject = Json.obj(
-            "type" -> "Palm")
+            "tileType" -> "Palm")
     }
     case object Base extends TileType {
         override def coloredStringRepresentation(gladiator: Option[GladiatorType]): String = coloredString(203, gladiator, "B")
         override def stringRepresentation(gladiator: Option[GladiatorType]): String = shortString(gladiator, "B")
         override def toJsObject: JsObject = Json.obj(
-            "type" -> "Base")
+            "tileType" -> "Base")
     }
     case class Mine(gold: Int) extends TileType {
         override def coloredStringRepresentation(gladiator: Option[GladiatorType]): String = coloredString(223, gladiator, "M")
         override def stringRepresentation(gladiator: Option[GladiatorType]): String = shortString(gladiator, "M")
         override def toJsObject: JsObject = Json.obj(
-            "type" -> "Mine",
+            "tileType" -> "Mine",
             "gold" -> gold)
         def goldPerHit = 10
         def mine = (gold - goldPerHit) match {

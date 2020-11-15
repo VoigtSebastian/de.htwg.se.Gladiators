@@ -8,7 +8,7 @@ import play.api.libs.json._
 object GladiatorJson {
     implicit val gladiatorWriters = new Writes[Gladiator] {
         def writes(gladiator: Gladiator) = Json.obj(
-            "type" -> gladiator.gladiatorType.simpleString,
+            "gladiatorType" -> gladiator.gladiatorType.simpleString,
             "position" -> gladiator.position,
             "healthPoints" -> gladiator.healthPoints,
             "movementPoints" -> gladiator.movementPoints,

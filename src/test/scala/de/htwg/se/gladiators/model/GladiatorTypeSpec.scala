@@ -34,7 +34,7 @@ class GladiatorTypeSpec extends AnyWordSpec with Matchers {
                 .values
                 .foreach(_.simpleString should not be (empty))
         }
-        "have a Json representation" in {
+        "have a Json non-empty representation" in {
             Json.toJson(GladiatorType.Archer).toString should not be (empty)
             Json.toJson(GladiatorType.Tank).toString should not be (empty)
             Json.toJson(GladiatorType.Knight).toString should not be (empty)

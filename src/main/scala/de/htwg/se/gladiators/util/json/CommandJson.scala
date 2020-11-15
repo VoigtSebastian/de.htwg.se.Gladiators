@@ -14,12 +14,13 @@ object CommandJson {
         (JsPath \ "x").read[Int] and
         (JsPath \ "y").read[Int])(Coordinate.apply _)
 
-    def readCommand(json: JsValue): Try[Command] = Try((json \ "type").as[String] match {
+    def readCommand(json: JsValue): Try[Command] = Try((json \ "commandType").as[String] match {
         case "Move" => Move((json \ "from").as[Coordinate], (json \ "to").as[Coordinate])
         case "BuyUnit" => BuyUnit((json \ "number").as[Int], (json \ "position").as[Coordinate])
         case "NamePlayerOne" => NamePlayerOne((json \ "name").as[String])
         case "NamePlayerTwo" => NamePlayerTwo((json \ "name").as[String])
         case "EndTurn" => EndTurn
         case "Quit" => Quit
+        case _ => throw new Exception("Unsupported command")
     })
 }
