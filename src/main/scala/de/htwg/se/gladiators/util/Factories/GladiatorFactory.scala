@@ -22,7 +22,7 @@ object GladiatorFactory {
             healthPoints.getOrElse(gladiator.healthPoints),
             movementPoints.getOrElse(gladiator.movementPoints),
             attackPoints.getOrElse(gladiator.attackPoints),
-            moved.getOrElse(true))
+            moved.getOrElse(true))()
     }
 
     // def curryGladiator(gladiatorType: GladiatorType)(position: Coordinate)(healthPoints: Int)(movementPoints: Int)(attackPoints: Int) = Gladiator(gladiatorType, position, healthPoints, movementPoints, attackPoints)
@@ -34,7 +34,7 @@ object GladiatorFactory {
             randomNumberInterval(30, 50).toInt,
             randomNumberInterval(2, 3).toInt,
             randomNumberInterval(40, 70).toInt,
-            true)
+            true)()
 
         case Knight => Gladiator(
             Knight,
@@ -42,7 +42,7 @@ object GladiatorFactory {
             randomNumberInterval(50, 80).toInt,
             randomNumberInterval(3, 4).toInt,
             randomNumberInterval(50, 80).toInt,
-            true)
+            true)()
 
         case Tank => Gladiator(
             Tank,
@@ -50,7 +50,7 @@ object GladiatorFactory {
             randomNumberInterval(80, 100).toInt,
             randomNumberInterval(1, 2).toInt,
             randomNumberInterval(30, 50).toInt,
-            true)
+            true)()
     }
 
     def createType: GladiatorType = GladiatorType.values(Random.nextInt(GladiatorType.values.length))

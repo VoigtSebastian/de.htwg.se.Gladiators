@@ -146,7 +146,7 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
     }
 
     def checkoutFromShop(player: Player, newShop: Shop, gladiator: Gladiator): (Player, Events) = {
-        (player.credits - gladiator.calculateCost) match {
+        (player.credits - gladiator.cost) match {
             case balance if balance >= 0 => {
                 shop = newShop
                 val newPlayer = player.copy(gladiators = player.gladiators :+ gladiator, credits = balance, alreadyBought = true)

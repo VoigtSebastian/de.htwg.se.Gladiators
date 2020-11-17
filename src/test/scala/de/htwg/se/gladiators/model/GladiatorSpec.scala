@@ -16,7 +16,7 @@ class GladiatorSpec extends AnyWordSpec with Matchers {
             "have a cost" in {
                 GladiatorFactory
                     .createGladiator()
-                    .calculateCost should be > 0
+                    .cost should be > 0
             }
             "be movable" in {
                 GladiatorFactory
@@ -37,6 +37,14 @@ class GladiatorSpec extends AnyWordSpec with Matchers {
                     .createGladiator(healthPoints = Some(0))
                     .attacked(10)
                     .healthPoints should be(-10)
+            }
+            "have the same cost after being copied" in {
+                val initGlad = GladiatorFactory.createGladiator()
+                initGlad.copy(healthPoints = 0, movementPoints = 0).cost should be(initGlad.cost)
+            }
+            "have the same health after being copied" in {
+                val initGlad = GladiatorFactory.createGladiator()
+                initGlad.copy(movementPoints = 0).initialHealth should be(initGlad.initialHealth)
             }
             "have a gladiatorType defined in its Json representation" in {
                 (Json.toJson(GladiatorFactory.createGladiator(gladiatorType = Some(GladiatorType.Archer))) \ "gladiatorType").as[String] should not be (empty)

@@ -19,13 +19,13 @@ object GladiatorType extends Enum[GladiatorType] {
         override def coloredString = coloredStringHelper(21, "T")
     }
     case object Knight extends GladiatorType {
-        override def movementPointsAttack(): Int = 2
+        override def movementPointsAttack(): Int = 1
         override def shortString: String = "K"
         override def simpleString: String = "Knight"
         override def coloredString = coloredStringHelper(196, "K")
     }
     case object Archer extends GladiatorType {
-        override def movementPointsAttack(): Int = 3
+        override def movementPointsAttack(): Int = 2
         override def shortString: String = "A"
         override def simpleString: String = "Archer"
         override def coloredString = coloredStringHelper(210, "A")
