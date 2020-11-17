@@ -11,8 +11,11 @@ object GladiatorJson {
             "gladiatorType" -> gladiator.gladiatorType.simpleString,
             "position" -> gladiator.position,
             "healthPoints" -> gladiator.healthPoints,
+            "initialHealthPoints" -> gladiator.initialHealth,
             "movementPoints" -> gladiator.movementPoints,
+            "movementPointsAttack" -> gladiator.gladiatorType.movementPointsAttack,
             "attackPoints" -> gladiator.attackPoints,
-            "moved" -> gladiator.moved)
+            "moved" -> gladiator.moved,
+            "initialCost" -> gladiator.cost)
     }
 }
