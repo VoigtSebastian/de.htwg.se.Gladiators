@@ -16,6 +16,6 @@ object GladiatorJson {
             "movementPointsAttack" -> gladiator.gladiatorType.movementPointsAttack,
             "attackPoints" -> gladiator.attackPoints,
             "moved" -> gladiator.moved,
-            "initialCost" -> gladiator.cost)
+            "cost" -> gladiator.cost)
     }
 }
