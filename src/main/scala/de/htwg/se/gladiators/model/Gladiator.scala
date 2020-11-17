@@ -9,23 +9,22 @@ case class Gladiator(
     movementPoints: Int,
     attackPoints: Int,
     moved: Boolean)(
-        healthOnInitialization: Int = healthPoints,
-        initialCost: Int = (((attackPoints + healthPoints) * (movementPoints + 1)) / 35).toInt) {
+    healthOnInitialization: Int = healthPoints,
+    initialCost: Int = (((attackPoints + healthPoints) * (movementPoints + 1)) / 35).toInt) {
 
-    // TODO: Test this
-    def copy(gladiatorType: GladiatorType = gladiatorType,
+    def copy(
+        gladiatorType: GladiatorType = gladiatorType,
         position: Coordinate = position,
         healthPoints: Int = healthPoints,
         movementPoints: Int = movementPoints,
         attackPoints: Int = attackPoints,
         moved: Boolean = moved): Gladiator = Gladiator(
-            gladiatorType,
-            position,
-            healthPoints,
-            movementPoints,
-            attackPoints,
-            moved
-        )(this.initialHealth, this.initialCost)
+        gladiatorType,
+        position,
+        healthPoints,
+        movementPoints,
+        attackPoints,
+        moved)(this.initialHealth, this.initialCost)
 
     def initialHealth = healthOnInitialization
     def cost = initialCost
