@@ -241,8 +241,8 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
             .gladiators
             .filter(_.position == tile)
             .map(gladiator => board.getValidCoordinates(gladiator.position, gladiator.gladiatorType.movementPointsAttack, Vector(Sand, Base)))
-            .flatten match {
-                case list: Vector[Coordinate] if list.length > 0 => Some(list)
+            .flatten.distinct match {
+                case list: Vector[Coordinate] if list.length > 0 => Some(list.filter(_ == tile))
                 case _ => None
             }
     }
@@ -253,8 +253,8 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
             .gladiators
             .filter(_.position == tile)
             .map(gladiator => board.getValidCoordinates(gladiator.position, gladiator.movementPoints, Vector(Sand)))
-            .flatten match {
-                case list: Vector[Coordinate] if list.length > 0 => Some(list)
+            .flatten.distinct match {
+                case list: Vector[Coordinate] if list.length > 0 => Some(list.filter(_ == tile))
                 case _ => None
             }
     }
