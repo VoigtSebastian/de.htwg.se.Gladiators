@@ -137,7 +137,7 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
                     updateCurrentPlayer(Some(player))
                     return event.broadcast
                 } else
-                    return ErrorMessage(f"The position $position is blocked").broadcast
+                    return ErrorMessage(f"You cannot spawn a gladiator at $position").broadcast
             }
             case (_, _, false) => ErrorMessage(f"You can not place a unit at $position").broadcast
             case (Some(_), _, _) => ErrorMessage(f"Cannot buy units in state $currentGameState").broadcast
