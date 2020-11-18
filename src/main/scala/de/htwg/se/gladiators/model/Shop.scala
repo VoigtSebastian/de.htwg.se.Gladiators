@@ -14,5 +14,5 @@ case class Shop(stock: Vector[Gladiator], itemsInStock: Int) {
     }
 
     override def toString: String = (formatLine("Type", "Attack-Points", "Movement-Points", "Health-Points", "Cost") +
-        stock.map(g => formatLine(g.gladiatorType.simpleString, g.attackPoints.toString, g.movementPoints.toString, g.healthPoints.toString, g.calculateCost.toString)).mkString)
+        stock.map(g => formatLine(g.gladiatorType.simpleString, g.attackPoints.toString, g.movementPoints.toString, g.healthPoints.toString, g.cost.toString)).mkString)
 }

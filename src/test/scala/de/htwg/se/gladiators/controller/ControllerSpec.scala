@@ -256,13 +256,13 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 controller.currentGameState = TurnPlayerOne
                 controller.inputCommand(BuyUnit(1, Coordinate((controller.board.tiles.size / 2), 1)))
                 eventQueue.events.dequeue().asInstanceOf[SuccessfullyBoughtGladiator].player should be(controller.playerOne.get)
-                controller.playerOne.get.credits should be(initialCredits - controller.playerOne.get.gladiators(0).calculateCost)
+                controller.playerOne.get.credits should be(initialCredits - controller.playerOne.get.gladiators(0).cost)
 
                 controller.playerTwo = Some(Player("", 0, initialCredits, 100, false, Vector()))
                 controller.currentGameState = TurnPlayerTwo
                 controller.inputCommand(BuyUnit(1, Coordinate((controller.board.tiles.size / 2), controller.board.tiles.size - 2)))
                 eventQueue.events.dequeue().asInstanceOf[SuccessfullyBoughtGladiator].player should be(controller.playerTwo.get)
-                controller.playerTwo.get.credits should be(initialCredits - controller.playerTwo.get.gladiators(0).calculateCost)
+                controller.playerTwo.get.credits should be(initialCredits - controller.playerTwo.get.gladiators(0).cost)
 
                 controller.playerOne.get.credits should be >= 0
                 controller.playerTwo.get.credits should be >= 0
@@ -528,8 +528,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                             position = Some(Coordinate(0, 0)),
                             movementPoints = Some(1)))))
                 controller.currentGameState = TurnPlayerOne
-                controller
-                    .attackTiles(Coordinate(0, 0)) should not be empty
+                controller.attackTiles(Coordinate(0, 0)) should not be empty
+                controller.attackTiles(Coordinate(0, 0)) should not(contain(Coordinate(0, 0)))
             }
             "return None because the tile is not occupied" in {
                 val (controller, _) = createControllerEventQueue()
@@ -565,8 +565,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                             position = Some(Coordinate(0, 0)),
                             movementPoints = Some(1)))))
                 controller.currentGameState = TurnPlayerOne
-                controller
-                    .moveTiles(Coordinate(0, 0)) should not be empty
+                controller.moveTiles(Coordinate(0, 0)) should not be empty
+                controller.moveTiles(Coordinate(0, 0)) should not(contain(Coordinate(0, 0)))
             }
             "return None because the tile is not occupied" in {
                 val (controller, _) = createControllerEventQueue()

@@ -146,7 +146,7 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
     }
 
     def checkoutFromShop(player: Player, newShop: Shop, gladiator: Gladiator): (Player, Events) = {
-        (player.credits - gladiator.calculateCost) match {
+        (player.credits - gladiator.cost) match {
             case balance if balance >= 0 => {
                 shop = newShop
                 val newPlayer = player.copy(gladiators = player.gladiators :+ gladiator, credits = balance, alreadyBought = true)
@@ -241,8 +241,8 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
             .gladiators
             .filter(_.position == tile)
             .map(gladiator => board.getValidCoordinates(gladiator.position, gladiator.gladiatorType.movementPointsAttack, Vector(Sand, Base)))
-            .flatten match {
-                case list: Vector[Coordinate] if list.length > 0 => Some(list)
+            .flatten.distinct match {
+                case list: Vector[Coordinate] if list.length > 0 => Some(list.filter(_ != tile))
                 case _ => None
             }
     }
@@ -253,8 +253,8 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
             .gladiators
             .filter(_.position == tile)
             .map(gladiator => board.getValidCoordinates(gladiator.position, gladiator.movementPoints, Vector(Sand)))
-            .flatten match {
-                case list: Vector[Coordinate] if list.length > 0 => Some(list)
+            .flatten.distinct match {
+                case list: Vector[Coordinate] if list.length > 0 => Some(list.filter(_ != tile))
                 case _ => None
             }
     }
