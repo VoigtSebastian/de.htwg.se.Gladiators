@@ -528,8 +528,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                             position = Some(Coordinate(0, 0)),
                             movementPoints = Some(1)))))
                 controller.currentGameState = TurnPlayerOne
-                controller
-                    .attackTiles(Coordinate(0, 0)) should not be empty
+                controller.attackTiles(Coordinate(0, 0)) should not be empty
+                controller.attackTiles(Coordinate(0, 0)) should not(contain(Coordinate(0, 0)))
             }
             "return None because the tile is not occupied" in {
                 val (controller, _) = createControllerEventQueue()
@@ -565,8 +565,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                             position = Some(Coordinate(0, 0)),
                             movementPoints = Some(1)))))
                 controller.currentGameState = TurnPlayerOne
-                controller
-                    .moveTiles(Coordinate(0, 0)) should not be empty
+                controller.moveTiles(Coordinate(0, 0)) should not be empty
+                controller.moveTiles(Coordinate(0, 0)) should not(contain(Coordinate(0, 0)))
             }
             "return None because the tile is not occupied" in {
                 val (controller, _) = createControllerEventQueue()
