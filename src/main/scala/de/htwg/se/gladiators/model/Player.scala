@@ -4,6 +4,7 @@ import de.htwg.se.gladiators.model.TileType.Sand
 import de.htwg.se.gladiators.util.Coordinate
 
 case class Player(
+    id: Int,
     name: String,
     enemyBaseLine: Int,
     credits: Int,

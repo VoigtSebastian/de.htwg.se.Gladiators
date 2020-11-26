@@ -10,8 +10,8 @@ import org.scalatest.wordspec.AnyWordSpec
 class PlayerSpec extends AnyWordSpec with Matchers {
     "A Player" should {
         val board = BoardFactory.initRandomBoard(7, 100)
-        val playerOne = Player("", 6, 0, 100, false, Vector())
-        val playerTwo = Player("", 0, 0, 100, false, Vector())
+        val playerOne = Player(1, "", 6, 0, 100, false, Vector())
+        val playerTwo = Player(2, "", 0, 0, 100, false, Vector())
         "return all tiles around the own base at the bottom of the map" in {
             val tiles = playerOne
                 .placementTilesNewUnit(7, board.tiles)

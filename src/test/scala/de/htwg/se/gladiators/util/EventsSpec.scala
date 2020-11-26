@@ -12,7 +12,7 @@ import play.api.libs.json.Json
 class EventsSpec extends AnyWordSpec with Matchers {
     "Every Event" should {
         "have a json representation" in {
-            val player = Player("one", 0, 100, 0, false)
+            val player = Player(1, "one", 0, 100, 0, false)
             val coordinate = Coordinate(0, 0)
             val events: Vector[Events] = Vector(
                 Init,

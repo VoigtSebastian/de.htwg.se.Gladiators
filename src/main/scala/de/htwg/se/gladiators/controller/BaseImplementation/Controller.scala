@@ -209,7 +209,7 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
         currentGameState match {
             case NamingPlayerOne => {
                 currentGameState = NamingPlayerTwo
-                playerOne = Some(Player(name, 0, 100, 100, false))
+                playerOne = Some(Player(1, name, 0, 100, 100, false))
                 PlayerOneNamed(name).broadcast
             }
             case _ =>
@@ -222,7 +222,7 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
         currentGameState match {
             case NamingPlayerTwo => {
                 currentGameState = TurnPlayerOne
-                playerTwo = Some(Player(name, board.tiles.size - 1, 100, 100, false))
+                playerTwo = Some(Player(2, name, board.tiles.size - 1, 100, 100, false))
                 PlayerTwoNamed(name).broadcast
                 Turn(playerOne.get).broadcast
             }
