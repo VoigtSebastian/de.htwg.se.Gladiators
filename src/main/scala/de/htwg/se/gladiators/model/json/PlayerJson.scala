@@ -8,6 +8,7 @@ import play.api.libs.json._
 object PlayerJson {
     implicit val playerWrites = new Writes[Player] {
         def writes(player: Player) = Json.obj(
+            "id" -> player.id,
             "name" -> player.name,
             "enemyBaseLine" -> player.enemyBaseLine,
             "credits" -> player.credits,
