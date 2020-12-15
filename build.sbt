@@ -22,7 +22,8 @@ val commonDependencies = Seq(
     "org.scala-lang.modules" %% "scala-swing" % "2.1.1",
     "com.softwaremill.macwire" %% "macros" % "2.3.6" % "provided",
     "com.softwaremill.macwire" %% "util" % "2.3.6",
-    "com.typesafe.play" %% "play-json" % "2.9.1"
+    "com.typesafe.play" %% "play-json" % "2.9.1",
+    "org.scalaj" %% "scalaj-http" % "2.4.2"
 )
 
 lazy val gladiatorsBase = (project in file(".")).settings(
