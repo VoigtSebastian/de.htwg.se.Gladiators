@@ -9,13 +9,20 @@ import scala.util.Try
 
 object PlayerServiceRequests {
     def queryPlayerByName(name: String): Option[Either[PlayerServiceReturnTypes.Player, PlayerServiceReturnTypes.Error]] = {
-        val body = Http(f"http://localhost:5050/player/name/$name").asString.body
+        val body = Try(
+            Json.parse(
+                Http(f"http://localhost:5050/player/name/$name")
+                    .asString
+                    .body)) match {
+                case Success(value) => value
+                case Failure(_) => return None
+            }
         Json
-            .fromJson[PlayerServiceReturnTypes.Player](Json.parse(body))
+            .fromJson[PlayerServiceReturnTypes.Player](body)
             .asOpt match {
                 case Some(player) => return Some(Left(player))
                 case None => Json
-                    .fromJson[PlayerServiceReturnTypes.Error](Json.parse(body))
+                    .fromJson[PlayerServiceReturnTypes.Error](body)
                     .asOpt match {
                         case Some(error) => return Some(Right(error))
                         case None => return None
