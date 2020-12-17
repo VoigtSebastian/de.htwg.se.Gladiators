@@ -87,7 +87,7 @@ object PlayerServiceRequests {
         Json
             .fromJson[Vector[PlayerServiceReturnTypes.Player]](body)
             .asOpt match {
-                case Some(players) => Some(players.sortBy(_.games_won))
+                case Some(players) => Some(players.sortBy(_.games_won).reverse)
                 case _ => None
             }
     }
