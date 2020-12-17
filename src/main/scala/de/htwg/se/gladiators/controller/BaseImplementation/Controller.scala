@@ -207,11 +207,21 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
 
     def namePlayerOne(name: String): Events = {
         PlayerServiceRequests.queryPlayerByName(name) match {
-            case None | Some(Left(_)) => {
+            case None => {
                 currentGameState match {
                     case NamingPlayerOne => {
                         currentGameState = NamingPlayerTwo
                         playerOne = Some(Player(1, name, 0, 100, 100, false))
+                        PlayerOneNamed(name).broadcast
+                    }
+                    case _ => ErrorMessage(s"Player two can not be named anymore").broadcast
+                }
+            }
+            case Some(Left(player)) => {
+                currentGameState match {
+                    case NamingPlayerOne => {
+                        currentGameState = NamingPlayerTwo
+                        playerOne = Some(Player(1, name, 0, 100, 100, false, Some(player.games_played), Some(player.games_won)))
                         PlayerOneNamed(name).broadcast
                     }
                     case _ => ErrorMessage(s"Player two can not be named anymore").broadcast
@@ -224,11 +234,22 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
 
     def namePlayerTwo(name: String): Events = {
         PlayerServiceRequests.queryPlayerByName(name) match {
-            case None | Some(Left(_)) => {
+            case None => {
                 currentGameState match {
                     case NamingPlayerTwo => {
                         currentGameState = TurnPlayerOne
                         playerTwo = Some(Player(2, name, board.tiles.size - 1, 100, 100, false))
+                        PlayerTwoNamed(name).broadcast
+                        Turn(playerOne.get).broadcast
+                    }
+                    case _ => ErrorMessage(s"Player two can not be named anymore").broadcast
+                }
+            }
+            case Some(Left(player)) => {
+                currentGameState match {
+                    case NamingPlayerTwo => {
+                        currentGameState = TurnPlayerOne
+                        playerTwo = Some(Player(2, name, board.tiles.size - 1, 100, 100, false, Some(player.games_played), Some(player.games_won)))
                         PlayerTwoNamed(name).broadcast
                         Turn(playerOne.get).broadcast
                     }
