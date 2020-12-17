@@ -19,14 +19,19 @@ import de.htwg.se.gladiators.util.Factories.ShopFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.Json
+import de.htwg.se.gladiators.util.Factories.PlayerFactory
 
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A controller" when {
         val baseConfig = Configuration(5, 15)
         "created" should {
             val controller = Controller(baseConfig)
-            controller.playerTwo = Some(Player(1, "", 0, 0, 100, false, Vector()))
-            controller.playerOne = Some(Player(2, "", 0, 0, 100, false, Vector()))
+            controller.playerTwo = Some(PlayerFactory(
+                health = 100,
+                alreadyBought = false)) //Some(Player(1, "", 0, 0, 100, false, Vector()))
+            controller.playerOne = Some(PlayerFactory(
+                health = 100,
+                alreadyBought = false)) // Some(Player(2, "", 0, 0, 100, false, Vector()))
             "be in the NamingPlayerOne state" in {
                 controller.gameState should be(GameState.NamingPlayerOne)
             }
@@ -63,13 +68,17 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         "returning the current player" should {
             "return Player One" in {
                 val controller = Controller(baseConfig)
-                controller.playerOne = Some(Player(1, "", 0, 0, 100, false, Vector()))
+                controller.playerOne = Some(PlayerFactory(
+                    health = 100,
+                    alreadyBought = false))
                 controller.currentGameState = TurnPlayerOne
                 controller.currentPlayer should be(controller.playerOne)
             }
             "return Player Two" in {
                 val controller = Controller(baseConfig)
-                controller.playerTwo = Some(Player(2, "", 0, 0, 100, false, Vector()))
+                controller.playerTwo = Some(PlayerFactory(
+                    health = 100,
+                    alreadyBought = false))
                 controller.currentGameState = TurnPlayerTwo
                 controller.currentPlayer should be(controller.playerTwo)
             }
@@ -84,13 +93,17 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         "returning the enemy player" should {
             "return Player One" in {
                 val controller = Controller(baseConfig)
-                controller.playerTwo = Some(Player(1, "", 0, 0, 100, false, Vector()))
+                controller.playerTwo = Some(PlayerFactory(
+                    health = 100,
+                    alreadyBought = false))
                 controller.currentGameState = TurnPlayerOne
                 controller.enemyPlayer should be(controller.playerTwo)
             }
             "return Player Two" in {
                 val controller = Controller(baseConfig)
-                controller.playerOne = Some(Player(2, "", 0, 0, 100, false, Vector()))
+                controller.playerOne = Some(PlayerFactory(
+                    health = 100,
+                    alreadyBought = false))
                 controller.currentGameState = TurnPlayerTwo
                 controller.enemyPlayer should be(controller.playerOne)
             }
@@ -110,14 +123,18 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             "update player one correctly" in {
                 val controller = Controller(baseConfig)
                 controller.currentGameState = GameState.TurnPlayerOne
-                controller.playerOne = Some(Player(1, "", 0, 0, 100, false, Vector()))
+                controller.playerOne = Some(PlayerFactory(
+                    health = 100,
+                    alreadyBought = false))
                 controller.updateCurrentPlayer(None)
                 controller.playerOne should be(None)
             }
             "update player two correctly" in {
                 val controller = Controller(baseConfig)
                 controller.currentGameState = GameState.TurnPlayerTwo
-                controller.playerTwo = Some(Player(2, "", 0, 0, 100, false, Vector()))
+                controller.playerTwo = Some(PlayerFactory(
+                    health = 100,
+                    alreadyBought = false))
                 controller.updateCurrentPlayer(None)
                 controller.playerTwo should be(None)
             }
@@ -130,14 +147,18 @@ class ControllerSpec extends AnyWordSpec with Matchers {
             "update player one correctly" in {
                 val controller = Controller(baseConfig)
                 controller.currentGameState = GameState.TurnPlayerTwo
-                controller.playerOne = Some(Player(1, "", 0, 0, 100, false, Vector()))
+                controller.playerOne = Some(PlayerFactory(
+                    health = 100,
+                    alreadyBought = false))
                 controller.updateEnemyPlayer(None)
                 controller.playerOne should be(None)
             }
             "update player two correctly" in {
                 val controller = Controller(baseConfig)
                 controller.currentGameState = GameState.TurnPlayerOne
-                controller.playerTwo = Some(Player(2, "", 0, 0, 100, false, Vector()))
+                controller.playerTwo = Some(PlayerFactory(
+                    health = 100,
+                    alreadyBought = false))
                 controller.updateEnemyPlayer(None)
                 controller.playerTwo should be(None)
             }
@@ -185,7 +206,11 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
                 controller.board = BoardFactory.initRandomBoard(percentageSand = 0)
 
-                controller.playerOne = Some(Player(1, "", controller.board.tiles.size - 1, Int.MaxValue, 100, true, Vector()))
+                controller.playerOne = Some(PlayerFactory(
+                    enemyBaseLine = controller.board.tiles.size - 1,
+                    health = Int.MaxValue,
+                    credits = Int.MaxValue,
+                    alreadyBought = true)) //Some(Player(1, "", controller.board.tiles.size - 1, Int.MaxValue, 100, true, Vector()))
                 controller.currentGameState = TurnPlayerOne
                 controller.buyUnit(1, Coordinate((controller.board.tiles.size / 2), 1))
                 eventQueue.events.dequeue.isInstanceOf[ErrorMessage] should be(true)
@@ -195,11 +220,19 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
                 controller.board = BoardFactory.initRandomBoard(percentageSand = 0)
 
-                controller.playerOne = Some(Player(1, "", controller.board.tiles.size - 1, initialCredits, 100, false, Vector()))
+                controller.playerOne = Some(PlayerFactory(
+                    enemyBaseLine = controller.board.tiles.size - 1,
+                    health = Int.MaxValue,
+                    credits = initialCredits,
+                    alreadyBought = false)) // Some(Player(1, "", controller.board.tiles.size - 1, initialCredits, 100, false, Vector()))
                 controller.currentGameState = TurnPlayerOne
                 controller.inputCommand(BuyUnit(1, Coordinate((controller.board.tiles.size / 2), 1)))
 
-                controller.playerTwo = Some(Player(2, "", 0, initialCredits, 100, false, Vector()))
+                controller.playerTwo = Some(PlayerFactory(
+                    enemyBaseLine = controller.board.tiles.size - 1,
+                    health = Int.MaxValue,
+                    credits = initialCredits,
+                    alreadyBought = false)) // Some(Player(2, "", 0, initialCredits, 100, false, Vector()))
                 controller.currentGameState = TurnPlayerTwo
                 controller.inputCommand(BuyUnit(1, Coordinate((controller.board.tiles.size / 2), controller.board.tiles.size - 2)))
 
@@ -226,7 +259,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
                 controller.board = BoardFactory.initRandomBoard(percentageSand = 100)
 
-                controller.playerOne = Some(Player(1, "", controller.board.tiles.size - 1, 0, 100, false, Vector()))
+                controller.playerOne = Some(PlayerFactory(
+                    enemyBaseLine = controller.board.tiles.size - 1,
+                    credits = 0,
+                    alreadyBought = false)) // Some(Player(1, "", controller.board.tiles.size - 1, 0, 100, false, Vector()))
                 controller.currentGameState = TurnPlayerOne
                 controller.inputCommand(BuyUnit(1, Coordinate((controller.board.tiles.size / 2), 1)))
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
@@ -236,7 +272,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
 
                 controller.currentGameState = TurnPlayerOne
-                controller.playerOne = Some(Player(2, "", 1000, controller.board.tiles.size, 100, false, Vector()))
+                controller.playerOne = Some(PlayerFactory(
+                    enemyBaseLine = controller.board.tiles.size,
+                    credits = 100,
+                    alreadyBought = false)) // Some(Player(2, "", 1000, controller.board.tiles.size, 100, false, Vector()))
 
                 controller.inputCommand(BuyUnit(1, Coordinate(-1, -1)))
                 controller.inputCommand(BuyUnit(1, Coordinate(0, controller.board.tiles.size)))
@@ -252,13 +291,19 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
                 controller.board = BoardFactory.initRandomBoard(percentageSand = 100)
 
-                controller.playerOne = Some(Player(1, "", controller.board.tiles.size - 1, initialCredits, 100, false, Vector()))
+                controller.playerOne = Some(PlayerFactory(
+                    enemyBaseLine = controller.board.tiles.size - 1,
+                    credits = initialCredits,
+                    alreadyBought = false)) // Some(Player(1, "", controller.board.tiles.size - 1, initialCredits, 100, false, Vector()))
                 controller.currentGameState = TurnPlayerOne
                 controller.inputCommand(BuyUnit(1, Coordinate((controller.board.tiles.size / 2), 1)))
                 eventQueue.events.dequeue().asInstanceOf[SuccessfullyBoughtGladiator].player should be(controller.playerOne.get)
                 controller.playerOne.get.credits should be(initialCredits - controller.playerOne.get.gladiators(0).cost)
 
-                controller.playerTwo = Some(Player(2, "", 0, initialCredits, 100, false, Vector()))
+                controller.playerTwo = Some(PlayerFactory(
+                    enemyBaseLine = 0,
+                    credits = initialCredits,
+                    alreadyBought = false)) // Some(Player(2, "", 0, initialCredits, 100, false, Vector()))
                 controller.currentGameState = TurnPlayerTwo
                 controller.inputCommand(BuyUnit(1, Coordinate((controller.board.tiles.size / 2), controller.board.tiles.size - 2)))
                 eventQueue.events.dequeue().asInstanceOf[SuccessfullyBoughtGladiator].player should be(controller.playerTwo.get)
@@ -281,8 +326,10 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                 val (controller, eventQueue) = createControllerEventQueue(shopStockSize = Some(5))
 
                 controller.currentGameState = TurnPlayerOne
-                controller.playerOne = Some(Player(1, "", 0, 0, 100, false, Vector(GladiatorFactory.createGladiator(position = Some(Coordinate(0, 0)), moved = Some(false)))))
-                controller.playerTwo = Some(Player(2, "", 0, 0, 100, false, Vector()))
+                controller.playerOne = Some(PlayerFactory(
+                    alreadyBought = false,
+                    gladiators = Vector(GladiatorFactory.createGladiator(position = Some(Coordinate(0, 0)), moved = Some(false))))) // Some(Player(1, "", 0, 0, 100, false, Vector(GladiatorFactory.createGladiator(position = Some(Coordinate(0, 0)), moved = Some(false)))))
+                controller.playerTwo = Some(PlayerFactory()) // Some(Player(2, "", 0, 0, 100, false, Vector()))
 
                 controller.inputCommand(Move(Coordinate(0, 0), Coordinate(-1, -1)))
                 eventQueue.events.dequeue().isInstanceOf[ErrorMessage] should be(true)
@@ -293,14 +340,23 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
                 controller.currentGameState = TurnPlayerOne
                 controller.board = BoardFactory.initRandomBoard(15, 100)
-                controller.playerOne = Some(Player(1, "", controller.board.tiles.size - 1, 0, 100, false, Vector(
-                    GladiatorFactory
-                        .createGladiator(
-                            position = Some(Coordinate(0, 0)),
-                            moved = Some(false),
-                            movementPoints = Some(4)))))
+                controller.playerOne = Some(PlayerFactory(
+                    alreadyBought = false,
+                    enemyBaseLine = controller.board.tiles.size - 1,
+                    gladiators = Vector(
+                        GladiatorFactory
+                            .createGladiator(
+                                position = Some(Coordinate(0, 0)),
+                                moved = Some(false),
+                                movementPoints = Some(4)))))
+                // Some(Player(1, "", controller.board.tiles.size - 1, 0, 100, false, Vector(
+                //  GladiatorFactory
+                //      .createGladiator(
+                //          position = Some(Coordinate(0, 0)),
+                //          moved = Some(false),
+                //          movementPoints = Some(4)))))
 
-                controller.playerTwo = Some(Player(2, "", 0, 0, 100, false, Vector()))
+                controller.playerTwo = Some(PlayerFactory())
 
                 controller.inputCommand(Move(Coordinate(0, 0), Coordinate(1, 0)))
                 eventQueue.events.dequeue().isInstanceOf[Moved] should be(true)
@@ -312,9 +368,9 @@ class ControllerSpec extends AnyWordSpec with Matchers {
 
                 controller.currentGameState = TurnPlayerTwo
                 controller.board = BoardFactory.initRandomBoard(15, 100)
-                controller.playerOne = Some(Player(1, "", controller.board.tiles.size - 1, 0, 100, false, Vector()))
+                controller.playerOne = Some(PlayerFactory(enemyBaseLine = controller.board.tiles.size - 1))
 
-                controller.playerTwo = Some(Player(2, "", 0, 0, 100, false, Vector(
+                controller.playerTwo = Some(PlayerFactory(gladiators = Vector(
                     GladiatorFactory
                         .createGladiator(
                             position = Some(Coordinate(0, 0)),

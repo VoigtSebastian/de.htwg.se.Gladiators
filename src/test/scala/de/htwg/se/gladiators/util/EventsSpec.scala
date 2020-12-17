@@ -1,6 +1,5 @@
 package de.htwg.se.gladiators.util
 
-import de.htwg.se.gladiators.model.Player
 import de.htwg.se.gladiators.util.Events._
 import de.htwg.se.gladiators.util.Factories.GladiatorFactory
 import de.htwg.se.gladiators.util.json.EventsJson._
@@ -8,11 +7,12 @@ import de.htwg.se.gladiators.util.json.EventsJson._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.Json
+import de.htwg.se.gladiators.util.Factories.PlayerFactory
 
 class EventsSpec extends AnyWordSpec with Matchers {
     "Every Event" should {
         "have a json representation" in {
-            val player = Player(1, "one", 0, 100, 0, false)
+            val player = PlayerFactory()
             val coordinate = Coordinate(0, 0)
             val events: Vector[Events] = Vector(
                 Init,

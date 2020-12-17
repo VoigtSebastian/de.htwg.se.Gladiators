@@ -3,7 +3,6 @@ package de.htwg.se.gladiators.aview
 import de.htwg.se.gladiators.controller.GameState
 import de.htwg.se.gladiators.controller.GameState._
 import de.htwg.se.gladiators.controller.TestImplementation.TestingController
-import de.htwg.se.gladiators.model.Player
 import de.htwg.se.gladiators.util.Command._
 import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.util.Events._
@@ -11,6 +10,7 @@ import de.htwg.se.gladiators.util.Factories.GladiatorFactory
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import de.htwg.se.gladiators.util.Factories.PlayerFactory
 
 class ControllerSpec extends AnyWordSpec with Matchers {
     "A Tui" when {
@@ -73,14 +73,14 @@ class ControllerSpec extends AnyWordSpec with Matchers {
                     controller.publish(Init)
                     controller.publish(PlayerOneNamed("torsten"))
                     controller.publish(PlayerTwoNamed("torsten"))
-                    controller.publish(Turn(Player(1, "", 0, 0, 100, false)))
+                    controller.publish(Turn(PlayerFactory()))
                     controller.publish(ErrorMessage("error"))
-                    controller.publish(SuccessfullyBoughtGladiator(Player(1, "", 0, 0, 100, false), GladiatorFactory.createGladiator()))
-                    controller.publish(Moved(Player(1, "", 0, 0, 100, false), Coordinate(0, 0), Coordinate(0, 0), GladiatorFactory.createGladiator()))
+                    controller.publish(SuccessfullyBoughtGladiator(PlayerFactory(), GladiatorFactory.createGladiator()))
+                    controller.publish(Moved(PlayerFactory(), Coordinate(0, 0), Coordinate(0, 0), GladiatorFactory.createGladiator()))
                     controller.publish(Shutdown)
-                    controller.publish(Won(Player(1, "", 0, 0, 0, false)))
-                    controller.publish(Attacked(Player(1, "", 0, 0, 0, false), true, Coordinate(0, 0), Coordinate(0, 0)))
-                    controller.publish(Mined(Player(1, "", 0, 0, 0, false), 10, true))
+                    controller.publish(Won(PlayerFactory()))
+                    controller.publish(Attacked(PlayerFactory(), true, Coordinate(0, 0), Coordinate(0, 0)))
+                    controller.publish(Mined(PlayerFactory(), 10, true))
 
                     controller.currentGameState = TurnPlayerOne
 
