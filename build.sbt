@@ -1,7 +1,7 @@
 //name := "de.htwg.se.Gladiators"
 import sbt.Keys.libraryDependencies
 
-coverageExcludedPackages := "<empty>;de.htwg.se.gladiators.Gladiators;de.htwg.se.gladiators.aview.Gui.*"
+coverageExcludedPackages := "<empty>;de.htwg.se.gladiators.Gladiators;de.htwg.se.gladiators.aview.Gui.*;de.htwg.se.gladiators.model.playerService.*"
 
 version := "0.1"
 scalaVersion := "2.12.12"
