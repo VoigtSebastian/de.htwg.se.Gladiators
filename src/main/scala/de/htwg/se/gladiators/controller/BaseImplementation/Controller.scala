@@ -23,6 +23,7 @@ import de.htwg.se.gladiators.util.Factories.ShopFactory
 import de.htwg.se.gladiators.util.MovementType
 
 import java.util.concurrent.atomic.AtomicBoolean
+import de.htwg.se.gladiators.model.playerService.PlayerServiceRequests
 
 case class Controller(configuration: Configuration) extends ControllerInterface {
     var currentGameState: GameState = NamingPlayerOne
@@ -103,7 +104,7 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
             enemyPlayer.get.copy(
                 health = (enemyPlayer.get.health - currentPlayer.get.gladiators.filter(_.position == from).head.attackPoints))))
         enemyPlayer.get.health <= 0 match {
-            case true => Won(currentPlayer.get)
+            case true => Won(currentPlayer.get) // todo: Write players to database
             case false => BaseAttacked(currentPlayer.get)
         }
     }
@@ -205,28 +206,36 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
     }
 
     def namePlayerOne(name: String): Events = {
-        // TODO: Player API lookup to set score
-        currentGameState match {
-            case NamingPlayerOne => {
-                currentGameState = NamingPlayerTwo
-                playerOne = Some(Player(1, name, 0, 100, 100, false))
-                PlayerOneNamed(name).broadcast
+        PlayerServiceRequests.queryPlayerByName(name) match {
+            case None | Some(Left(_)) => {
+                currentGameState match {
+                    case NamingPlayerOne => {
+                        currentGameState = NamingPlayerTwo
+                        playerOne = Some(Player(1, name, 0, 100, 100, false))
+                        PlayerOneNamed(name).broadcast
+                    }
+                    case _ => ErrorMessage(s"Player two can not be named anymore").broadcast
+                }
             }
-            case _ =>
-                ErrorMessage(s"Player two can not be named anymore").broadcast
+            case Some(Right(message)) => ErrorMessage(s"${message.error_type}: ${message.message}").broadcast
         }
+
     }
 
     def namePlayerTwo(name: String): Events = {
-        // TODO: Player API lookup to set sc
-        currentGameState match {
-            case NamingPlayerTwo => {
-                currentGameState = TurnPlayerOne
-                playerTwo = Some(Player(2, name, board.tiles.size - 1, 100, 100, false))
-                PlayerTwoNamed(name).broadcast
-                Turn(playerOne.get).broadcast
+        PlayerServiceRequests.queryPlayerByName(name) match {
+            case None | Some(Left(_)) => {
+                currentGameState match {
+                    case NamingPlayerTwo => {
+                        currentGameState = TurnPlayerOne
+                        playerTwo = Some(Player(2, name, board.tiles.size - 1, 100, 100, false))
+                        PlayerTwoNamed(name).broadcast
+                        Turn(playerOne.get).broadcast
+                    }
+                    case _ => ErrorMessage(s"Player two can not be named anymore").broadcast
+                }
             }
-            case _ => ErrorMessage(s"Player two can not be named anymore").broadcast
+            case Some(Right(message)) => ErrorMessage(s"${message.error_type}: ${message.message}").broadcast
         }
     }
 
