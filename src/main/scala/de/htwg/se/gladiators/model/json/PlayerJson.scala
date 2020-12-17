@@ -14,6 +14,8 @@ object PlayerJson {
             "credits" -> player.credits,
             "health" -> player.health,
             "alreadyBought" -> player.alreadyBought,
+            "gamesPlayed" -> player.gamesPlayed,
+            "gamesWon" -> player.gamesWon,
             "gladiators" -> player.gladiators)
     }
 }
