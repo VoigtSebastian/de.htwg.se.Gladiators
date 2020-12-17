@@ -12,6 +12,7 @@ import de.htwg.se.gladiators.model.TileType
 import de.htwg.se.gladiators.model.TileType.Base
 import de.htwg.se.gladiators.model.TileType.Mine
 import de.htwg.se.gladiators.model.TileType.Sand
+import de.htwg.se.gladiators.model.playerService.PlayerServiceRequests
 import de.htwg.se.gladiators.util.Command
 import de.htwg.se.gladiators.util.Command._
 import de.htwg.se.gladiators.util.Configuration
@@ -19,11 +20,11 @@ import de.htwg.se.gladiators.util.Coordinate
 import de.htwg.se.gladiators.util.Events
 import de.htwg.se.gladiators.util.Events._
 import de.htwg.se.gladiators.util.Factories.BoardFactory.initRandomBoard
+import de.htwg.se.gladiators.util.Factories.PlayerFactory
 import de.htwg.se.gladiators.util.Factories.ShopFactory
 import de.htwg.se.gladiators.util.MovementType
 
 import java.util.concurrent.atomic.AtomicBoolean
-import de.htwg.se.gladiators.model.playerService.PlayerServiceRequests
 
 case class Controller(configuration: Configuration) extends ControllerInterface {
     var currentGameState: GameState = NamingPlayerOne
@@ -211,7 +212,13 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
                 currentGameState match {
                     case NamingPlayerOne => {
                         currentGameState = NamingPlayerTwo
-                        playerOne = Some(Player(1, name, 0, 100, 100, false))
+                        playerOne = Some(PlayerFactory(
+                            id = 1,
+                            name = name,
+                            enemyBaseLine = 0,
+                            health = 100,
+                            credits = 100,
+                            alreadyBought = false))
                         PlayerOneNamed(name).broadcast
                     }
                     case _ => ErrorMessage(s"Player two can not be named anymore").broadcast
@@ -221,7 +228,15 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
                 currentGameState match {
                     case NamingPlayerOne => {
                         currentGameState = NamingPlayerTwo
-                        playerOne = Some(Player(1, name, 0, 100, 100, false, Some(player.games_played), Some(player.games_won)))
+                        playerOne = Some(PlayerFactory(
+                            id = 1,
+                            name = name,
+                            enemyBaseLine = 0,
+                            health = 100,
+                            credits = 100,
+                            alreadyBought = false,
+                            gamesPlayed = Some(player.games_played),
+                            gamesWon = Some(player.games_won)))
                         PlayerOneNamed(name).broadcast
                     }
                     case _ => ErrorMessage(s"Player two can not be named anymore").broadcast
@@ -238,7 +253,13 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
                 currentGameState match {
                     case NamingPlayerTwo => {
                         currentGameState = TurnPlayerOne
-                        playerTwo = Some(Player(2, name, board.tiles.size - 1, 100, 100, false))
+                        playerTwo = Some(PlayerFactory(
+                            id = 2,
+                            name = name,
+                            enemyBaseLine = board.tiles.size - 1,
+                            health = 100,
+                            credits = 100,
+                            alreadyBought = false))
                         PlayerTwoNamed(name).broadcast
                         Turn(playerOne.get).broadcast
                     }
@@ -249,7 +270,15 @@ case class Controller(configuration: Configuration) extends ControllerInterface 
                 currentGameState match {
                     case NamingPlayerTwo => {
                         currentGameState = TurnPlayerOne
-                        playerTwo = Some(Player(2, name, board.tiles.size - 1, 100, 100, false, Some(player.games_played), Some(player.games_won)))
+                        playerTwo = Some(PlayerFactory(
+                            id = 2,
+                            name = name,
+                            enemyBaseLine = board.tiles.size - 1,
+                            health = 100,
+                            credits = 100,
+                            alreadyBought = false,
+                            gamesPlayed = Some(player.games_played),
+                            gamesWon = Some(player.games_won)))
                         PlayerTwoNamed(name).broadcast
                         Turn(playerOne.get).broadcast
                     }
