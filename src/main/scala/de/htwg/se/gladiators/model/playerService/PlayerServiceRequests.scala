@@ -74,4 +74,21 @@ object PlayerServiceRequests {
                     }
             }
     }
+
+    def queryLeaderBoard: Option[Vector[PlayerServiceReturnTypes.Player]] = {
+        val body = Try(
+            Json.parse(
+                Http(f"http://localhost:5050/players")
+                    .asString
+                    .body)) match {
+                case Success(value) => value
+                case Failure(_) => return None
+            }
+        Json
+            .fromJson[Vector[PlayerServiceReturnTypes.Player]](body)
+            .asOpt match {
+                case Some(players) => Some(players.sortBy(_.games_won))
+                case _ => None
+            }
+    }
 }
