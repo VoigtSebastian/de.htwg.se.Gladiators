@@ -4,7 +4,7 @@ import sbt.Keys.libraryDependencies
 coverageExcludedPackages := "<empty>;de.htwg.se.gladiators.Gladiators;de.htwg.se.gladiators.aview.Gui.*"
 
 version := "0.1"
-scalaVersion := "2.12.12"
+scalaVersion := "2.11.1"
 trapExit := false
 scalacOptions ++= Seq(
     "-deprecation",
