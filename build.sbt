@@ -10,8 +10,7 @@ scalacOptions ++= Seq(
     "-deprecation",
     "-feature",
     "-Yrangepos",
-    "-Ywarn-unused",
-    "evicted")
+    "-Ywarn-unused")
 
 val commonDependencies = Seq(
     "org.scalactic" %% "scalactic" % "3.1.1",
